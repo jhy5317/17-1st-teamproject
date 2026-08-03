@@ -31,6 +31,9 @@
   const districtFilter = document.getElementById("district-filter");
   const riskFilter = document.getElementById("risk-filter");
   const boundaryToggle = document.getElementById("boundary-toggle");
+  // jisu_02_추가 / 취약도 색상 토글
+  const vulnerabilityToggle = document.getElementById("vulnerability-toggle");
+  //
   const mapStatus = document.getElementById("map-status");
   const panelEyebrow = document.getElementById("panel-eyebrow");
   const dongNameElement = document.getElementById("dong-name");
@@ -202,6 +205,10 @@
   const dongGeometryByCode = new Map();
   let selectedFeature = null;
   let administrativeBoundaryVisible = true;
+  // jisu_02_추가 / 취약도 단계별 채움색을 지도에 표시할지 저장
+  let vulnerabilityLayerVisible = true;
+  //
+
   let selectedDistrict = "all";
   let selectedRiskLevel = "all";
   let heatDataBaseDate = null;
@@ -379,8 +386,11 @@
 
     setDongPolygonOptions(dongCode, {
       visible: true,
-      fillColor: riskStyle.color,
-      fillOpacity: heatData ? 0.94 : 0.5,
+      // jisu_02_추가수정 / fillColor, fillOpacity 수정
+      // 색상을 꺼도 마우스를 올린 행정동은 흰색 반투명 효과와 파란 테두리로 구분
+      fillColor: vulnerabilityLayerVisible ? riskStyle.color : "#ffffff",
+      fillOpacity: vulnerabilityLayerVisible ? (heatData ? 0.94 : 0.5) : 0.16,
+      //
       strokeColor: "#1e3a8a",
       strokeOpacity: 1,
       strokeWeight: 2.8,
@@ -821,8 +831,9 @@
       visible: true,
 
       fillColor: riskStyle.color,
-      fillOpacity: heatData ? 0.72 : 0.28,
-
+      // jisu_02_추가수정 / 수정 fillOpacity:
+      fillOpacity: vulnerabilityLayerVisible ? (heatData ? 0.72 : 0.28) : 0,
+      //
       strokeColor: "#64748b",
       strokeOpacity: administrativeBoundaryVisible ? 0.8 : 0,
       strokeWeight: 1.3,
@@ -1575,6 +1586,25 @@
       administrativeBoundaryVisible
         ? "행정동 경계를 표시합니다."
         : "행정동 경계를 숨겼습니다.",
+    );
+  });
+
+  // jisu_02_추가 / 체크박스 이벤트 추가
+  vulnerabilityToggle?.addEventListener("change", () => {
+    // 체크 상태를 저장하고 모든 행정동 채움색을 다시 계산한다.
+    vulnerabilityLayerVisible = vulnerabilityToggle.checked;
+    applyAllDongPolygonStyles();
+
+    // 전체 스타일 갱신으로 선택 효과가 사라지지 않게 다시 적용한다.
+    if (selectedFeature) {
+      showSelectionEffects(selectedFeature);
+      applySelectedFeatureStyle(selectedFeature);
+    }
+
+    setStatus(
+      vulnerabilityLayerVisible
+        ? "폭염 취약도 색상을 표시합니다."
+        : "폭염 취약도 색상을 숨겼습니다.",
     );
   });
 

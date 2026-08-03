@@ -110,6 +110,11 @@ header p {
   white-space: nowrap;
 }
 
+/* jisu_02_추가 / 연속된 지도 레이어 토글이 서로 떨어지지 않도록 배치 */
+.layer-toggle + .layer-toggle {
+  margin-left: 0;
+}
+
 .map-status {
   position: absolute;
   width: 1px;
