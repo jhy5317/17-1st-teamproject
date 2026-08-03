@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>대구광역시 기후재난 취약지역</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='/css/map.css') }}"
+    />
+
+    {% if map_api_configured %}
+    <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId={{ naver_map_client_id }}"></script>
+    {% endif %}
+  </head>
+
+  <body>
+    <header>
+      <h1>대구광역시 폭염 취약지역 분석</h1>
+      <p>여러 공공데이터를 결합한 행정동별 구조적 폭염 취약도를 확인합니다.</p>
+    </header>
+
+    <main class="map-page">
+      {% if map_api_configured %}
+      <section class="map-toolbar" aria-label="지도 도구">
+        <label class="search-field" for="dong-search">
+          <span>행정동 검색</span>
+          <input
+            id="dong-search"
+            type="search"
+            placeholder="예: 삼덕동"
+            autocomplete="off"
+          />
+        </label>
+        <button id="search-button" type="button">검색</button>
+        <button id="reset-button" class="secondary-button" type="button">
+          지도 초기화
+        </button>
+        <label class="filter-field" for="district-filter">
+          <span>구·군</span>
+          <select id="district-filter">
+            <option value="all">대구 전체</option>
+            <option value="중구">중구</option>
+            <option value="동구">동구</option>
+            <option value="서구">서구</option>
+            <option value="남구">남구</option>
+            <option value="북구">북구</option>
+            <option value="수성구">수성구</option>
+            <option value="달서구">달서구</option>
+            <option value="달성군">달성군</option>
+            <option value="군위군">군위군</option>
+          </select>
+        </label>
+        <label class="filter-field" for="risk-filter">
+          <span>취약도</span>
+          <select id="risk-filter">
+            <option value="all">전체 단계</option>
+            <option value="critical">매우 높음</option>
+            <option value="high">높음</option>
+            <option value="moderate">보통</option>
+            <option value="low">낮음</option>
+            <option value="none">데이터 없음</option>
+          </select>
+        </label>
+        <label class="layer-toggle">
+          <input id="boundary-toggle" type="checkbox" checked />
+          행정동 경계 표시
+        </label>
+        <p id="map-status" class="map-status" role="status" aria-live="polite">
+          행정동 데이터를 불러오는 중입니다.
+        </p>
+      </section>
+
+      <section class="summary-grid" aria-label="폭염 취약도 분석 요약">
+        <article class="summary-card">
+          <span>분석 지역</span>
+          <strong id="summary-analyzed">-</strong>
+          <small>전체 150개 행정동</small>
+        </article>
+        <article class="summary-card">
+          <span>평균 취약도</span>
+          <strong id="summary-average">-</strong>
+          <small>100점 기준</small>
+        </article>
+        <article class="summary-card summary-alert">
+          <span>고위험 지역</span>
+          <strong id="summary-high-risk">-</strong>
+          <small>높음·매우 높음</small>
+        </article>
+        <article class="summary-card">
+          <span>분석 기준일</span>
+          <strong id="summary-base-date">-</strong>
+          <small id="summary-data-status">데이터 준비 중</small>
+        </article>
+      </section>
+
+      <div class="map-layout">
+        <div id="map" aria-label="대구광역시 행정동 지도"></div>
+
+        <aside id="dong-panel" class="dong-panel" aria-live="polite">
+          <p id="panel-eyebrow" class="panel-eyebrow">선택 지역</p>
+          <h2 id="dong-name">행정동을 선택하세요</h2>
+          <dl id="dong-details">
+            <div>
+              <dt>구·군</dt>
+              <dd id="dong-district">-</dd>
+            </div>
+            <div>
+              <dt>행정동 코드</dt>
+              <dd id="dong-code">-</dd>
+            </div>
+            <div>
+              <dt>기준일</dt>
+              <dd id="dong-base-date">-</dd>
+            </div>
+            <div>
+              <dt>상대 취약도</dt>
+              <dd id="dong-risk-level">데이터 없음</dd>
+            </div>
+            <div>
+              <dt>종합 점수</dt>
+              <dd id="dong-risk-score">-</dd>
+            </div>
+          </dl>
+          <dl id="district-details" hidden>
+            <div>
+              <dt>행정동 수</dt>
+              <dd id="district-dong-count">-</dd>
+            </div>
+            <div>
+              <dt>평균 취약도</dt>
+              <dd id="district-average-score">-</dd>
+            </div>
+            <div>
+              <dt>매우 높음·높음</dt>
+              <dd id="district-high-count">-</dd>
+            </div>
+            <div>
+              <dt>구·군 내 최고</dt>
+              <dd id="district-top-dong">-</dd>
+            </div>
+            <div>
+              <dt>구·군 내 최저</dt>
+              <dd id="district-bottom-dong">-</dd>
+            </div>
+            <div>
+              <dt>운영 무더위쉼터</dt>
+              <dd id="district-cooling-shelters">-</dd>
+            </div>
+            <div>
+              <dt>그늘막</dt>
+              <dd id="district-shade-shelters">-</dd>
+            </div>
+            <div>
+              <dt>자료 완전성</dt>
+              <dd id="district-data-status">-</dd>
+            </div>
+          </dl>
+          <section class="indicator-breakdown" aria-labelledby="indicator-title">
+            <h3 id="indicator-title">세부 취약 요인 정규화값 (0~1)</h3>
+            <div class="indicator-row">
+              <div>
+                <span>불투수면 위험</span>
+                <strong id="indicator-impervious-value">-</strong>
+              </div>
+              <progress
+                id="indicator-impervious"
+                max="1"
+                value="0"
+                aria-label="불투수면 위험 정규화값"
+              ></progress>
+            </div>
+            <div class="indicator-row">
+              <div>
+                <span>녹지 부족</span>
+                <strong id="indicator-green-value">-</strong>
+              </div>
+              <progress
+                id="indicator-green"
+                max="1"
+                value="0"
+                aria-label="녹지 부족 정규화값"
+              ></progress>
+            </div>
+            <div class="indicator-row">
+              <div>
+                <span>고령인구 민감도</span>
+                <strong id="indicator-elderly-value">-</strong>
+              </div>
+              <progress
+                id="indicator-elderly"
+                max="1"
+                value="0"
+                aria-label="고령인구 민감도 정규화값"
+              ></progress>
+            </div>
+            <div class="indicator-row">
+              <div>
+                <span>무더위쉼터 밀도 부족</span>
+                <strong id="indicator-cooling-density-value">-</strong>
+              </div>
+              <progress
+                id="indicator-cooling-density"
+                max="1"
+                value="0"
+                aria-label="무더위쉼터 밀도 부족 정규화값"
+              ></progress>
+            </div>
+            <div class="indicator-row">
+              <div>
+                <span>무더위쉼터 접근 부족</span>
+                <strong id="indicator-cooling-access-value">-</strong>
+              </div>
+              <progress
+                id="indicator-cooling-access"
+                max="1"
+                value="0"
+                aria-label="무더위쉼터 접근 부족 정규화값"
+              ></progress>
+            </div>
+            <div class="indicator-row">
+              <div>
+                <span>그늘막 공급 부족</span>
+                <strong id="indicator-shade-value">-</strong>
+              </div>
+              <progress
+                id="indicator-shade"
+                max="1"
+                value="0"
+                aria-label="그늘막 공급 부족 정규화값"
+              ></progress>
+            </div>
+          </section>
+          <p class="panel-guide">
+            지도에서 행정동을 클릭하거나 검색하면 해당 지역의 분석 정보를
+            확인할 수 있습니다.
+          </p>
+          <div id="analysis-placeholder" class="analysis-placeholder">
+            폭염 취약도 데이터를 준비 중입니다.
+          </div>
+        </aside>
+      </div>
+
+      <section class="map-legend" aria-label="폭염 상대 취약도 범례">
+        <strong>상대 취약도</strong>
+        <span><i class="risk-color risk-low"></i>낮음</span>
+        <span><i class="risk-color risk-moderate"></i>보통</span>
+        <span><i class="risk-color risk-high"></i>높음</span>
+        <span><i class="risk-color risk-critical"></i>매우 높음</span>
+        <span><i class="risk-color risk-none"></i>데이터 없음</span>
+      </section>
+
+      <section class="risk-ranking" aria-labelledby="risk-ranking-title">
+        <div class="ranking-heading">
+          <div>
+            <p class="panel-eyebrow">RISK RANKING</p>
+            <h2 id="risk-ranking-title">폭염 취약지역 상위 5곳</h2>
+          </div>
+          <p>항목을 선택하면 해당 행정동으로 이동합니다.</p>
+        </div>
+        <ol id="risk-ranking-list" class="ranking-list">
+          <li class="ranking-empty">분석 데이터를 준비 중입니다.</li>
+        </ol>
+      </section>
+      <section
+        class="risk-ranking ranking-low"
+        aria-labelledby="low-risk-ranking-title"
+      >
+        <div class="ranking-heading">
+          <div>
+            <p class="panel-eyebrow">LOW RISK RANKING</p>
+            <h2 id="low-risk-ranking-title">폭염 취약지역 하위 5곳</h2>
+          </div>
+          <p>항목을 선택하면 해당 행정동으로 이동합니다.</p>
+        </div>
+        <ol id="low-risk-ranking-list" class="ranking-list">
+          <li class="ranking-empty">분석 데이터를 준비 중입니다.</li>
+        </ol>
+      </section>
+      {% else %}
+      <p class="map-error">NAVER_MAP_CLIENT_ID가 설정되지 않았습니다.</p>
+      {% endif %}
+    </main>
+
+    {% if map_api_configured %}
+    <script src="{{ url_for('static', path='/js/map.js') }}"></script>
+    {% endif %}
+  </body>
+</html>

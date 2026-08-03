@@ -1,0 +1,4883 @@
+{
+  "status": "passed",
+  "check_count": 1214,
+  "checks": [
+    {
+      "check": "GeoJSON 행정동이 150개다",
+      "passed": true
+    },
+    {
+      "check": "GeoJSON 행정동 코드가 고유하다",
+      "passed": true
+    },
+    {
+      "check": "행정동 결과가 150행이다",
+      "passed": true
+    },
+    {
+      "check": "행정동 결과 코드가 고유하다",
+      "passed": true
+    },
+    {
+      "check": "행정동 결과 코드가 GeoJSON과 정확히 일치한다",
+      "passed": true
+    },
+    {
+      "check": "지도 JSON이 CSV의 150개 행정동과 정확히 일치한다",
+      "passed": true
+    },
+    {
+      "check": "모든 취약도 점수가 0~100 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 삼덕동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 삼덕동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 삼덕동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 삼덕동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 삼덕동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 삼덕동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 삼덕동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "중구 삼덕동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내3동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내3동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내3동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내3동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내3동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내3동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내3동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "중구 성내3동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "중구 대신동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 대신동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 대신동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 대신동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 대신동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 대신동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 대신동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "중구 대신동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산3동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산3동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산3동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산3동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산3동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산3동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산3동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산3동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산4동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산4동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산4동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산4동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산4동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산4동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산4동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "중구 남산4동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "중구 대봉1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 대봉1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 대봉1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 대봉1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 대봉1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 대봉1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 대봉1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "중구 대봉1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "중구 대봉2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 대봉2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 대봉2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 대봉2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 대봉2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 대봉2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 대봉2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "중구 대봉2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "중구 동인동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 동인동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 동인동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 동인동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 동인동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 동인동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "중구 동인동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "중구 동인동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암3동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암3동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암3동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암3동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암3동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암3동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암3동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암3동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암4동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암4동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암4동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암4동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암4동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암4동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암4동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암4동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암5동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암5동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암5동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암5동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암5동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암5동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암5동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 신암5동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천1·2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천1·2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천1·2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천1·2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천1·2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천1·2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천1·2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천1·2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천3동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천3동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천3동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천3동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천3동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천3동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천3동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천3동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천4동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천4동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천4동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천4동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천4동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천4동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천4동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 신천4동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 효목1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 효목1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 효목1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 효목1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 효목1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 효목1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 효목1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 효목1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 효목2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 효목2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 효목2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 효목2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 효목2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 효목2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 효목2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 효목2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 도평동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 도평동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 도평동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 도평동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 도평동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 도평동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 도평동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 도평동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 불로·봉무동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 불로·봉무동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 불로·봉무동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 불로·봉무동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 불로·봉무동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 불로·봉무동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 불로·봉무동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 불로·봉무동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 지저동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 지저동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 지저동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 지저동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 지저동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 지저동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 지저동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 지저동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 동촌동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 동촌동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 동촌동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 동촌동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 동촌동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 동촌동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 동촌동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 동촌동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 방촌동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 방촌동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 방촌동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 방촌동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 방촌동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 방촌동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 방촌동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 방촌동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 해안동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 해안동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 해안동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 해안동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 해안동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 해안동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 해안동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 해안동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 공산동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 공산동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 공산동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 공산동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 공산동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 공산동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 공산동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 공산동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심3동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심3동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심3동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심3동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심3동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심3동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심3동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심3동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심4동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심4동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심4동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심4동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심4동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심4동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심4동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 안심4동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "동구 혁신동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 혁신동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 혁신동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 혁신동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 혁신동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 혁신동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "동구 혁신동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "동구 혁신동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당2·3동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당2·3동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당2·3동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당2·3동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당2·3동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당2·3동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당2·3동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당2·3동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당4동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당4동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당4동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당4동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당4동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당4동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당4동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "서구 내당4동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산2·3동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산2·3동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산2·3동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산2·3동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산2·3동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산2·3동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산2·3동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산2·3동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산4동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산4동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산4동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산4동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산4동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산4동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산4동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산4동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산5동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산5동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산5동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산5동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산5동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산5동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산5동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산5동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산6동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산6동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산6동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산6동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산6동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산6동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산6동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산6동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산7동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산7동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산7동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산7동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산7동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산7동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산7동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "서구 비산7동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리3동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리3동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리3동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리3동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리3동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리3동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리3동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리3동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리4동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리4동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리4동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리4동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리4동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리4동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리4동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리4동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리5동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리5동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리5동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리5동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리5동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리5동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리5동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리5동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리6동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리6동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리6동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리6동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리6동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리6동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리6동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "서구 평리6동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "서구 상중이동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 상중이동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 상중이동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 상중이동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 상중이동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 상중이동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 상중이동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "서구 상중이동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "서구 원대동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 원대동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 원대동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 원대동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 원대동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 원대동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "서구 원대동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "서구 원대동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "남구 이천동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 이천동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 이천동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 이천동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 이천동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 이천동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 이천동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "남구 이천동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕3동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕3동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕3동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕3동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕3동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕3동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕3동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "남구 봉덕3동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명3동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명3동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명3동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명3동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명3동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명3동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명3동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명3동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명4동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명4동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명4동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명4동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명4동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명4동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명4동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명4동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명5동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명5동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명5동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명5동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명5동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명5동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명5동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명5동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명6동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명6동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명6동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명6동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명6동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명6동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명6동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명6동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명9동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명9동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명9동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명9동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명9동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명9동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명9동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명9동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명10동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명10동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명10동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명10동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명10동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명10동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명10동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명10동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명11동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명11동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명11동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명11동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명11동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명11동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명11동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "남구 대명11동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 고성동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 고성동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 고성동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 고성동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 고성동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 고성동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 고성동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 고성동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 칠성동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 칠성동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 칠성동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 칠성동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 칠성동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 칠성동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 칠성동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 칠성동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산3동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산3동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산3동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산3동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산3동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산3동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산3동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 침산3동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격3동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격3동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격3동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격3동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격3동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격3동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격3동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격3동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격4동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격4동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격4동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격4동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격4동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격4동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격4동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 산격4동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 복현1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 복현1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 복현1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 복현1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 복현1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 복현1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 복현1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 복현1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 복현2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 복현2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 복현2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 복현2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 복현2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 복현2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 복현2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 복현2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 검단동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 검단동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 검단동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 검단동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 검단동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 검단동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 검단동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 검단동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 무태조야동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 무태조야동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 무태조야동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 무태조야동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 무태조야동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 무태조야동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 무태조야동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 무태조야동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 태전2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 태전2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 태전2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 태전2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 태전2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 태전2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 태전2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 태전2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 관문동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 관문동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 관문동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 관문동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 관문동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 관문동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 관문동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 관문동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 읍내동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 읍내동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 읍내동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 읍내동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 읍내동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 읍내동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 읍내동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 읍내동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 관음동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 관음동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 관음동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 관음동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 관음동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 관음동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 관음동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 관음동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 태전1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 태전1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 태전1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 태전1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 태전1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 태전1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 태전1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 태전1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 구암동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 구암동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 구암동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 구암동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 구암동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 구암동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 구암동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 구암동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 노원동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 노원동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 노원동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 노원동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 노원동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 노원동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 노원동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 노원동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 동천동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 동천동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 동천동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 동천동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 동천동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 동천동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 동천동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 동천동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 국우동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 국우동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 국우동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 국우동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 국우동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 국우동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 국우동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 국우동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "북구 대현동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 대현동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 대현동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 대현동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 대현동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 대현동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "북구 대현동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "북구 대현동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어3동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어3동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어3동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어3동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어3동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어3동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어3동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어3동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어4동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어4동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어4동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어4동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어4동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어4동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어4동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범어4동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌3동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌3동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌3동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌3동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌3동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌3동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌3동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 만촌3동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성1가동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성1가동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성1가동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성1가동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성1가동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성1가동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성1가동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성1가동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성2·3가동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성2·3가동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성2·3가동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성2·3가동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성2·3가동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성2·3가동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성2·3가동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성2·3가동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성4가동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성4가동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성4가동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성4가동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성4가동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성4가동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성4가동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 수성4가동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 황금1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 황금1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 황금1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 황금1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 황금1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 황금1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 황금1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 황금1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 황금2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 황금2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 황금2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 황금2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 황금2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 황금2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 황금2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 황금2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 중동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 중동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 중동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 중동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 중동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 중동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 중동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 중동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 상동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 상동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 상동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 상동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 상동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 상동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 상동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 상동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 파동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 파동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 파동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 파동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 파동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 파동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 파동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 파동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 두산동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 두산동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 두산동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 두산동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 두산동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 두산동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 두산동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 두산동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 지산1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 지산1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 지산1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 지산1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 지산1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 지산1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 지산1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 지산1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 지산2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 지산2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 지산2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 지산2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 지산2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 지산2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 지산2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 지산2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범물1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범물1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범물1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범물1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범물1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범물1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범물1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범물1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범물2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범물2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범물2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범물2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범물2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범물2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범물2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 범물2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산3동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산3동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산3동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산3동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산3동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산3동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산3동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "수성구 고산3동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 두류3동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 두류3동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 두류3동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 두류3동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 두류3동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 두류3동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 두류3동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 두류3동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 본리동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 본리동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 본리동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 본리동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 본리동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 본리동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 본리동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 본리동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 감삼동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 감삼동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 감삼동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 감삼동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 감삼동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 감삼동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 감삼동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 감삼동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 죽전동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 죽전동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 죽전동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 죽전동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 죽전동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 죽전동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 죽전동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 죽전동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 장기동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 장기동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 장기동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 장기동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 장기동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 장기동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 장기동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 장기동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 이곡1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 이곡1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 이곡1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 이곡1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 이곡1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 이곡1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 이곡1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 이곡1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 신당동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 신당동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 신당동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 신당동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 신당동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 신당동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 신당동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 신당동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 월성2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 월성2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 월성2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 월성2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 월성2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 월성2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 월성2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 월성2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인3동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인3동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인3동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인3동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인3동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인3동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인3동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 상인3동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 도원동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 도원동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 도원동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 도원동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 도원동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 도원동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 도원동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 도원동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 송현1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 송현1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 송현1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 송현1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 송현1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 송현1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 송현1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 송현1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 송현2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 송현2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 송현2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 송현2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 송현2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 송현2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 송현2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 송현2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 본동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 본동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 본동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 본동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 본동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 본동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 본동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 본동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 용산1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 용산1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 용산1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 용산1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 용산1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 용산1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 용산1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 용산1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 용산2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 용산2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 용산2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 용산2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 용산2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 용산2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 용산2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 용산2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 이곡2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 이곡2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 이곡2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 이곡2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 이곡2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 이곡2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 이곡2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 이곡2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 성당동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 성당동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 성당동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 성당동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 성당동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 성당동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 성당동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 성당동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 두류1·2동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 두류1·2동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 두류1·2동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 두류1·2동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 두류1·2동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 두류1·2동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 두류1·2동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 두류1·2동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 월성1동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 월성1동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 월성1동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 월성1동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 월성1동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 월성1동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 월성1동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 월성1동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 진천동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 진천동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 진천동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 진천동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 진천동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 진천동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 진천동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 진천동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달서구 유천동의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 유천동의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 유천동의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 유천동의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 유천동의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 유천동의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달서구 유천동의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달서구 유천동의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달성군 화원읍의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 화원읍의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 화원읍의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 화원읍의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 화원읍의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 화원읍의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 화원읍의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달성군 화원읍의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달성군 논공읍의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 논공읍의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 논공읍의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 논공읍의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 논공읍의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 논공읍의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 논공읍의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달성군 논공읍의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달성군 다사읍의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 다사읍의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 다사읍의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 다사읍의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 다사읍의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 다사읍의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 다사읍의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달성군 다사읍의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달성군 유가읍의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 유가읍의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 유가읍의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 유가읍의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 유가읍의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 유가읍의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 유가읍의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달성군 유가읍의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달성군 옥포읍의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 옥포읍의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 옥포읍의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 옥포읍의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 옥포읍의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 옥포읍의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 옥포읍의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달성군 옥포읍의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달성군 현풍읍의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 현풍읍의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 현풍읍의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 현풍읍의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 현풍읍의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 현풍읍의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 현풍읍의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달성군 현풍읍의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달성군 가창면의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 가창면의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 가창면의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 가창면의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 가창면의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 가창면의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 가창면의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달성군 가창면의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달성군 하빈면의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 하빈면의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 하빈면의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 하빈면의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 하빈면의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 하빈면의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 하빈면의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달성군 하빈면의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "달성군 구지면의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 구지면의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 구지면의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 구지면의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 구지면의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 구지면의 shade_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "달성군 구지면의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "달성군 구지면의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "군위군 군위읍의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 군위읍의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 군위읍의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 군위읍의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 군위읍의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 군위읍의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "군위군 군위읍의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "군위군 소보면의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 소보면의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 소보면의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 소보면의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 소보면의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 소보면의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "군위군 소보면의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "군위군 효령면의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 효령면의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 효령면의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 효령면의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 효령면의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 효령면의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "군위군 효령면의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "군위군 부계면의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 부계면의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 부계면의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 부계면의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 부계면의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 부계면의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "군위군 부계면의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "군위군 우보면의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 우보면의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 우보면의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 우보면의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 우보면의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 우보면의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "군위군 우보면의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "군위군 의흥면의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 의흥면의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 의흥면의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 의흥면의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 의흥면의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 의흥면의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "군위군 의흥면의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "군위군 산성면의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 산성면의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 산성면의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 산성면의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 산성면의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 산성면의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "군위군 산성면의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "군위군 삼국유사면의 impervious_risk가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 삼국유사면의 green_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 삼국유사면의 elderly_sensitivity가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 삼국유사면의 cooling_shelter_density_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 삼국유사면의 cooling_shelter_access_deficit가 0~1 범위다",
+      "passed": true
+    },
+    {
+      "check": "군위군 삼국유사면의 구성요소 수가 일치한다",
+      "passed": true
+    },
+    {
+      "check": "군위군 삼국유사면의 정규화 합계가 재현된다",
+      "passed": true
+    },
+    {
+      "check": "공개된 0~1 구성요소의 동일기여 평균으로 점수가 0.01 이내 재현된다",
+      "passed": true
+    },
+    {
+      "check": "등급 사분위 경계값이 점수에서 재현된다",
+      "passed": true
+    },
+    {
+      "check": "모든 상대 취약등급이 사분위 경계와 일치한다",
+      "passed": true
+    },
+    {
+      "check": "지도 JSON의 점수·등급이 CSV와 일치한다",
+      "passed": true
+    },
+    {
+      "check": "핵심 자료 완전 행정동이 142개다",
+      "passed": true
+    },
+    {
+      "check": "자료 미완전 8개 행정동은 모두 군위군이다",
+      "passed": true
+    },
+    {
+      "check": "군위군만 그늘막을 제외한 5개 구성요소 평균을 사용한다",
+      "passed": true
+    },
+    {
+      "check": "구·군 요약이 9행이다",
+      "passed": true
+    },
+    {
+      "check": "구·군별 행정동 수 합계가 150이다",
+      "passed": true
+    },
+    {
+      "check": "지도 JSON에 선택 가능한 구·군 요약 9개가 있다",
+      "passed": true
+    },
+    {
+      "check": "모든 구·군 요약에 상·하위 행정동이 있다",
+      "passed": true
+    },
+    {
+      "check": "시간맥락은 2017~2026년을 포괄한다",
+      "passed": true
+    },
+    {
+      "check": "2026년 신규 기상 관측 90일의 시작·종료일이 일치한다",
+      "passed": true
+    },
+    {
+      "check": "핵심 결합 자료는 그늘막 외 누락이 없다",
+      "passed": true
+    },
+    {
+      "check": "그늘막 누락은 군위군 8개 행정동뿐이다",
+      "passed": true
+    }
+  ],
+  "summary": {
+    "record_count": 150,
+    "district_count": 9,
+    "score_min": 38.5,
+    "score_max": 75.25,
+    "score_average": 58.77,
+    "max_score_recalculation_difference": 0.005,
+    "risk_counts": {
+      "critical": 38,
+      "high": 37,
+      "low": 38,
+      "moderate": 37
+    },
+    "risk_thresholds": {
+      "p25": 52.84,
+      "p50": 60.7,
+      "p75": 64.82
+    },
+    "complete_record_count": 142,
+    "incomplete_record_count": 8
+  }
+}
