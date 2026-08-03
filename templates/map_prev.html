@@ -25,12 +25,6 @@
     <main class="map-page">
       {% if map_api_configured %}
       <section class="map-toolbar" aria-label="지도 도구">
-        <!--
-          [검색 기능 개선]
-          기존 행정동 검색 입력창을 유지하면서 지명 검색 결과도 함께 표시한다.
-          입력창과 결과 목록을 하나의 search-container로 묶어
-          검색창 바로 아래에 자동완성 목록이 나타나도록 구성했다.
-        -->
         <div class="search-container">
           <label class="search-field" for="dong-search">
             <span>행정동 검색</span>
@@ -44,10 +38,6 @@
             />
           </label>
 
-          <!--
-            map.js가 행정동 결과와 지명 검색 결과를 동적으로 추가하는 목록이다.
-            hidden 속성은 검색 결과가 없거나 검색창이 비어 있을 때 목록을 숨긴다.
-          -->
           <ul
             id="dong-search-results"
             class="search-results"

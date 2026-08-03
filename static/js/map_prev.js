@@ -211,16 +211,6 @@
   let selectionAnimationFrame = null;
   let lastHandledDongClickCode = null;
   let lastHandledDongClickAt = 0;
-  /*
-   * [지명 검색 기능 추가]
-   * searchRenderTimer:
-   * 사용자가 글자를 입력할 때마다 API가 즉시 호출되는 것을 막고,
-   * 입력이 잠시 멈춘 뒤 한 번만 검색하도록 하는 디바운스 타이머이다.
-   *
-   * latestSearchRequestToken:
-   * 이전 검색 요청보다 늦게 도착한 오래된 응답이
-   * 최신 검색 결과를 덮어쓰지 못하도록 요청 순서를 구분한다.
-   */
   let searchRenderTimer = null;
   let latestSearchRequestToken = 0;
 
@@ -1344,24 +1334,6 @@
     updateIndicatorBreakdown();
   }
 
-
-  
-  /*
-   * -------------------------------------------------------------------------
-   * [행정동 검색 + 지명 검색 통합 기능]
-   *
-   * 기존에는 GeoJSON에 저장된 행정동 이름만 검색할 수 있었다.
-   * 이번 수정으로 FastAPI의 /api/place-search를 호출해
-   * '이월드' 같은 장소명도 검색할 수 있도록 확장했다.
-   *
-   * NAVER 검색 API가 반환한 좌표를 경도·위도로 변환한 뒤,
-   * 기존 GeoJSON의 행정동 경계 안에 해당 좌표가 포함되는지 검사한다.
-   * 따라서 별도의 행정동명을 API에서 받지 않아도
-   * 현재 프로젝트 경계 데이터를 기준으로 행정동을 판별할 수 있다.
-   * -------------------------------------------------------------------------
-   */
-
-  // NAVER 지역 검색 좌표는 1천만 배 정수 형태이므로 일반 경위도로 변환한다.
   function normalizePlaceCoordinate(value) {
     const numericValue = Number(value);
 
@@ -1372,7 +1344,6 @@
     return numericValue > 1000 ? numericValue / 10000000 : numericValue;
   }
 
-  // 변환한 장소 좌표가 포함된 행정동 Feature를 기존 좌표 판별 함수로 찾는다.
   function findDongFeatureByCoordinates(longitude, latitude) {
     if (!Number.isFinite(longitude) || !Number.isFinite(latitude)) {
       return null;
@@ -1382,105 +1353,141 @@
     return findDongFeatureAtCoordinate(coordinate);
   }
 
-  // 기존 기능: 현재 구·군/취약도 필터를 만족하는 행정동 이름을 검색한다.
   function getDongSearchCandidates(query) {
     return dongFeatures
-      .filter((feature) => {
-        if (!featureMatchesFilters(feature)) {
-          return false;
-        }
+    .filter((feature) => {
+      if (!featureMatchesFilters(feature)) {
+        return false;
+      }
 
-        return getDongInfo(feature)
-          .name
-          .toLocaleLowerCase("ko-KR")
-          .includes(query);
-      })
-      .sort((left, right) => {
-        const leftInfo = getDongInfo(left);
-        const rightInfo = getDongInfo(right);
+      return getDongInfo(feature)
+        .name
+        .toLocaleLowerCase("ko-KR")
+        .includes(query);
+    })
+    .sort((left, right) => {
+      const leftInfo = getDongInfo(left);
+      const rightInfo = getDongInfo(right);
 
-        return leftInfo.name.localeCompare(rightInfo.name, "ko-KR");
-      })
-      .map((feature) => {
-        const dongInfo = getDongInfo(feature);
-        const districtName = getDistrictName(feature);
+      return leftInfo.name.localeCompare(rightInfo.name, "ko-KR");
+    })
+    .map((feature) => {
+      const dongInfo = getDongInfo(feature);
+      const districtName = getDistrictName(feature);
 
-        return {
-          type: "dong",
-          feature,
-          title: dongInfo.name,
-          subtitle: `행정동 · ${districtName}`,
-          keyword: dongInfo.name,
-        };
-      });
+      return {
+        type: "dong",
+        feature,
+        title: dongInfo.name,
+        subtitle: `행정동 · ${districtName}`,
+        keyword: dongInfo.name,
+      };
+    });
+}
+
+async function getPlaceSearchCandidates(rawQuery) {
+  const response = await fetch(
+    `/api/place-search?query=${encodeURIComponent(rawQuery)}`,
+    {
+      method: "GET",
+      cache: "no-cache",
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`장소 검색 실패: ${response.status} ${response.statusText}`);
   }
 
-  /*
-   * 새 기능: FastAPI의 장소 검색 API를 호출한다.
-   * 반환된 장소 좌표를 행정동 GeoJSON과 대조해
-   * 장소명과 해당 행정동을 하나의 검색 결과로 만든다.
-   */
-  async function getPlaceSearchCandidates(rawQuery) {
-    const response = await fetch(
-      `/api/place-search?query=${encodeURIComponent(rawQuery)}`,
-      {
-        method: "GET",
-        cache: "no-cache",
-      },
-    );
+  const payload = await response.json();
+  const items = Array.isArray(payload.items) ? payload.items : [];
 
-    if (!response.ok) {
-      throw new Error(`장소 검색 실패: ${response.status} ${response.statusText}`);
-    }
+  return items
+    .map((item) => {
+      const longitude = normalizePlaceCoordinate(item.mapx);
+      const latitude = normalizePlaceCoordinate(item.mapy);
+      const feature = findDongFeatureByCoordinates(longitude, latitude);
 
-    const payload = await response.json();
-    const items = Array.isArray(payload.items) ? payload.items : [];
+      if (!feature || !featureMatchesFilters(feature)) {
+        return null;
+      }
 
-    return items
-      .map((item) => {
-        const longitude = normalizePlaceCoordinate(item.mapx);
-        const latitude = normalizePlaceCoordinate(item.mapy);
-        const feature = findDongFeatureByCoordinates(longitude, latitude);
+      const dongInfo = getDongInfo(feature);
+      const districtName = getDistrictName(feature);
 
-        if (!feature || !featureMatchesFilters(feature)) {
-          return null;
-        }
+      return {
+        type: "place",
+        feature,
+        placeTitle: item.title,
+        title: item.title,
+        subtitle: `${districtName} ${dongInfo.name}`,
+        keyword: item.title,
+      };
+    })
+    .filter(Boolean);
+}
 
-        const dongInfo = getDongInfo(feature);
-        const districtName = getDistrictName(feature);
+async function getSearchCandidates(rawQuery) {
+  const query = rawQuery.trim().toLocaleLowerCase("ko-KR");
 
-        return {
-          type: "place",
-          feature,
-          placeTitle: item.title,
-          title: item.title,
-          subtitle: `${districtName} ${dongInfo.name}`,
-          keyword: item.title,
-        };
-      })
-      .filter(Boolean);
+  if (!query) {
+    return [];
   }
 
-  // 행정동 검색 결과와 지명 검색 결과를 하나의 목록으로 합친다.
-  async function getSearchCandidates(rawQuery) {
-    const query = rawQuery.trim().toLocaleLowerCase("ko-KR");
+  const dongCandidates = getDongSearchCandidates(query);
 
-    if (!query) {
-      return [];
-    }
-
-    const dongCandidates = getDongSearchCandidates(query);
-
-    let placeCandidates = [];
-    try {
-      placeCandidates = await getPlaceSearchCandidates(rawQuery);
-    } catch (error) {
-      console.error("장소 검색 결과 로딩 실패:", error);
-    }
-
-    return [...dongCandidates, ...placeCandidates];
+  let placeCandidates = [];
+  try {
+    placeCandidates = await getPlaceSearchCandidates(rawQuery);
+  } catch (error) {
+    console.error("장소 검색 결과 로딩 실패:", error);
   }
 
+  return [...dongCandidates, ...placeCandidates];
+}
+
+function createSearchResultButton(candidate) {
+  const listItem = document.createElement("li");
+  const resultButton = document.createElement("button");
+  const titleElement = document.createElement("strong");
+  const subtitleElement = document.createElement("span");
+
+  resultButton.type = "button";
+  resultButton.className = "dong-search-result-button";
+
+  titleElement.textContent =
+    candidate.type === "place"
+      ? `${candidate.title} · ${candidate.subtitle}`
+      : candidate.title;
+
+  subtitleElement.textContent =
+    candidate.type === "place"
+      ? "지명 검색 결과"
+      : candidate.subtitle;
+
+  subtitleElement.style.display = "block";
+  subtitleElement.style.marginTop = "4px";
+  subtitleElement.style.fontSize = "12px";
+  subtitleElement.style.fontWeight = "400";
+  subtitleElement.style.color = "#64748b";
+
+  resultButton.append(titleElement, subtitleElement);
+
+  resultButton.addEventListener("click", () => {
+    searchInput.value = candidate.keyword;
+    closeSearchResults();
+    selectDong(candidate.feature);
+
+    if (candidate.type === "place") {
+      setStatus(
+        `${candidate.placeTitle}은(는) ${candidate.subtitle}에 있습니다.`,
+      );
+    }
+  });
+
+  listItem.append(resultButton);
+  return listItem;
+}
+  
   function closeSearchResults() {
     if (searchResults) {
       searchResults.replaceChildren();
@@ -1490,141 +1497,113 @@
     searchInput?.setAttribute("aria-expanded", "false");
   }
 
-  /*
-   * 검색 결과 버튼 생성
-   * - 행정동 결과: 행정동명과 구·군 표시
-   * - 지명 결과: 장소명과 판별된 구·군/행정동 표시
-   * 결과를 클릭하면 기존 selectDong()을 재사용해 지도와 분석 패널을 이동한다.
-   */
-  function createSearchResultButton(candidate) {
-    const listItem = document.createElement("li");
-    const resultButton = document.createElement("button");
-    const titleElement = document.createElement("strong");
-    const subtitleElement = document.createElement("span");
-
-    resultButton.type = "button";
-    resultButton.className = "dong-search-result-button";
-
-    titleElement.textContent =
-      candidate.type === "place"
-        ? `${candidate.title} · ${candidate.subtitle}`
-        : candidate.title;
-
-    subtitleElement.textContent =
-      candidate.type === "place"
-        ? "지명 검색 결과"
-        : candidate.subtitle;
-
-    subtitleElement.style.display = "block";
-    subtitleElement.style.marginTop = "4px";
-    subtitleElement.style.fontSize = "12px";
-    subtitleElement.style.fontWeight = "400";
-    subtitleElement.style.color = "#64748b";
-
-    resultButton.append(titleElement, subtitleElement);
-
-    resultButton.addEventListener("click", () => {
-      searchInput.value = candidate.keyword;
-      closeSearchResults();
-      selectDong(candidate.feature);
-
-      if (candidate.type === "place") {
-        setStatus(
-          `${candidate.placeTitle}은(는) ${candidate.subtitle}에 있습니다.`,
-        );
-      }
-    });
-
-    listItem.append(resultButton);
-    return listItem;
-  }
-
-  /*
-   * 검색어 입력 중 자동완성 목록을 출력한다.
-   * requestToken을 비교해 오래된 비동기 응답이 최신 결과를 덮는 것을 방지한다.
-   */
-  async function renderSearchResults() {
+  function renderSearchResults() {
     if (!searchInput || !searchResults) {
       return;
     }
 
-    const rawQuery = searchInput.value.trim();
-    const requestToken = ++latestSearchRequestToken;
+    const query = searchInput.value.trim().toLocaleLowerCase("ko-KR");
 
     searchResults.replaceChildren();
 
-    if (!rawQuery) {
+    if (!query) {
       closeSearchResults();
       return;
     }
 
-    const candidates = await getSearchCandidates(rawQuery);
-
-    if (requestToken !== latestSearchRequestToken) {
-      return;
-    }
-
-    searchResults.replaceChildren();
-
-    if (candidates.length === 0) {
-      const emptyItem = document.createElement("li");
-
-      emptyItem.className = "dong-search-empty";
-      emptyItem.textContent = `"${rawQuery}" 검색 결과가 없습니다.`;
-
-      searchResults.append(emptyItem);
-      searchResults.hidden = false;
-      searchInput.setAttribute("aria-expanded", "true");
-      return;
-    }
-
-    candidates.forEach((candidate) => {
-      searchResults.append(createSearchResultButton(candidate));
-    });
-
-    searchResults.hidden = false;
-    searchInput.setAttribute("aria-expanded", "true");
-  }
-
-  /*
-   * 검색 버튼 또는 Enter 입력 처리
-   * 결과가 하나면 즉시 해당 행정동으로 이동하고,
-   * 여러 개면 사용자가 선택할 수 있도록 검색 목록을 유지한다.
-   */
-  async function searchDong() {
-    const rawQuery = searchInput?.value.trim() ?? "";
-
-    if (!rawQuery) {
-      closeSearchResults();
-      setStatus("검색어를 입력해주세요.");
-      searchInput?.focus();
-      return;
-    }
-
-    const candidates = await getSearchCandidates(rawQuery);
-
-    if (candidates.length === 0) {
-      await renderSearchResults();
-      setStatus(`"${rawQuery}"에 해당하는 검색 결과가 없습니다.`);
-      return;
-    }
-
-    if (candidates.length === 1) {
-      const candidate = candidates[0];
-
-      closeSearchResults();
-      selectDong(candidate.feature);
-
-      if (candidate.type === "place") {
-        setStatus(`${candidate.placeTitle}은(는) ${candidate.subtitle}에 있습니다.`);
+    const matchedFeatures = dongFeatures
+    .filter((feature) => {
+      if (!featureMatchesFilters(feature)) {
+        return false;
       }
 
-      return;
-    }
+      const dongName = getDongInfo(feature)
+        .name
+        .toLocaleLowerCase("ko-KR");
 
-    await renderSearchResults();
-    setStatus(`${candidates.length}개의 검색 결과를 찾았습니다.`);
+      return dongName.includes(query);
+    })
+    .sort((left, right) => {
+      const leftInfo = getDongInfo(left);
+      const rightInfo = getDongInfo(right);
+
+      return leftInfo.name.localeCompare(rightInfo.name, "ko-KR");
+    });
+
+  if (matchedFeatures.length === 0) {
+    const emptyItem = document.createElement("li");
+
+    emptyItem.className = "dong-search-empty";
+    emptyItem.textContent = `"${searchInput.value.trim()}" 검색 결과가 없습니다.`;
+
+    searchResults.append(emptyItem);
+    searchResults.hidden = false;
+    searchInput.setAttribute("aria-expanded", "true");
+    return;
   }
+
+  matchedFeatures.forEach((feature) => {
+    const dongInfo = getDongInfo(feature);
+    const districtName = getDistrictName(feature);
+    const listItem = document.createElement("li");
+    const resultButton = document.createElement("button");
+
+    resultButton.type = "button";
+    resultButton.className = "dong-search-result-button";
+    resultButton.textContent = `${districtName} ${dongInfo.name}`;
+
+    resultButton.addEventListener("click", () => {
+      searchInput.value = dongInfo.name;
+      closeSearchResults();
+      selectDong(feature);
+    });
+
+    listItem.append(resultButton);
+    searchResults.append(listItem);
+  });
+
+  searchResults.hidden = false;
+  searchInput.setAttribute("aria-expanded", "true");
+}
+
+  function searchDong() {
+  const query = searchInput?.value.trim().toLocaleLowerCase("ko-KR") ?? "";
+
+  if (!query) {
+    closeSearchResults();
+    setStatus("검색할 행정동 이름을 입력해주세요.");
+    searchInput?.focus();
+    return;
+  }
+
+  const matchedFeatures = dongFeatures.filter((candidate) => {
+    return (
+      featureMatchesFilters(candidate) &&
+      getDongInfo(candidate)
+        .name
+        .toLocaleLowerCase("ko-KR")
+        .includes(query)
+    );
+  });
+
+  if (matchedFeatures.length === 0) {
+    renderSearchResults();
+
+    setStatus(
+      `"${searchInput.value.trim()}"에 해당하는 행정동이 현재 필터에 없습니다.`,
+    );
+    return;
+  }
+
+  if (matchedFeatures.length === 1) {
+    closeSearchResults();
+    selectDong(matchedFeatures[0]);
+    return;
+  }
+
+  renderSearchResults();
+  setStatus(`${matchedFeatures.length}개의 행정동을 찾았습니다.`);
+}
 
   function handleDongHover(feature, coordinate) {
     if (
@@ -1753,21 +1732,7 @@
 
   mapElement.addEventListener("mouseleave", scheduleDongHoverClear);
 
-  /*
-   * 입력 이벤트 디바운스
-   * 마지막 입력 후 250ms가 지난 시점에만 검색하여
-   * 불필요한 NAVER API 호출을 줄인다.
-   */
-  searchInput?.addEventListener("input", () => {
-    if (searchRenderTimer !== null) {
-      window.clearTimeout(searchRenderTimer);
-    }
-
-    searchRenderTimer = window.setTimeout(() => {
-      renderSearchResults();
-      searchRenderTimer = null;
-    }, 250);
-  });
+  searchInput?.addEventListener("input", renderSearchResults);
 
   searchButton?.addEventListener("click", searchDong);
 

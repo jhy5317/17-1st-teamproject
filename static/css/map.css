@@ -50,6 +50,66 @@ header p {
   font-weight: 700;
 }
 
+.search-container {
+  position: relative;
+  flex: 0 1 320px;
+}
+
+.search-container .search-field {
+  width: 100%;
+}
+
+.search-results {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  max-height: 280px;
+  margin: 0;
+  padding: 6px 0;
+  overflow-y: auto;
+  list-style: none;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgb(15 23 42 / 16%);
+}
+
+.search-results li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.map-toolbar .dong-search-result-button {
+  display: block;
+  width: 100%;
+  height: auto;
+  padding: 11px 14px;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  background: #ffffff;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.map-toolbar .dong-search-result-button:hover,
+.map-toolbar .dong-search-result-button:focus-visible {
+  color: #0f172a;
+  background: #f1f5f9;
+  outline: none;
+}
+
+.dong-search-empty {
+  padding: 11px 14px;
+  color: #64748b;
+  font-size: 14px;
+}
+
 .search-field input,
 .filter-field select {
   width: 100%;

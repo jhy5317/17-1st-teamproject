@@ -5,9 +5,6 @@ import os
 import re
 from pathlib import Path
 
-# [지명 검색 기능 추가]
-# NAVER 지역 검색 API를 비동기로 호출하기 위해 httpx를 사용한다.
-# Query는 검색어의 길이와 필수 입력 여부를 FastAPI에서 검증하기 위해 추가했다.
 import httpx
 from dotenv import load_dotenv
 from fastapi import FastAPI, Query, Request
@@ -36,10 +33,6 @@ templates = Jinja2Templates(
 
 HEAT_DATA_FILE = BASE_DIR / "data" / "processed" / "heat_vulnerability.json"
 
-# [지명 검색 기능 추가]
-# 사용자가 입력한 장소명(예: 이월드)을 검색하기 위한 NAVER 지역 검색 API 주소이다.
-# 인증 정보는 코드에 직접 작성하지 않고 .env의
-# NAVER_SEARCH_CLIENT_ID, NAVER_SEARCH_CLIENT_SECRET 값을 사용한다.
 NAVER_LOCAL_SEARCH_URL = (
     "https://naverapihub.apigw.ntruss.com/search/v1/local"
 )
@@ -136,17 +129,6 @@ def heat_vulnerability():
         "message": None,
     }
 
-# ---------------------------------------------------------------------------
-# [지명 검색 기능 추가]
-# 프론트엔드(map.js)가 직접 NAVER API를 호출하지 않고 이 FastAPI 경로를 호출한다.
-# 이렇게 구성하면 Client Secret이 브라우저에 노출되지 않는다.
-#
-# 처리 순서
-# 1. 사용자가 입력한 장소명을 query로 전달받는다.
-# 2. 검색어 앞에 '대구'를 붙여 대구 지역 결과를 우선 검색한다.
-# 3. NAVER 지역 검색 API 결과 중 대구 주소를 가진 항목만 남긴다.
-# 4. 장소명, 주소, 좌표(mapx, mapy)를 map.js에 반환한다.
-# ---------------------------------------------------------------------------
 @app.get("/api/place-search")
 async def place_search(
     query: str = Query(
@@ -236,7 +218,6 @@ async def place_search(
     items = []
 
     for item in raw_items:
-        # NAVER 검색 결과의 장소명에는 <b> 태그가 포함될 수 있으므로 제거한다.
         title = re.sub(
             r"<[^>]+>",
             "",
