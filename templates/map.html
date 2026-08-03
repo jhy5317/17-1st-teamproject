@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>대구광역시 기후재난 취약지역</title>
-
+    <!-- jisu_01_추가수정 / href= 수정-->
     <link
       rel="stylesheet"
-      href="{{ url_for('static', path='/css/map.css') }}"
+      href="{{ url_for('static', path='/css/map.css') }}?v={{ static_version }}"
     />
 
     {% if map_api_configured %}
@@ -283,9 +283,9 @@
       <p class="map-error">NAVER_MAP_CLIENT_ID가 설정되지 않았습니다.</p>
       {% endif %}
     </main>
-
+    <!-- jisu_01_추가수정 / <script src= 수정 -->
     {% if map_api_configured %}
-    <script src="{{ url_for('static', path='/js/map.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/map.js') }}?v={{ static_version }}"></script>
     {% endif %}
   </body>
 </html>

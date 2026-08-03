@@ -32,9 +32,32 @@ templates = Jinja2Templates(
 HEAT_DATA_FILE = BASE_DIR / "data" / "processed" / "heat_vulnerability.json"
 
 
+# jisu_01_추가 -> 수정한 코드가 최신 상태로 보이게만 하는 기능-------------#
+@app.middleware("http")
+async def disable_static_cache(request: Request, call_next):
+    """개발 중 이전 지도 스크립트가 브라우저 캐시에 남지 않게 한다."""
+    response = await call_next(request)
+
+    if request.url.path.startswith("/static/"):
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+
+    return response
+#----------------------------------------------------------------#
+
+
 @app.get("/")
 def root(request: Request):
+    """지도 API 설정과 정적 파일 버전을 포함해 메인 화면을 렌더링"""
     client_id = os.getenv("NAVER_MAP_CLIENT_ID", "")
+
+    # jisu_01_추가 / CSS 또는 JavaScript가 수정되면 주소에 붙는 버전 번호도 변경된다.------#
+    static_version = max(
+        int((BASE_DIR / "static" / "js" / "map.js").stat().st_mtime),
+        int((BASE_DIR / "static" / "css" / "map.css").stat().st_mtime),
+    )
+    # ---------------------------------------------------------------#
 
     return templates.TemplateResponse(
         request=request,
@@ -42,6 +65,7 @@ def root(request: Request):
         context={
             "naver_map_client_id": client_id,
             "map_api_configured": bool(client_id),
+            "static_version": static_version,
         },
     )
 
