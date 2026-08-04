@@ -1043,26 +1043,43 @@ def get_kma_warning_items() -> list[dict[str, Any]]:
     KMA_ALERT_CACHE["expires_at"] = now + 60
     return normalized_items
 
+# jisu_12_추가수정 / 폭염, 열대야
+def iter_current_warning_entries(
+    item: dict[str, Any],
+) -> list[tuple[str, str]]:
+    """특보현황의 t6에서 특보명과 해당 지역을 항목별로 분리한다."""
+    status_text = item.get("t6")
 
-def item_text(item: dict[str, Any]) -> str:
-    """필드명이 바뀌어도 특보 문구를 판별할 수 있도록 값을 평탄화한다."""
-    # 기상청 응답은 운영 시점에 따라 특보 문구가 들어가는 키가 달라질 수
-    # 있어 특정 필드명 대신 모든 문자열 값을 모아 지역/폭염 키워드를 찾는다.
-    values: list[str] = []
+    if not isinstance(status_text, str) or not status_text.strip():
+        return []
 
-    def collect(value: Any) -> None:
-        """중첩된 기상청 응답의 모든 원시 값을 문자열 목록에 모은다."""
-        if isinstance(value, dict):
-            for nested in value.values():
-                collect(nested)
-        elif isinstance(value, list):
-            for nested in value:
-                collect(nested)
-        elif value is not None:
-            values.append(str(value))
+    # 기상청 응답의 줄바꿈 형식을 통일한다.
+    normalized_text = (
+        status_text
+        .replace("\r\n", "\n")
+        .replace("\r", "\n")
+        .replace("<br />", "\n")
+        .replace("<br/>", "\n")
+        .replace("<br>", "\n")
+    )
 
-    collect(item)
-    return " ".join(values)
+    entries: list[tuple[str, str]] = []
+
+    # 예: "o 폭염주의보 : 대구광역시"
+    for line in normalized_text.splitlines():
+        normalized_line = " ".join(line.split()).lstrip("o○- ").strip()
+
+        if ":" not in normalized_line:
+            continue
+
+        warning_name, affected_areas = normalized_line.split(":", 1)
+        warning_name = warning_name.strip()
+        affected_areas = affected_areas.strip()
+
+        if warning_name and affected_areas:
+            entries.append((warning_name, affected_areas))
+
+    return entries
 
 
 @app.get("/api/heat-alerts")
@@ -1071,6 +1088,11 @@ def heat_alerts(regionCode: str | None = None):
     record = find_vulnerability_record(regionCode) if regionCode else None
     district = str(record.get("district", "")) if record else ""
     dong = str(record.get("dong", "")) if record else ""
+
+    # jisu_12_추가수정 / 폭염, 열대야 주의보 / 지역명 생성
+    region_name = " ".join(
+    name for name in (district, dong) if name
+    )
 
     # 실제 특보 API 키가 준비되기 전에 팝업 배너 모양과 애니메이션만 확인한다.
     # 운영 시에는 반드시 KMA_ALERT_TEST_MODE=false로 두어 테스트 문구가 노출되지 않게 한다.
@@ -1084,6 +1106,7 @@ def heat_alerts(regionCode: str | None = None):
         return {
             "status": "active",
             "regionCode": regionCode,
+            "regionName": region_name, # 지역명 추가
             "alerts": [
                 {
                     "level": "warning",
@@ -1096,45 +1119,69 @@ def heat_alerts(regionCode: str | None = None):
             "message": "특보 배너 화면 테스트 응답입니다.",
             "testMode": True,
         }
-
     alerts: list[dict[str, str]] = []
-    detected_titles: set[str] = set()
+
+    # jisu_12_추가수정 / 폭염, 열대야 경보
+    #
+    # 폭염주의보 / 폭염경보 / 폭염중대경보
+    # 열대야주의보 / 열대야경보 / 열대야중대경보
+    detected_alerts: set[tuple[str, str]] = set()
 
     for item in get_kma_warning_items():
-        warning_text = item_text(item)
-        is_daegu_warning = "대구" in warning_text
-        if not is_daegu_warning:
-            continue
-        # 열대야 폭염 확인
-        if "폭염" in warning_text:
-            title = "폭염경보" if "경보" in warning_text else "폭염주의보"
-            level = "critical" if title == "폭염경보" else "warning"
-            category = "heatwave"
-        elif "열대야" in warning_text:
-            # 열대야가 공식 특보명이 아닌 형태로 제공될 수도 있으므로 원문에
-            # '주의보'가 있을 때만 주의보로 표기하고, 나머지는 알림으로 구분한다.
-            title = "열대야주의보" if "주의보" in warning_text else "열대야 알림"
-            level = "warning"
-            category = "tropical-night"
-        else:
-            continue
+        # t6의 현재 발효 특보를 종류와 적용 지역으로 나누어 확인한다.
+        for warning_name, affected_areas in iter_current_warning_entries(item):
+            # 해당 특보의 적용 지역에 대구가 포함된 경우만 사용한다.
+            if "대구" not in affected_areas:
+                continue
 
-        if title in detected_titles:
-            continue
-        detected_titles.add(title)
-        alerts.append(
-            {
-                "level": level,
-                "category": category,
-                "title": title,
-                "message": f"{district} {dong} 지역에 {title}가 발표 중입니다.",
-            }
-        )
+            # 특보 종류를 구분한다.
+            if "폭염" in warning_name:
+                category = "heatwave"
+                alert_name = "폭염"
+            elif "열대야" in warning_name:
+                category = "tropical-night"
+                alert_name = "열대야"
+            else:
+                continue
+
+            # 기상청 특보강도 0·1·2에 대응한다.
+            if "중대경보" in warning_name:
+                severity_name = "중대경보"
+                level = "critical"
+            elif "경보" in warning_name:
+                severity_name = "경보"
+                level = "critical"
+            elif "주의보" in warning_name:
+                severity_name = "주의보"
+                level = "warning"
+            else:
+                continue
+
+            title = f"{alert_name}{severity_name}"
+            alert_key = (category, title)
+
+            # 같은 종류와 단계가 여러 줄에 있어도 한 번만 표시한다.
+            if alert_key in detected_alerts:
+                continue
+
+            detected_alerts.add(alert_key)
+            alerts.append(
+                {
+                    "level": level,
+                    "category": category,
+                    "title": title,
+                    "message": (
+                        f"{district} {dong} 지역에 "
+                        f"{title}가 발표 중입니다."
+                    ),
+                }
+            )
 
     if alerts:
         return {
             "status": "active",
             "regionCode": regionCode,
+            "regionName": region_name,
             "alerts": alerts,
             "source": "기상청 기상특보 조회서비스",
             "message": "선택 지역의 기상청 실시간 특보·알림 현황입니다.",
@@ -1143,6 +1190,7 @@ def heat_alerts(regionCode: str | None = None):
     return {
         "status": "unavailable",
         "regionCode": regionCode,
+        "regionName": region_name,
         "alerts": [],
         "source": "기상청 기상특보 API",
         "message": (

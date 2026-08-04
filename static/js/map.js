@@ -1554,26 +1554,66 @@
       }
 
       const isTestMode = payload.testMode === true;
-      const alertTitles = alerts.map((alert) => alert.title).filter(Boolean);
+      // jisu_12_추가수정 / 폭염, 열대야 경보
+      /*
+      긴급 폭염주의보 · 열대야주의보 둘 다면
+      -> 선택 지역에 폭염주의보와 열대야주의보가 동시에 발표 중입니다.
+
+      긴급 폭염주의보
+      -> 대구 ○○동 지역에 폭염주의보가 발표 중입니다.
+
+      긴급 열대야경보
+      -> 대구 ○○동 지역에 열대야경보가 발표 중입니다.
+      */
+      const alertTitles = [
+        ...new Set(alerts.map((alert) => alert.title).filter(Boolean)),
+      ];
       const alertMessages = alerts
         .map((alert) => alert.message)
         .filter(Boolean);
 
+      // 배너 제목은 여러 특보가 있으면 가운데 점으로 구분한다.
       const alertTitle = alertTitles.join(" · ") || "기상특보";
+
+      // jisu_12_추가수정 / 폭염, 열대야 주의보
+      // 여러 특보가 동시에 있으면 하나의 자연스러운 문장으로 합친다.
+      const combinedAlertNames =
+        alertTitles.length <= 1
+          ? alertTitles[0]
+          : `${alertTitles.slice(0, -1).join(", ")}와 ${
+              alertTitles[alertTitles.length - 1]
+            }`;
+
+      // 서버가 전달한 실제 구·군과 행정동 이름을 사용한다.
+      const selectedRegionName =
+        typeof payload.regionName === "string" && payload.regionName.trim()
+          ? payload.regionName.trim()
+          : "선택 지역";
+
+      // 특보가 여러 개면 실제 지역명과 특보명을 하나의 문장으로 합친다.
       const alertMessage =
-        alertMessages.join(" · ") || "선택 지역에 기상특보가 발표 중입니다.";
+        alertTitles.length > 1
+          ? `${selectedRegionName} 지역에 ${combinedAlertNames}가 동시에 발표 중입니다.`
+          : (alertMessages[0] ??
+            `${selectedRegionName} 지역에 기상특보가 발표 중입니다.`);
 
       const alertLevel = alerts.some((alert) => alert.level === "critical")
         ? "critical"
         : "warning";
 
+      const hasHeatwaveAlert = alerts.some(
+        (alert) => alert.category === "heatwave",
+      );
       const hasTropicalNightAlert = alerts.some(
         (alert) => alert.category === "tropical-night",
       );
 
-      const safetyMessage = hasTropicalNightAlert
-        ? "밤사이 실내 온도를 낮추고 충분한 수분을 섭취하세요."
-        : "충분한 수분 섭취와 한낮 야외활동 자제가 필요합니다.";
+      const safetyMessage =
+        hasHeatwaveAlert && hasTropicalNightAlert
+          ? "낮에는 야외활동을 줄이고, 밤사이 실내 온도를 낮추며 충분한 수분을 섭취하세요."
+          : hasTropicalNightAlert
+            ? "밤사이 실내 온도를 낮추고 충분한 수분을 섭취하세요."
+            : "충분한 수분 섭취와 한낮 야외활동 자제가 필요합니다.";
 
       if (selectedHeatAlertTitle) {
         selectedHeatAlertTitle.textContent = isTestMode
@@ -1583,7 +1623,7 @@
 
       if (selectedHeatAlertMessage) {
         selectedHeatAlertMessage.textContent =
-          `${isTestMode ? "화면 테스트" : "기상청 발표"} · ` +
+          // `${isTestMode ? "화면 테스트" : "기상청 발표"} · ` +
           `${alertMessage} · ${safetyMessage}`;
       }
 
