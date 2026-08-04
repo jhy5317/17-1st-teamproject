@@ -5,95 +5,99 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>대구광역시 기후재난 취약지역</title>
-
+    <!-- jisu_01_추가수정 / href= 수정-->
     <link
       rel="stylesheet"
-      href="{{ url_for('static', path='/css/map.css') }}"
+      href="{{ url_for('static', path='/css/map.css') }}?v={{ static_version }}"
     />
-
     {% if map_api_configured %}
     <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId={{ naver_map_client_id }}"></script>
     {% endif %}
   </head>
 
   <body>
-    <header>
-      <h1>대구광역시 폭염 취약지역 분석</h1>
-      <p>여러 공공데이터를 결합한 행정동별 구조적 폭염 취약도를 확인합니다.</p>
+    <header class="main-header">
+      <div class="header-brand">
+        <h1>
+          대구광역시
+          <span class="title-sub">폭염 분석기</span>
+        </h1>
+      </div>
+      <div class="header-right">
+        <button id="open-search-btn" class="header-icon-btn" type="button"
+          aria-label="검색창 열기" aria-controls="search-popup-panel" aria-expanded="false">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2.5"/>
+            <path d="M16 16L21 21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button id="header-menu-button" class="menu-button" type="button" aria-label="메뉴">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 6H20" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>
+            <path d="M4 12H20" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>
+            <path d="M4 18H20" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
     </header>
 
-    <main class="map-page">
-      {% if map_api_configured %}
-      <section class="map-toolbar" aria-label="지도 도구">
-        <!--
-          [검색 기능 개선]
-          기존 행정동 검색 입력창을 유지하면서 지명 검색 결과도 함께 표시한다.
-          입력창과 결과 목록을 하나의 search-container로 묶어
-          검색창 바로 아래에 자동완성 목록이 나타나도록 구성했다.
-        -->
-        <div class="search-container">
-          <label class="search-field" for="dong-search">
-            <span>행정동 검색</span>
-            <input
-              id="dong-search"
-              type="search"
-              placeholder="예: 삼덕동"
-              autocomplete="off"
-              aria-controls="dong-search-results"
-              aria-expanded="false"
-            />
-          </label>
+    <section id="search-popup-panel" class="search-popup-panel" hidden
+      aria-label="행정동 및 장소 검색과 지도 필터">
+      <button id="close-search-btn" class="close-popup-btn" type="button" aria-label="검색창 닫기">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M6 6L18 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+      </button>
 
-          <!--
-            map.js가 행정동 결과와 지명 검색 결과를 동적으로 추가하는 목록이다.
-            hidden 속성은 검색 결과가 없거나 검색창이 비어 있을 때 목록을 숨긴다.
-          -->
-          <ul
-            id="dong-search-results"
-            class="search-results"
-            hidden
-          ></ul>
+      <div class="search-popup-inner">
+        <div class="popup-search-bar">
+          <div class="search-container popup-search-container">
+            <label class="input-container" for="dong-search">
+              <svg class="search-prefix-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2.2"/>
+                <path d="M16 16L21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+              </svg>
+              <input id="dong-search" type="search" placeholder="행정동 또는 장소명 검색"
+                autocomplete="off" aria-controls="dong-search-results" aria-expanded="false" />
+            </label>
+            <ul id="dong-search-results" class="search-results popup-dropdown-list" hidden></ul>
+          </div>
+          <button id="search-button" class="popup-submit-btn" type="button">검색</button>
+          <button id="reset-button" class="popup-reset-btn" type="button">지도 초기화</button>
         </div>
 
-        <button id="search-button" type="button">검색</button>
-        <button id="reset-button" class="secondary-button" type="button">
-          지도 초기화
-        </button>
-        <label class="filter-field" for="district-filter">
-          <span>구·군</span>
-          <select id="district-filter">
-            <option value="all">대구 전체</option>
-            <option value="중구">중구</option>
-            <option value="동구">동구</option>
-            <option value="서구">서구</option>
-            <option value="남구">남구</option>
-            <option value="북구">북구</option>
-            <option value="수성구">수성구</option>
-            <option value="달서구">달서구</option>
-            <option value="달성군">달성군</option>
-            <option value="군위군">군위군</option>
-          </select>
-        </label>
-        <label class="filter-field" for="risk-filter">
-          <span>취약도</span>
-          <select id="risk-filter">
-            <option value="all">전체 단계</option>
-            <option value="critical">매우 높음</option>
-            <option value="high">높음</option>
-            <option value="moderate">보통</option>
-            <option value="low">낮음</option>
-            <option value="none">데이터 없음</option>
-          </select>
-        </label>
-        <label class="layer-toggle">
-          <input id="boundary-toggle" type="checkbox" checked />
-          행정동 경계 표시
-        </label>
+        <div class="popup-filter-section">
+          <label class="popup-filter-field" for="district-filter">
+            <span>구·군</span>
+            <select id="district-filter">
+              <option value="all">대구 전체</option><option value="중구">중구</option>
+              <option value="동구">동구</option><option value="서구">서구</option>
+              <option value="남구">남구</option><option value="북구">북구</option>
+              <option value="수성구">수성구</option><option value="달서구">달서구</option>
+              <option value="달성군">달성군</option><option value="군위군">군위군</option>
+            </select>
+          </label>
+          <label class="popup-filter-field" for="risk-filter">
+            <span>취약도</span>
+            <select id="risk-filter">
+              <option value="all">전체 단계</option><option value="critical">매우 높음</option>
+              <option value="high">높음</option><option value="moderate">보통</option>
+              <option value="low">낮음</option><option value="none">데이터 없음</option>
+            </select>
+          </label>
+          <label class="popup-layer-toggle"><input id="boundary-toggle" type="checkbox" checked />행정동 경계</label>
+          <label class="popup-layer-toggle"><input id="vulnerability-toggle" type="checkbox" checked />취약도 색상</label>
+        </div>
+
         <p id="map-status" class="map-status" role="status" aria-live="polite">
           행정동 데이터를 불러오는 중입니다.
         </p>
-      </section>
+      </div>
+    </section>
 
+    <main class="map-page">
+      {% if map_api_configured %}
       <section class="summary-grid" aria-label="폭염 취약도 분석 요약">
         <article class="summary-card">
           <span>분석 지역</span>
@@ -113,12 +117,40 @@
         <article class="summary-card">
           <span>분석 기준일</span>
           <strong id="summary-base-date">-</strong>
-          <small id="summary-data-status">데이터 준비 중</small>
         </article>
       </section>
 
       <div class="map-layout">
         <div id="map" aria-label="대구광역시 행정동 지도"></div>
+        <!-- 상·하위 취약지역 순위를 지도 오른쪽에 세로로 표시한다. -->
+        <aside class="ranking-sidebar" aria-label="폭염 취약지역 순위">
+          <section class="risk-ranking" aria-labelledby="risk-ranking-title">
+            <div class="ranking-heading">
+              <div>
+                <h2 id="risk-ranking-title">폭염 취약지역 상위 3곳</h2>
+              </div>
+              <p>항목을 선택하면 해당 행정동으로 이동합니다.</p>
+            </div>
+            <ol id="risk-ranking-list" class="ranking-list">
+              <li class="ranking-empty">분석 데이터를 준비 중입니다.</li>
+            </ol>
+          </section>
+
+          <section
+            class="risk-ranking ranking-low"
+            aria-labelledby="low-risk-ranking-title"
+          >
+            <div class="ranking-heading">
+              <div>
+                <h2 id="low-risk-ranking-title">폭염 취약지역 하위 3곳</h2>
+              </div>
+              <p>항목을 선택하면 해당 행정동으로 이동합니다.</p>
+            </div>
+            <ol id="low-risk-ranking-list" class="ranking-list">
+              <li class="ranking-empty">분석 데이터를 준비 중입니다.</li>
+            </ol>
+          </section>
+        </aside>
 
         <aside id="dong-panel" class="dong-panel" aria-live="polite">
           <p id="panel-eyebrow" class="panel-eyebrow">선택 지역</p>
@@ -179,7 +211,47 @@
               <dd id="district-data-status">-</dd>
             </div>
           </dl>
-          <section class="indicator-breakdown" aria-labelledby="indicator-title">
+          <!--jisu_03_추가 / 팝업 / 선택 행정동의 기상청 초단기실황을 표시하는 패널 영역-->
+          <section class="live-weather" aria-labelledby="weather-title">
+            <div class="panel-section-heading">
+              <h3 id="weather-title">현재 날씨</h3>
+              <span id="weather-source">지역 선택 후 조회</span>
+            </div>
+            <p id="weather-message" class="panel-data-message">
+              행정동을 선택하면 실시간 날씨를 확인할 수 있습니다.
+            </p>
+            <dl class="weather-metrics">
+              <div>
+                <dt>날씨</dt>
+                <dd id="weather-condition">-</dd>
+              </div>
+              <div>
+                <dt>기온</dt>
+                <dd id="weather-temperature">-</dd>
+              </div>
+              <div>
+                <dt>습도</dt>
+                <dd id="weather-humidity">-</dd>
+              </div>
+              <div>
+                <dt>체감온도</dt>
+                <dd id="weather-feels-like">-</dd>
+              </div>
+              <div>
+                <dt>풍속</dt>
+                <dd id="weather-wind">-</dd>
+              </div>
+              <div>
+                <dt>1시간 강수량</dt>
+                <dd id="weather-rainfall">-</dd>
+              </div>
+            </dl>
+          </section>
+          <!--------------------------------------------------------->
+          <section
+            class="indicator-breakdown"
+            aria-labelledby="indicator-title"
+          >
             <h3 id="indicator-title">세부 취약 요인 정규화값 (0~1)</h3>
             <div class="indicator-row">
               <div>
@@ -254,16 +326,8 @@
               ></progress>
             </div>
           </section>
-          <p class="panel-guide">
-            지도에서 행정동을 클릭하거나 검색하면 해당 지역의 분석 정보를
-            확인할 수 있습니다.
-          </p>
-          <div id="analysis-placeholder" class="analysis-placeholder">
-            폭염 취약도 데이터를 준비 중입니다.
-          </div>
         </aside>
       </div>
-
       <section class="map-legend" aria-label="폭염 상대 취약도 범례">
         <strong>상대 취약도</strong>
         <span><i class="risk-color risk-low"></i>낮음</span>
@@ -272,41 +336,141 @@
         <span><i class="risk-color risk-critical"></i>매우 높음</span>
         <span><i class="risk-color risk-none"></i>데이터 없음</span>
       </section>
-
-      <section class="risk-ranking" aria-labelledby="risk-ranking-title">
-        <div class="ranking-heading">
-          <div>
-            <p class="panel-eyebrow">RISK RANKING</p>
-            <h2 id="risk-ranking-title">폭염 취약지역 상위 5곳</h2>
-          </div>
-          <p>항목을 선택하면 해당 행정동으로 이동합니다.</p>
-        </div>
-        <ol id="risk-ranking-list" class="ranking-list">
-          <li class="ranking-empty">분석 데이터를 준비 중입니다.</li>
-        </ol>
-      </section>
-      <section
-        class="risk-ranking ranking-low"
-        aria-labelledby="low-risk-ranking-title"
-      >
-        <div class="ranking-heading">
-          <div>
-            <p class="panel-eyebrow">LOW RISK RANKING</p>
-            <h2 id="low-risk-ranking-title">폭염 취약지역 하위 5곳</h2>
-          </div>
-          <p>항목을 선택하면 해당 행정동으로 이동합니다.</p>
-        </div>
-        <ol id="low-risk-ranking-list" class="ranking-list">
-          <li class="ranking-empty">분석 데이터를 준비 중입니다.</li>
-        </ol>
-      </section>
       {% else %}
       <p class="map-error">NAVER_MAP_CLIENT_ID가 설정되지 않았습니다.</p>
       {% endif %}
     </main>
 
+    <!--
+      jisu_03_추가 / 팝업
+      행정동 클릭 상세 팝업: map.js가 오른쪽 패널과 동일한 API 결과를 채운다.
+      SVG에는 배경지도 없이 선택 경계와 해당 경계 안의 쉼터 위치만 표시한다.
+    -->
+    <div id="region-popup" class="region-popup-backdrop" hidden>
+      <div class="region-popup-shell">
+        <!-- 선택 지역 특보가 있을 때만 팝업 카드 바깥 상단에 표시한다. -->
+        <div
+          id="selected-heat-alert"
+          class="selected-heat-alert"
+          role="alert"
+          aria-live="assertive"
+          hidden
+        >
+          <strong id="selected-heat-alert-title">긴급 기상특보</strong>
+          <div class="selected-heat-alert-track">
+            <span id="selected-heat-alert-message"></span>
+          </div>
+          <small>기상청 실시간 특보</small>
+        </div>
+
+        <section
+          class="region-popup"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="region-popup-title"
+        >
+          <header class="region-popup-header">
+            <div>
+              <p id="region-popup-location">선택 행정구역</p>
+              <h2 id="region-popup-title">행정동 정보</h2>
+            </div>
+            <button
+              id="region-popup-close"
+              class="region-popup-close"
+              type="button"
+              aria-label="지역 상세 팝업 닫기"
+            >
+              ×
+            </button>
+          </header>
+
+          <div class="region-popup-summary">
+            <div>
+              <span>폭염 취약도</span>
+              <strong id="region-popup-risk">-</strong>
+            </div>
+            <div>
+              <span>종합 점수</span>
+              <strong id="region-popup-score">-</strong>
+            </div>
+          </div>
+
+          <!-- jisu_03_추가 / 팝업 / 팝업 SVG를 지도 요소로 교체
+          선택한 행정동의 실제 네이버 지도와 행정구역 경계를 표시한다. -->
+          <section
+            class="region-popup-map-card"
+            aria-label="선택 행정구역 지도"
+          >
+            <div
+              id="region-popup-map"
+              role="region"
+              aria-label="선택한 행정동의 지도와 행정구역 경계"
+            ></div>
+          </section>
+          <!-- 03 -->
+
+          <div class="region-popup-grid">
+            <section
+              class="region-popup-card"
+              aria-labelledby="region-popup-weather-title"
+            >
+              <div class="region-popup-card-heading">
+                <div>
+                  <small>LIVE WEATHER</small>
+                  <h3 id="region-popup-weather-title">현재 날씨</h3>
+                </div>
+                <span id="region-popup-weather-source">조회 중</span>
+              </div>
+              <p id="region-popup-weather-message" class="region-popup-message">
+                실시간 날씨를 조회하고 있습니다.
+              </p>
+              <dl class="region-popup-weather">
+                <div>
+                  <dt>날씨</dt>
+                  <dd id="region-popup-weather-condition">-</dd>
+                </div>
+                <div>
+                  <dt>기온</dt>
+                  <dd id="region-popup-weather-temperature">-</dd>
+                </div>
+                <div>
+                  <dt>습도</dt>
+                  <dd id="region-popup-weather-humidity">-</dd>
+                </div>
+                <div>
+                  <dt>체감온도</dt>
+                  <dd id="region-popup-weather-feels-like">-</dd>
+                </div>
+              </dl>
+            </section>
+
+            <section
+              class="region-popup-card"
+              aria-labelledby="region-popup-shelter-title"
+            >
+              <div class="region-popup-card-heading">
+                <div>
+                  <small>COOLING SHELTER</small>
+                  <h3 id="region-popup-shelter-title">무더위쉼터</h3>
+                </div>
+                <strong id="region-popup-shelter-count">조회 중</strong>
+              </div>
+              <p id="region-popup-shelter-message" class="region-popup-message">
+                선택 경계 내부 쉼터를 조회하고 있습니다.
+              </p>
+              <ul
+                id="region-popup-shelter-list"
+                class="region-popup-shelter-list"
+              ></ul>
+            </section>
+          </div>
+        </section>
+      </div>
+    </div>
+    <!-- 03 -->
+    <!-- jisu_01_추가수정 / <script src= 수정 -->
     {% if map_api_configured %}
-    <script src="{{ url_for('static', path='/js/map.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/map.js') }}?v={{ static_version }}"></script>
     {% endif %}
   </body>
 </html>
