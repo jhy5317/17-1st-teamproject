@@ -62,6 +62,7 @@ KMA_WARNING_API_URL = (
 )
 KMA_CURRENT_WEATHER_API_URL = (
     "https://apis.data.go.kr/1360000/"
+    # 초단기실황 getUltraSrtNcst / 초단기예보 getUltraSrtFcst
     "VilageFcstInfoService_2.0/getUltraSrtNcst"
 )
 
@@ -293,8 +294,8 @@ def current_kma_base_datetime(now: datetime | None = None) -> datetime:
     current_time = now or datetime.now(KOREA_TIMEZONE)
     if current_time.tzinfo is None:
         current_time = current_time.replace(tzinfo=KOREA_TIMEZONE)
-    # 실황은 매시 40분 이후 제공되므로 45분 전 시각을 정시로 내림한다.
-    return (current_time - timedelta(minutes=45)).replace(
+    # 실황은 매시 10분 이후 제공하므로 11로 수정
+    return (current_time - timedelta(minutes=11)).replace(
         minute=0,
         second=0,
         microsecond=0,
@@ -517,19 +518,19 @@ def collect_hourly_weather() -> dict[str, int]:
 
 
 def seconds_until_next_weather_update(now: datetime | None = None) -> float:
-    """다음 매시 45분 자동 수집까지 남은 초를 계산한다."""
+    """다음 매시 11분 자동 수집까지 남은 초를 계산한다."""
     current_time = now or datetime.now(KOREA_TIMEZONE)
     if current_time.tzinfo is None:
         current_time = current_time.replace(tzinfo=KOREA_TIMEZONE)
-    next_update = current_time.replace(minute=45, second=0, microsecond=0)
+    next_update = current_time.replace(minute=11, second=0, microsecond=0) # 11분에 수집
     if next_update <= current_time:
         next_update += timedelta(hours=1)
     return max((next_update - current_time).total_seconds(), 0.0)
 
 
-def weather_scheduler_loop() -> None:
-    """서버 실행 중 매시 45분에 기상 실황 수집 작업을 반복한다."""
-    # 시작 직후에도 한 번 수집해 45분까지 기다리지 않고 최신 DB를 준비한다.
+def weather_scheduler_loop():
+    """서버 실행 중 매시 11분에 기상 실황 수집 작업을 반복한다."""
+    # 시작 직후에도 한 번 수집해 11분까지 기다리지 않고 최신 DB를 준비한다.
     collect_hourly_weather()
     while not WEATHER_SCHEDULER_STOP.wait(seconds_until_next_weather_update()):
         collect_hourly_weather()
