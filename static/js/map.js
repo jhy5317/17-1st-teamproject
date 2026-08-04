@@ -1403,6 +1403,22 @@
     }
   }
 
+  // jisu_09_추가 / 쉼터 운영요일을 짧게 표시한다.----------------//
+  function formatShelterOperationDays(value) {
+    const days = String(value ?? "").replaceAll(" ", "");
+
+    if (days === "월,화,수,목,금,토,일") {
+      return "매일";
+    }
+
+    if (days === "월,화,수,목,금") {
+      return "평일";
+    }
+
+    return days ? days.replaceAll(",", "·") : "요일 정보 없음";
+  }
+  //----------------------------------------------------------//
+
   // 선택 행정동의 쉼터 이름과 주소를 팝업에 표시한다.
   function renderPopupShelterList(shelters) {
     if (!regionPopupShelterList) {
@@ -1415,6 +1431,7 @@
       return;
     }
 
+    /*jisu_09_추가 / 쉼터 / 목록에 운영요일·시간 추가 */
     regionPopupShelterList.innerHTML = shelters
       .slice(0, 8)
       .map(
@@ -1422,6 +1439,10 @@
         <li>
           <strong>${escapeHtml(shelter.name ?? "무더위쉼터")}</strong>
           <span>${escapeHtml(shelter.address ?? "주소 정보 없음")}</span>
+          <span class="region-popup-shelter-schedule">
+            ${escapeHtml(formatShelterOperationDays(shelter.operationDays))}
+            · ${escapeHtml(shelter.openTime ?? "시간 정보 없음")}
+          </span>
         </li>
       `,
       )

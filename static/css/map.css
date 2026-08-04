@@ -402,13 +402,17 @@ header p {
   background: #e2e8f0;
 }
 
-/*jisu_08_추가수정 / 무더위 쉼터 / 가로 박스비율 -------------------*/
+/*jisu_09_추가수정 / 무더위 쉼터 / 가로 박스비율 / 개별 속성 변경-------------------*/
 .region-popup-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: stretch;
   gap: 16px;
-  padding: 16px 24px 24px;
+
+  padding-top: 16px;
+  padding-right: 24px;
+  padding-bottom: 6px;
+  padding-left: 24px;
 }
 /*--------------------------------------------------------*/
 
@@ -470,8 +474,7 @@ header p {
 /* jisu_08_추가 / 무더위 쉼터 사이즈 조정------------------------*/
 /* 무더위쉼터 안내문이 불필요한 높이를 차지하지 않게 한다. */
 #region-popup-shelter-message {
-  min-height: 0;
-  margin: 8px 0;
+  display: none;
 }
 /*-------------------------------------------------*/
 
@@ -503,9 +506,9 @@ header p {
 팝업 하단의 날씨 데이터 출처 */
 .region-popup-source {
   margin: 0;
-  padding: 0 24px 18px;
+  padding: 0 24px 6px;
   color: #94a3b8;
-  font-size: 11px;
+  font-size: 10px; /*출처폰트크기*/
   line-height: 1.5;
   text-align: right;
 }
@@ -514,7 +517,7 @@ header p {
 .region-popup-shelter-list {
   max-height: 160px; /*쉼터 목록 세로 높이 줄이기*/
   overflow: auto;
-  margin: 0;
+  margin:12px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -540,6 +543,15 @@ header p {
   color: #64748b;
   font-size: 11px;
 }
+
+/* jisu_09_추가 / 쉼터 운영요일과 운영시간--------------------*/
+.region-popup-shelter-list .region-popup-shelter-schedule {
+  margin-top: 3px;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 700;
+}
+/* 09 ----------------------------------------------------*/
 
 .region-popup-shelter-empty {
   color: #64748b;
@@ -1141,7 +1153,7 @@ header p {
   }
 
   .region-popup-grid {
-    padding: 14px 18px 20px;
+    padding: 14px 18px 6px;
   }
   /**/
 }
