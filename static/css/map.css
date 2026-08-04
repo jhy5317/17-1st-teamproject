@@ -1569,3 +1569,255 @@ header p {
   .popup-filter-section { align-items: stretch; flex-direction: column; }
   .popup-filter-field { justify-content: space-between; width: 100%; }
 }
+
+
+/* --------------------------------------------------------------------------
+   [UI 복원]
+   프론트엔드 디자인 합치기 전 레이아웃을 유지하면서,
+   최신 기능인 구·군 평균 그래프와 취약도 색상 토글만 배치한다.
+   -------------------------------------------------------------------------- */
+
+.vulnerability-layer-toggle {
+  margin-left: 0;
+}
+
+.map-layout {
+  grid-template-columns: minmax(0, 1fr) 320px;
+}
+
+/* 기존 상세 정보 패널은 행정동 팝업으로 대체되었으므로 화면에서는 숨긴다. */
+.dong-panel {
+  display: none;
+}
+
+.district-chart-sidebar {
+  align-self: stretch;
+  min-width: 0;
+}
+
+.district-chart-card {
+  height: 100%;
+  padding: 20px;
+  overflow: auto;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgb(15 23 42 / 10%);
+}
+
+.district-chart-heading {
+  margin-bottom: 18px;
+}
+
+.district-chart-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.district-chart-heading h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.district-chart-heading p {
+  margin: 7px 0 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.district-chart-reset {
+  flex: 0 0 auto;
+  min-height: 34px;
+  padding: 0 12px;
+  color: #1e3a8a;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.district-chart-reset:hover,
+.district-chart-reset:focus-visible {
+  background: #dbeafe;
+  outline: none;
+}
+
+.district-average-chart {
+  display: grid;
+  gap: 10px;
+}
+
+.district-chart-row {
+  display: grid;
+  width: 100%;
+  gap: 7px;
+  padding: 10px;
+  color: #0f172a;
+  text-align: left;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.district-chart-row:hover,
+.district-chart-row:focus-visible {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  outline: none;
+}
+
+.district-chart-row-header {
+  display: grid;
+  grid-template-columns: 24px 1fr auto;
+  align-items: center;
+  gap: 7px;
+}
+
+.district-chart-rank {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  background: #334155;
+  border-radius: 50%;
+}
+
+.district-chart-name {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.district-chart-score {
+  color: #b91c1c;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.district-chart-track {
+  width: 100%;
+  height: 9px;
+  overflow: hidden;
+  background: #e2e8f0;
+  border-radius: 999px;
+}
+
+.district-chart-bar {
+  height: 100%;
+  border-radius: inherit;
+}
+
+.district-chart-bar-low { background: #f6ded8; }
+.district-chart-bar-moderate { background: #f2b28c; }
+.district-chart-bar-high { background: #d2665a; }
+.district-chart-bar-critical { background: #b82132; }
+
+.district-chart-empty {
+  margin: 0;
+  padding: 18px 8px;
+  color: #64748b;
+  font-size: 13px;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .map-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .district-chart-card {
+    max-height: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .map-toolbar {
+    align-items: stretch;
+  }
+
+  .search-container,
+  .search-field {
+    flex-basis: 100%;
+    width: 100%;
+  }
+
+  .filter-field {
+    flex: 1 1 140px;
+  }
+
+  .layer-toggle {
+    width: auto;
+  }
+
+  .district-chart-heading-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   [UI 복원 추가 수정]
+   합치기 과정에서 적용된 HsSummerWaterLight·Escoredream 장식 글꼴을 제거하고,
+   최초 화면에서 사용하던 기본 산세리프 계열 글꼴과 헤더 크기로 복원한다.
+   -------------------------------------------------------------------------- */
+
+header {
+  display: block;
+  padding: 28px 32px;
+  color: #ffffff;
+  font-family: Pretendard, "Noto Sans KR", Arial, sans-serif;
+  font-weight: 400;
+  background: #1e3a8a;
+  border-bottom: 0;
+}
+
+header h1 {
+  margin: 0;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+  transform: none;
+}
+
+header p {
+  margin: 8px 0 0;
+  color: #dbeafe;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.header,
+.header-brand,
+.header h1 .title-sub,
+.header-brand h1 .title-sub {
+  font-family: inherit;
+  transform: none;
+}
+
+@media (max-width: 620px) {
+  header {
+    padding: 22px 20px;
+  }
+
+  header h1 {
+    font-size: 24px;
+  }
+
+  header p {
+    font-size: 13px;
+  }
+}

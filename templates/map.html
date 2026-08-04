@@ -16,88 +16,86 @@
   </head>
 
   <body>
-    <header class="main-header">
-      <div class="header-brand">
-        <h1>
-          대구광역시
-          <span class="title-sub">폭염 분석기</span>
-        </h1>
-      </div>
-      <div class="header-right">
-        <button id="open-search-btn" class="header-icon-btn" type="button"
-          aria-label="검색창 열기" aria-controls="search-popup-panel" aria-expanded="false">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2.5"/>
-            <path d="M16 16L21 21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-          </svg>
-        </button>
-        <button id="header-menu-button" class="menu-button" type="button" aria-label="메뉴">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M4 6H20" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>
-            <path d="M4 12H20" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>
-            <path d="M4 18H20" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>
-          </svg>
-        </button>
-      </div>
+    <!-- [UI 복원] 프론트엔드 디자인 합치기 전의 파란색 기본 헤더 -->
+    <header>
+      <h1>대구광역시 폭염 취약지역 분석</h1>
+      <p>여러 공공데이터를 결합한 행정동별 구조적 폭염 취약도를 확인합니다.</p>
     </header>
 
-    <section id="search-popup-panel" class="search-popup-panel" hidden
-      aria-label="행정동 및 장소 검색과 지도 필터">
-      <button id="close-search-btn" class="close-popup-btn" type="button" aria-label="검색창 닫기">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-          <path d="M6 6L18 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-        </svg>
-      </button>
-
-      <div class="search-popup-inner">
-        <div class="popup-search-bar">
-          <div class="search-container popup-search-container">
-            <label class="input-container" for="dong-search">
-              <svg class="search-prefix-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2.2"/>
-                <path d="M16 16L21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-              </svg>
-              <input id="dong-search" type="search" placeholder="행정동 또는 장소명 검색"
-                autocomplete="off" aria-controls="dong-search-results" aria-expanded="false" />
-            </label>
-            <ul id="dong-search-results" class="search-results popup-dropdown-list" hidden></ul>
-          </div>
-          <button id="search-button" class="popup-submit-btn" type="button">검색</button>
-          <button id="reset-button" class="popup-reset-btn" type="button">지도 초기화</button>
+    <main class="map-page">
+      {% if map_api_configured %}
+      <!--
+        [UI 복원]
+        펼침형 검색 패널 대신 합치기 전의 고정형 검색·필터 도구 모음을 사용한다.
+        장소 자동완성, 구·군 필터, 취약도 필터, 경계·색상 토글 기능은 유지한다.
+      -->
+      <section class="map-toolbar" aria-label="지도 도구">
+        <div class="search-container">
+          <label class="search-field" for="dong-search">
+            <span>행정동·장소 검색</span>
+            <input
+              id="dong-search"
+              type="search"
+              placeholder="예: 삼덕동, 이월드"
+              autocomplete="off"
+              aria-controls="dong-search-results"
+              aria-expanded="false"
+            />
+          </label>
+          <ul
+            id="dong-search-results"
+            class="search-results"
+            hidden
+          ></ul>
         </div>
 
-        <div class="popup-filter-section">
-          <label class="popup-filter-field" for="district-filter">
-            <span>구·군</span>
-            <select id="district-filter">
-              <option value="all">대구 전체</option><option value="중구">중구</option>
-              <option value="동구">동구</option><option value="서구">서구</option>
-              <option value="남구">남구</option><option value="북구">북구</option>
-              <option value="수성구">수성구</option><option value="달서구">달서구</option>
-              <option value="달성군">달성군</option><option value="군위군">군위군</option>
-            </select>
-          </label>
-          <label class="popup-filter-field" for="risk-filter">
-            <span>취약도</span>
-            <select id="risk-filter">
-              <option value="all">전체 단계</option><option value="critical">매우 높음</option>
-              <option value="high">높음</option><option value="moderate">보통</option>
-              <option value="low">낮음</option><option value="none">데이터 없음</option>
-            </select>
-          </label>
-          <label class="popup-layer-toggle"><input id="boundary-toggle" type="checkbox" checked />행정동 경계</label>
-          <label class="popup-layer-toggle"><input id="vulnerability-toggle" type="checkbox" checked />취약도 색상</label>
-        </div>
+        <button id="search-button" type="button">검색</button>
+        <button id="reset-button" class="secondary-button" type="button">
+          지도 초기화
+        </button>
+
+        <label class="filter-field" for="district-filter">
+          <span>구·군</span>
+          <select id="district-filter">
+            <option value="all">대구 전체</option>
+            <option value="중구">중구</option>
+            <option value="동구">동구</option>
+            <option value="서구">서구</option>
+            <option value="남구">남구</option>
+            <option value="북구">북구</option>
+            <option value="수성구">수성구</option>
+            <option value="달서구">달서구</option>
+            <option value="달성군">달성군</option>
+            <option value="군위군">군위군</option>
+          </select>
+        </label>
+
+        <label class="filter-field" for="risk-filter">
+          <span>취약도</span>
+          <select id="risk-filter">
+            <option value="all">전체 단계</option>
+            <option value="critical">매우 높음</option>
+            <option value="high">높음</option>
+            <option value="moderate">보통</option>
+            <option value="low">낮음</option>
+            <option value="none">데이터 없음</option>
+          </select>
+        </label>
+
+        <label class="layer-toggle">
+          <input id="boundary-toggle" type="checkbox" checked />
+          행정동 경계 표시
+        </label>
+        <label class="layer-toggle vulnerability-layer-toggle">
+          <input id="vulnerability-toggle" type="checkbox" checked />
+          취약도 색상 표시
+        </label>
 
         <p id="map-status" class="map-status" role="status" aria-live="polite">
           행정동 데이터를 불러오는 중입니다.
         </p>
-      </div>
-    </section>
+      </section>
 
-    <main class="map-page">
-      {% if map_api_configured %}
       <section class="summary-grid" aria-label="폭염 취약도 분석 요약">
         <article class="summary-card">
           <span>분석 지역</span>
@@ -122,37 +120,34 @@
 
       <div class="map-layout">
         <div id="map" aria-label="대구광역시 행정동 지도"></div>
-        <!-- 상·하위 취약지역 순위를 지도 오른쪽에 세로로 표시한다. -->
-        <aside class="ranking-sidebar" aria-label="폭염 취약지역 순위">
-          <section class="risk-ranking" aria-labelledby="risk-ranking-title">
-            <div class="ranking-heading">
-              <div>
-                <h2 id="risk-ranking-title">폭염 취약지역 상위 3곳</h2>
+        <!-- 구·군별 평균 취약도를 지도 오른쪽 가로 막대그래프로 표시한다. -->
+        <aside class="district-chart-sidebar" aria-label="구·군별 평균 취약도">
+          <section class="district-chart-card" aria-labelledby="district-chart-title">
+            <div class="district-chart-heading">
+              <div class="district-chart-heading-row">
+                <h2 id="district-chart-title">구·군별 평균 취약도</h2>
+                <button
+                  id="district-chart-reset"
+                  class="district-chart-reset"
+                  type="button"
+                >
+                  대구 전체 보기
+                </button>
               </div>
-              <p>항목을 선택하면 해당 행정동으로 이동합니다.</p>
+              <p>막대를 선택하면 해당 구·군으로 이동합니다.</p>
             </div>
-            <ol id="risk-ranking-list" class="ranking-list">
-              <li class="ranking-empty">분석 데이터를 준비 중입니다.</li>
-            </ol>
-          </section>
-
-          <section
-            class="risk-ranking ranking-low"
-            aria-labelledby="low-risk-ranking-title"
-          >
-            <div class="ranking-heading">
-              <div>
-                <h2 id="low-risk-ranking-title">폭염 취약지역 하위 3곳</h2>
-              </div>
-              <p>항목을 선택하면 해당 행정동으로 이동합니다.</p>
+            <div
+              id="district-average-chart"
+              class="district-average-chart"
+              role="list"
+              aria-live="polite"
+            >
+              <p class="district-chart-empty">분석 데이터를 준비 중입니다.</p>
             </div>
-            <ol id="low-risk-ranking-list" class="ranking-list">
-              <li class="ranking-empty">분석 데이터를 준비 중입니다.</li>
-            </ol>
           </section>
         </aside>
 
-        <aside id="dong-panel" class="dong-panel" aria-live="polite">
+<aside id="dong-panel" class="dong-panel" aria-live="polite">
           <p id="panel-eyebrow" class="panel-eyebrow">선택 지역</p>
           <h2 id="dong-name">행정동을 선택하세요</h2>
           <dl id="dong-details">

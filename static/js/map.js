@@ -52,8 +52,8 @@
   const summaryAverage = document.getElementById("summary-average");
   const summaryHighRisk = document.getElementById("summary-high-risk");
   const summaryBaseDate = document.getElementById("summary-base-date");
-  const riskRankingList = document.getElementById("risk-ranking-list");
-  const lowRiskRankingList = document.getElementById("low-risk-ranking-list");
+  const districtAverageChart = document.getElementById("district-average-chart");
+  const districtChartReset = document.getElementById("district-chart-reset");
 
   //jisu_03_추가 / 팝업 / HTML 요소 참조 추가
   const dongPanel = document.getElementById("dong-panel");
@@ -517,65 +517,83 @@
     }
   }
 
-  function renderRanking(listElement, descending) {
-    if (!listElement) {
-      return;
+  function getDistrictRiskLevel(score) {
+    if (score >= 75) {
+      return "critical";
     }
 
-    const ranking = [...heatDataByDongCode.entries()]
-      .filter(([dongCode]) => dongFeatureByCode.has(dongCode))
-      .sort((left, right) =>
-        descending
-          ? right[1].score - left[1].score
-          : left[1].score - right[1].score,
-      )
-      .slice(0, 3);
-
-    listElement.replaceChildren();
-
-    if (ranking.length === 0) {
-      const emptyItem = document.createElement("li");
-      emptyItem.className = "ranking-empty";
-      emptyItem.textContent = "표시할 폭염 취약도 분석 데이터가 없습니다.";
-      listElement.append(emptyItem);
-      return;
+    if (score >= 50) {
+      return "high";
     }
 
-    ranking.forEach(([dongCode, heatData]) => {
-      const feature = dongFeatureByCode.get(dongCode);
-      const dongInfo = getDongInfo(feature);
-      const riskStyle = RISK_STYLES[heatData.riskLevel];
-      const item = document.createElement("li");
-      const button = document.createElement("button");
-      const name = document.createElement("span");
-      const meta = document.createElement("span");
-      const score = document.createElement("strong");
+    if (score >= 25) {
+      return "moderate";
+    }
 
-      item.className = "ranking-item";
-      button.className = "ranking-button";
-      button.type = "button";
-      button.dataset.dongCode = dongCode;
-      button.setAttribute(
-        "aria-label",
-        `${dongInfo.name}, 취약도 ${heatData.score.toFixed(1)}점`,
-      );
-
-      name.className = "ranking-name";
-      name.textContent = dongInfo.name;
-      meta.className = "ranking-meta";
-      meta.textContent = `${getDistrictName(feature)} · ${riskStyle.label}`;
-      score.className = "ranking-score";
-      score.textContent = `${heatData.score.toFixed(1)}점`;
-
-      button.append(name, meta, score);
-      item.append(button);
-      listElement.append(item);
-    });
+    return "low";
   }
 
-  function renderRiskRankings() {
-    renderRanking(riskRankingList, true);
-    renderRanking(lowRiskRankingList, false);
+  function renderDistrictAverageChart() {
+    if (!districtAverageChart) {
+      return;
+    }
+
+    const districts = [...heatDataByDistrict.entries()]
+      .map(([districtName, district]) => ({
+        name: districtName,
+        score: Number(district.score_average),
+      }))
+      .filter((district) => Number.isFinite(district.score))
+      .sort((left, right) => right.score - left.score);
+
+    districtAverageChart.replaceChildren();
+
+    if (districts.length === 0) {
+      const empty = document.createElement("p");
+      empty.className = "district-chart-empty";
+      empty.textContent = "표시할 구·군 평균 취약도 데이터가 없습니다.";
+      districtAverageChart.append(empty);
+      return;
+    }
+
+    districts.forEach((district, index) => {
+      const riskLevel = getDistrictRiskLevel(district.score);
+      const riskStyle = RISK_STYLES[riskLevel];
+      const button = document.createElement("button");
+      const header = document.createElement("span");
+      const rank = document.createElement("span");
+      const name = document.createElement("strong");
+      const score = document.createElement("span");
+      const track = document.createElement("span");
+      const bar = document.createElement("span");
+
+      button.type = "button";
+      button.className = "district-chart-row";
+      button.dataset.district = district.name;
+      button.setAttribute("role", "listitem");
+      button.setAttribute(
+        "aria-label",
+        `${district.name}, 평균 취약도 ${district.score.toFixed(1)}점`,
+      );
+
+      header.className = "district-chart-row-header";
+      rank.className = "district-chart-rank";
+      rank.textContent = String(index + 1);
+      name.className = "district-chart-name";
+      name.textContent = district.name;
+      score.className = "district-chart-score";
+      score.textContent = `${district.score.toFixed(1)}점`;
+      score.style.color = riskStyle.color;
+
+      track.className = "district-chart-track";
+      bar.className = `district-chart-bar district-chart-bar-${riskLevel}`;
+      bar.style.width = `${Math.max(0, Math.min(100, district.score))}%`;
+
+      header.append(rank, name, score);
+      track.append(bar);
+      button.append(header, track);
+      districtAverageChart.append(button);
+    });
   }
 
   function getDistrictName(feature) {
@@ -2246,19 +2264,27 @@
     }
   });
 
-  function handleRankingClick(event) {
-    const rankingButton = event.target.closest("button[data-dong-code]");
-    const listElement = event.currentTarget;
+  function handleDistrictChartClick(event) {
+    const chartButton = event.target.closest("button[data-district]");
 
-    if (!rankingButton || !listElement.contains(rankingButton)) {
+    if (!chartButton || !districtAverageChart?.contains(chartButton)) {
       return;
     }
 
-    const feature = dongFeatureByCode.get(rankingButton.dataset.dongCode);
+    selectedRiskLevel = "all";
 
-    if (!feature) {
-      return;
+    if (riskFilter) {
+      riskFilter.value = "all";
     }
+
+    selectDistrict(chartButton.dataset.district);
+  }
+
+  districtAverageChart?.addEventListener("click", handleDistrictChartClick);
+
+  districtChartReset?.addEventListener("click", () => {
+    clearDongHover();
+    clearSelection();
 
     selectedDistrict = "all";
     selectedRiskLevel = "all";
@@ -2272,11 +2298,10 @@
     }
 
     applyAllDongPolygonStyles();
-    selectDong(feature);
-  }
-
-  riskRankingList?.addEventListener("click", handleRankingClick);
-  lowRiskRankingList?.addEventListener("click", handleRankingClick);
+    map.setCenter(DAEGU_CENTER);
+    map.setZoom(INITIAL_ZOOM);
+    setStatus("대구 전체 행정동을 표시합니다.");
+  });
 
   boundaryToggle?.addEventListener("change", () => {
     administrativeBoundaryVisible = boundaryToggle.checked;
@@ -2494,7 +2519,7 @@
 
       restorePolygonOverlays();
       updateAnalysisSummary(heatPayload);
-      renderRiskRankings();
+      renderDistrictAverageChart();
 
       console.info("대구광역시 지도 레이어 초기화가 완료됐습니다.");
     } catch (error) {
