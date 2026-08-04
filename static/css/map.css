@@ -162,11 +162,12 @@ header p {
   color: #b91c1c;
 }
 
-/*jisu_04_수정*/
+/*jisu_05_수정 */
+/* 지도와 순위 사이드바를 나란히 배치한다. */
 .map-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 16px;
 }
 
 /* jisu_03_추가 / 팝업 / 팝업·특보 디자인 */
@@ -387,7 +388,6 @@ header p {
   border: 1px solid #dbe3ee;
   border-radius: 14px;
 }
-
 
 /* jisu_03_추가 / 팝업 / css교체
 선택한 행정동을 실제 네이버 지도로 표시한다. */
@@ -717,26 +717,6 @@ header p {
 .weather-metrics dd {
   text-align: left;
 }
-/**/
-/*
-.panel-guide {
-  margin: 20px 0;
-  color: #475569;
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-
-.analysis-placeholder {
-  padding: 16px;
-  color: #64748b;
-  font-size: 13px;
-  text-align: center;
-  background: #f1f5f9;
-  border: 1px dashed #94a3b8;
-  border-radius: 10px;
-}
-jisu_04_삭제 / 선택.. */
 
 .map-legend {
   display: flex;
@@ -782,6 +762,61 @@ jisu_04_삭제 / 선택.. */
 .risk-none {
   background: #e2e8f0;
 }
+
+/* jisu_05_추가수정 / 순위 사이드바 CSS 추가*/
+/* 지도 오른쪽 상·하위 순위 사이드바 */
+.ranking-sidebar {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.ranking-sidebar .risk-ranking {
+  margin-top: 0;
+  padding: 16px;
+}
+
+.ranking-sidebar .ranking-heading {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.ranking-sidebar .ranking-list {
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+/* 좁은 사이드바 안에서 이름과 점수를 나란히 배치한다. */
+.ranking-sidebar .ranking-button {
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "name score"
+    "meta score";
+  align-items: center;
+  gap: 3px 10px;
+  padding: 10px 12px;
+}
+
+.ranking-sidebar .ranking-name {
+  grid-area: name;
+}
+
+.ranking-sidebar .ranking-meta {
+  grid-area: meta;
+  padding-left: 29px;
+}
+
+.ranking-sidebar .ranking-score {
+  grid-area: score;
+  align-self: center;
+  white-space: nowrap;
+  font-size: 16px;
+}
+/* 05 */
 
 .risk-ranking {
   margin-top: 16px;
@@ -961,6 +996,11 @@ jisu_04_삭제 / 선택.. */
     height: 65vh;
     min-height: 480px;
   }
+  /* jisu_05_추가수정 / 태블릿 배치
+  좁은 화면에서는 순위 영역을 지도 아래 두 칸으로 배치한다. */
+  .ranking-sidebar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
   /*jisu_03_추가 / 팝업 / 반응형 특보 디자인 */
   .selected-heat-alert {
@@ -989,49 +1029,49 @@ jisu_04_삭제 / 선택.. */
 
   /* jisu_03_추가 / 팝업 / 모바일 팝업 디자인 -- 굳이..? */
   .region-popup-backdrop {
-  align-items: end;
-  padding: 0;
-}
+    align-items: end;
+    padding: 0;
+  }
 
-.region-popup-shell {
-  width: 100%;
-  max-height: 96vh;
-  gap: 6px;
-}
+  .region-popup-shell {
+    width: 100%;
+    max-height: 96vh;
+    gap: 6px;
+  }
 
-.selected-heat-alert {
-  margin: 0 8px;
-  border-radius: 10px;
-}
+  .selected-heat-alert {
+    margin: 0 8px;
+    border-radius: 10px;
+  }
 
-.region-popup {
-  max-height: 88vh;
-  border-radius: 18px 18px 0 0;
-}
+  .region-popup {
+    max-height: 88vh;
+    border-radius: 18px 18px 0 0;
+  }
 
-.region-popup-summary,
-.region-popup-grid {
-  grid-template-columns: 1fr;
-}
+  .region-popup-summary,
+  .region-popup-grid {
+    grid-template-columns: 1fr;
+  }
 
-.region-popup-header {
-  padding: 18px;
-}
+  .region-popup-header {
+    padding: 18px;
+  }
 
-.region-popup-summary {
-  padding: 16px 18px 0;
-}
+  .region-popup-summary {
+    padding: 16px 18px 0;
+  }
 
-.region-popup-map-card {
-  margin: 14px 18px 0;
-}
+  .region-popup-map-card {
+    margin: 14px 18px 0;
+  }
 
-#region-popup-map {
-  height: 250px;
-}
+  #region-popup-map {
+    height: 250px;
+  }
 
-.region-popup-grid {
-  padding: 14px 18px 20px;
-}
-/**/
+  .region-popup-grid {
+    padding: 14px 18px 20px;
+  }
+  /**/
 }

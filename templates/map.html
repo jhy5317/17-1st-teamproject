@@ -103,6 +103,35 @@
 
       <div class="map-layout">
         <div id="map" aria-label="대구광역시 행정동 지도"></div>
+        <!-- 상·하위 취약지역 순위를 지도 오른쪽에 세로로 표시한다. -->
+        <aside class="ranking-sidebar" aria-label="폭염 취약지역 순위">
+          <section class="risk-ranking" aria-labelledby="risk-ranking-title">
+            <div class="ranking-heading">
+              <div>
+                <h2 id="risk-ranking-title">폭염 취약지역 상위 3곳</h2>
+              </div>
+              <p>항목을 선택하면 해당 행정동으로 이동합니다.</p>
+            </div>
+            <ol id="risk-ranking-list" class="ranking-list">
+              <li class="ranking-empty">분석 데이터를 준비 중입니다.</li>
+            </ol>
+          </section>
+
+          <section
+            class="risk-ranking ranking-low"
+            aria-labelledby="low-risk-ranking-title"
+          >
+            <div class="ranking-heading">
+              <div>
+                <h2 id="low-risk-ranking-title">폭염 취약지역 하위 3곳</h2>
+              </div>
+              <p>항목을 선택하면 해당 행정동으로 이동합니다.</p>
+            </div>
+            <ol id="low-risk-ranking-list" class="ranking-list">
+              <li class="ranking-empty">분석 데이터를 준비 중입니다.</li>
+            </ol>
+          </section>
+        </aside>
 
         <aside id="dong-panel" class="dong-panel" aria-live="polite">
           <p id="panel-eyebrow" class="panel-eyebrow">선택 지역</p>
@@ -280,7 +309,6 @@
           </section>
         </aside>
       </div>
-
       <section class="map-legend" aria-label="폭염 상대 취약도 범례">
         <strong>상대 취약도</strong>
         <span><i class="risk-color risk-low"></i>낮음</span>
@@ -288,34 +316,6 @@
         <span><i class="risk-color risk-high"></i>높음</span>
         <span><i class="risk-color risk-critical"></i>매우 높음</span>
         <span><i class="risk-color risk-none"></i>데이터 없음</span>
-      </section>
-
-      <section class="risk-ranking" aria-labelledby="risk-ranking-title">
-        <div class="ranking-heading">
-          <div>
-            <p class="panel-eyebrow">RISK RANKING</p>
-            <h2 id="risk-ranking-title">폭염 취약지역 상위 5곳</h2>
-          </div>
-          <p>항목을 선택하면 해당 행정동으로 이동합니다.</p>
-        </div>
-        <ol id="risk-ranking-list" class="ranking-list">
-          <li class="ranking-empty">분석 데이터를 준비 중입니다.</li>
-        </ol>
-      </section>
-      <section
-        class="risk-ranking ranking-low"
-        aria-labelledby="low-risk-ranking-title"
-      >
-        <div class="ranking-heading">
-          <div>
-            <p class="panel-eyebrow">LOW RISK RANKING</p>
-            <h2 id="low-risk-ranking-title">폭염 취약지역 하위 5곳</h2>
-          </div>
-          <p>항목을 선택하면 해당 행정동으로 이동합니다.</p>
-        </div>
-        <ol id="low-risk-ranking-list" class="ranking-list">
-          <li class="ranking-empty">분석 데이터를 준비 중입니다.</li>
-        </ol>
       </section>
       {% else %}
       <p class="map-error">NAVER_MAP_CLIENT_ID가 설정되지 않았습니다.</p>

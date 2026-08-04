@@ -521,7 +521,7 @@
           ? right[1].score - left[1].score
           : left[1].score - right[1].score,
       )
-      .slice(0, 5);
+      .slice(0, 3);
 
     listElement.replaceChildren();
 
