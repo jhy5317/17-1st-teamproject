@@ -52,6 +52,66 @@
   const summaryDataStatus = document.getElementById("summary-data-status");
   const riskRankingList = document.getElementById("risk-ranking-list");
   const lowRiskRankingList = document.getElementById("low-risk-ranking-list");
+
+  //jisu_03_추가 / 팝업 / HTML 요소 참조 추가
+  const dongPanel = document.getElementById("dong-panel");
+
+  const selectedHeatAlert = document.getElementById("selected-heat-alert");
+  const selectedHeatAlertTitle = document.getElementById(
+    "selected-heat-alert-title",
+  );
+  const selectedHeatAlertMessage = document.getElementById(
+    "selected-heat-alert-message",
+  );
+
+  const weatherSource = document.getElementById("weather-source");
+  const weatherMessage = document.getElementById("weather-message");
+  const weatherCondition = document.getElementById("weather-condition");
+  const weatherTemperature = document.getElementById("weather-temperature");
+  const weatherHumidity = document.getElementById("weather-humidity");
+  const weatherFeelsLike = document.getElementById("weather-feels-like");
+  const weatherWind = document.getElementById("weather-wind");
+  const weatherRainfall = document.getElementById("weather-rainfall");
+
+  const regionPopup = document.getElementById("region-popup");
+  const regionPopupClose = document.getElementById("region-popup-close");
+  const regionPopupLocation = document.getElementById("region-popup-location");
+  const regionPopupTitle = document.getElementById("region-popup-title");
+  const regionPopupRisk = document.getElementById("region-popup-risk");
+  const regionPopupScore = document.getElementById("region-popup-score");
+  // jisu_03_추가수정 / 팝업 /
+  const regionPopupMapElement = document.getElementById("region-popup-map");
+  //
+
+  const regionPopupWeatherSource = document.getElementById(
+    "region-popup-weather-source",
+  );
+  const regionPopupWeatherMessage = document.getElementById(
+    "region-popup-weather-message",
+  );
+  const regionPopupWeatherCondition = document.getElementById(
+    "region-popup-weather-condition",
+  );
+  const regionPopupWeatherTemperature = document.getElementById(
+    "region-popup-weather-temperature",
+  );
+  const regionPopupWeatherHumidity = document.getElementById(
+    "region-popup-weather-humidity",
+  );
+  const regionPopupWeatherFeelsLike = document.getElementById(
+    "region-popup-weather-feels-like",
+  );
+
+  const regionPopupShelterCount = document.getElementById(
+    "region-popup-shelter-count",
+  );
+  const regionPopupShelterMessage = document.getElementById(
+    "region-popup-shelter-message",
+  );
+  const regionPopupShelterList = document.getElementById(
+    "region-popup-shelter-list",
+  );
+  //
   const districtDetailElements = {
     dongCount: document.getElementById("district-dong-count"),
     averageScore: document.getElementById("district-average-score"),
@@ -218,10 +278,19 @@
   let lastHandledDongClickCode = null;
   let lastHandledDongClickAt = 0;
 
+  // jisu_03_추가 / 팝업 / 상태값 추가
+  // 팝업에서 현재 선택한 행정동과 비동기 요청 순서를 관리한다.
+  let regionPopupDongCode = null;
+  let selectedRegionRequestId = 0;
+
+  // 팝업 전용 네이버 지도와 행정동 경계 도형을 보관한다.
+  let regionPopupMap = null;
+  const regionPopupBoundaryPolygons = [];
+  //
+
   /*
    * GeoJSON 요청
    */
-
   async function loadGeoJson(url) {
     const response = await fetch(url, {
       method: "GET",
@@ -248,7 +317,9 @@
     });
 
     if (!response.ok) {
-      throw new Error(`${response.status} ${response.statusText}: ${HEAT_DATA_URL}`);
+      throw new Error(
+        `${response.status} ${response.statusText}: ${HEAT_DATA_URL}`,
+      );
     }
 
     const payload = await response.json();
@@ -443,7 +514,7 @@
       summaryDataStatus.textContent =
         analyzedCount > 0
           ? `행정동 데이터 ${analyzedCount}/150`
-          : payload.message ?? "데이터 준비 중";
+          : (payload.message ?? "데이터 준비 중");
     }
   }
 
@@ -520,7 +591,8 @@
 
   function featureMatchesFilters(feature) {
     const districtMatches =
-      selectedDistrict === "all" || getDistrictName(feature) === selectedDistrict;
+      selectedDistrict === "all" ||
+      getDistrictName(feature) === selectedDistrict;
     const riskMatches =
       selectedRiskLevel === "all" ||
       getRiskLevelForFeature(feature) === selectedRiskLevel;
@@ -1028,32 +1100,289 @@
     showPanelMode("district");
     dongNameElement.textContent = districtName;
     districtDetailElements.dongCount.textContent = `${district.dong_count}개`;
-    districtDetailElements.averageScore.textContent =
-      `${Number(district.score_average).toFixed(1)}점`;
-    districtDetailElements.highCount.textContent =
-      `${Number(district.critical_count) + Number(district.high_count)}개`;
-    districtDetailElements.topDong.textContent =
-      `${district.top_vulnerable_dong} · ${Number(
-        district.top_vulnerable_score,
-      ).toFixed(1)}점`;
-    districtDetailElements.bottomDong.textContent =
-      `${district.bottom_vulnerable_dong} · ${Number(
-        district.bottom_vulnerable_score,
-      ).toFixed(1)}점`;
-    districtDetailElements.coolingShelters.textContent =
-      `${district.cooling_shelter_operating}개`;
+    districtDetailElements.averageScore.textContent = `${Number(district.score_average).toFixed(1)}점`;
+    districtDetailElements.highCount.textContent = `${Number(district.critical_count) + Number(district.high_count)}개`;
+    districtDetailElements.topDong.textContent = `${district.top_vulnerable_dong} · ${Number(
+      district.top_vulnerable_score,
+    ).toFixed(1)}점`;
+    districtDetailElements.bottomDong.textContent = `${district.bottom_vulnerable_dong} · ${Number(
+      district.bottom_vulnerable_score,
+    ).toFixed(1)}점`;
+    districtDetailElements.coolingShelters.textContent = `${district.cooling_shelter_operating}개`;
     districtDetailElements.shadeShelters.textContent =
       district.shade_shelter_count === null
         ? "자료 없음"
         : `${district.shade_shelter_count}개`;
-    districtDetailElements.dataStatus.textContent =
-      district.core_data_complete
-        ? "6개 지표 완전"
-        : `평균 자료 충족률 ${(
-            Number(district.component_coverage_average) * 100
-          ).toFixed(1)}%`;
+    districtDetailElements.dataStatus.textContent = district.core_data_complete
+      ? "6개 지표 완전"
+      : `평균 자료 충족률 ${(
+          Number(district.component_coverage_average) * 100
+        ).toFixed(1)}%`;
     updateIndicatorBreakdown(district.indicators);
   }
+  /**/
+  // API 숫자값만 단위와 함께 표시하고 누락·비정상 값은 하이픈으로 통일한다.
+  function formatMetric(value, suffix = "") {
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) ? `${numericValue}${suffix}` : "-";
+  }
+
+  // 새 지역을 조회하기 전 패널과 팝업의 이전 날씨 값을 초기 상태로 되돌린다.
+  function resetWeatherPanel(message = "행정동을 선택하면 조회합니다.") {
+    weatherSource.textContent = "지역 선택 후 조회";
+    weatherMessage.textContent = message;
+    weatherCondition.textContent = "-";
+    weatherTemperature.textContent = "-";
+    weatherHumidity.textContent = "-";
+    weatherFeelsLike.textContent = "-";
+    weatherWind.textContent = "-";
+    weatherRainfall.textContent = "-";
+    if (regionPopupWeatherSource) {
+      regionPopupWeatherSource.textContent = "조회 중";
+      regionPopupWeatherMessage.textContent = message;
+      regionPopupWeatherCondition.textContent = "-";
+      regionPopupWeatherTemperature.textContent = "-";
+      regionPopupWeatherHumidity.textContent = "-";
+      regionPopupWeatherFeelsLike.textContent = "-";
+    }
+  }
+
+  // 서버에서 정규화한 날씨를 패널과 상세 팝업에 함께 채운다.
+  async function updateWeatherPanel(dongCode, requestId) {
+    resetWeatherPanel("실시간 날씨를 조회하고 있습니다.");
+    try {
+      const response = await fetch(
+        `/api/weather/${encodeURIComponent(dongCode)}`,
+      );
+      if (!response.ok) {
+        throw new Error(`날씨 API HTTP ${response.status}`);
+      }
+      const weather = await response.json();
+      if (!weather || typeof weather !== "object" || Array.isArray(weather)) {
+        throw new Error("날씨 API 응답 형식이 올바르지 않습니다.");
+      }
+
+      if (requestId !== selectedRegionRequestId) {
+        return;
+      }
+
+      weatherSource.textContent = weather.source ?? "날씨 정보";
+      // DB의 최신 정시 자료가 없어서 이전 자료를 반환한 경우 관측시각과
+      // 지연 안내를 함께 표시해 사용자가 현재값으로 오해하지 않게 한다.
+      const weatherTimeMessage =
+        weather.status === "ready"
+          ? `${weather.observedAt ?? "현재"} 기준${
+              weather.isStale && weather.message ? ` · ${weather.message}` : ""
+            }`
+          : (weather.message ?? "날씨 정보를 사용할 수 없습니다.");
+      weatherMessage.textContent = weatherTimeMessage;
+      weatherCondition.textContent = weather.condition ?? "-";
+      weatherTemperature.textContent = formatMetric(weather.temperature, "℃");
+      weatherHumidity.textContent = formatMetric(weather.humidity, "%");
+      weatherFeelsLike.textContent = formatMetric(weather.feelsLike, "℃");
+      weatherWind.textContent = formatMetric(weather.windSpeed, "m/s");
+      weatherRainfall.textContent = formatMetric(weather.precipitation1h, "mm");
+      if (regionPopupWeatherSource) {
+        regionPopupWeatherSource.textContent = weather.source ?? "날씨 정보";
+        regionPopupWeatherMessage.textContent = weatherTimeMessage;
+        regionPopupWeatherCondition.textContent = weather.condition ?? "-";
+        regionPopupWeatherTemperature.textContent = formatMetric(
+          weather.temperature,
+          "℃",
+        );
+        regionPopupWeatherHumidity.textContent = formatMetric(
+          weather.humidity,
+          "%",
+        );
+        regionPopupWeatherFeelsLike.textContent = formatMetric(
+          weather.feelsLike,
+          "℃",
+        );
+      }
+    } catch (error) {
+      console.error("날씨 조회 실패:", error);
+      if (requestId === selectedRegionRequestId) {
+        resetWeatherPanel("날씨 정보를 불러오지 못했습니다.");
+      }
+    }
+  }
+
+  /*jisu_03_추가 / 팝업 / 같은 위치에 실제 지도 함수 추가 */
+  /*
+   * 팝업 내부에 별도의 네이버 지도를 만들고,
+   * 선택한 행정동 경계가 지도 영역에 맞게 보이도록 확대한다.
+   */
+  function renderRegionPopupMap(dongCode) {
+    if (!regionPopupMapElement) {
+      return;
+    }
+
+    const geometry = dongGeometryByCode.get(dongCode);
+    const bounds = dongBoundsByCode.get(dongCode);
+
+    if (!geometry || !bounds) {
+      return;
+    }
+
+    const heatData = heatDataByDongCode.get(dongCode);
+    const riskStyle = RISK_STYLES[heatData?.riskLevel ?? "none"];
+
+    // 팝업 지도는 최초 한 번만 생성하고 이후에는 재사용한다.
+    if (!regionPopupMap) {
+      regionPopupMap = new naver.maps.Map(regionPopupMapElement, {
+        center: bounds.getCenter(),
+        zoom: 14,
+        minZoom: 10,
+        maxZoom: 18,
+
+        draggable: true,
+        scrollWheel: true,
+        pinchZoom: true,
+        keyboardShortcuts: false,
+
+        zoomControl: true,
+        mapTypeControl: false,
+        mapDataControl: false,
+        scaleControl: false,
+      });
+    }
+
+    // 이전에 선택했던 행정동 경계를 제거한다.
+    regionPopupBoundaryPolygons
+      .splice(0)
+      .forEach((polygon) => polygon.setMap(null));
+
+    // 선택한 행정동의 Polygon 또는 MultiPolygon만 표시한다.
+    getPolygonCoordinateGroups(geometry).forEach((polygonCoordinates) => {
+      const polygon = new naver.maps.Polygon({
+        map: regionPopupMap,
+        paths: polygonCoordinatesToPaths(polygonCoordinates),
+        fillColor: riskStyle.color,
+        fillOpacity: 0.48,
+        strokeColor: "#1e3a8a",
+        strokeOpacity: 1,
+        strokeWeight: 3,
+        clickable: false,
+        zIndex: 10,
+      });
+
+      regionPopupBoundaryPolygons.push(polygon);
+    });
+
+    // 팝업이 열린 후 지도 크기를 다시 계산하고 행정동 경계에 맞춘다.
+    window.requestAnimationFrame(() => {
+      naver.maps.Event.trigger(regionPopupMap, "resize");
+      regionPopupMap.fitBounds(bounds, 32);
+    });
+  }
+
+  // jisu_03_추가 / 팝업 / 쉼터 임시 안내 함수
+  // 쉼터 API를 연결하기 전까지 팝업에 안내 문구만 표시한다.
+  function showShelterPlaceholder() {
+    if (regionPopupShelterCount) {
+      regionPopupShelterCount.textContent = "추후 연결";
+    }
+
+    if (regionPopupShelterMessage) {
+      regionPopupShelterMessage.textContent =
+        "무더위쉼터 정보는 다음 기능에서 연결합니다.";
+    }
+
+    if (regionPopupShelterList) {
+      regionPopupShelterList.innerHTML =
+        '<li class="region-popup-shelter-empty">현재는 쉼터 데이터가 연결되지 않았습니다.</li>';
+    }
+  }
+
+  // jisu_03_추가 / 팝업 / 폭염특보 함수
+  // 지역 변경·특보 없음·팝업 종료 시 이전 특보를 숨긴다.
+  function hideSelectedHeatAlert() {
+    if (selectedHeatAlert) {
+      selectedHeatAlert.hidden = true;
+      selectedHeatAlert.dataset.level = "normal";
+    }
+  }
+
+  // 선택 행정동의 기상청 폭염·열대야 특보를 조회한다.
+  async function updateHeatAlert(dongCode, requestId) {
+    hideSelectedHeatAlert();
+
+    try {
+      const response = await fetch(
+        `/api/heat-alerts?regionCode=${encodeURIComponent(dongCode)}`,
+      );
+
+      if (!response.ok) {
+        throw new Error(`특보 API HTTP ${response.status}`);
+      }
+
+      const payload = await response.json();
+
+      if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+        throw new Error("특보 API 응답 형식이 올바르지 않습니다.");
+      }
+
+      // 이전에 선택한 행정동의 늦은 응답은 화면에 표시하지 않는다.
+      if (requestId !== selectedRegionRequestId) {
+        return;
+      }
+
+      const alerts = Array.isArray(payload.alerts) ? payload.alerts : [];
+
+      const isActiveOfficialAlert =
+        payload.status === "active" &&
+        payload.source === "기상청 기상특보 조회서비스" &&
+        alerts.length > 0;
+
+      if (!isActiveOfficialAlert) {
+        hideSelectedHeatAlert();
+        return;
+      }
+
+      const isTestMode = payload.testMode === true;
+      const alertTitles = alerts.map((alert) => alert.title).filter(Boolean);
+      const alertMessages = alerts
+        .map((alert) => alert.message)
+        .filter(Boolean);
+
+      const alertTitle = alertTitles.join(" · ") || "기상특보";
+      const alertMessage =
+        alertMessages.join(" · ") || "선택 지역에 기상특보가 발표 중입니다.";
+
+      const alertLevel = alerts.some((alert) => alert.level === "critical")
+        ? "critical"
+        : "warning";
+
+      const hasTropicalNightAlert = alerts.some(
+        (alert) => alert.category === "tropical-night",
+      );
+
+      const safetyMessage = hasTropicalNightAlert
+        ? "밤사이 실내 온도를 낮추고 충분한 수분을 섭취하세요."
+        : "충분한 수분 섭취와 한낮 야외활동 자제가 필요합니다.";
+
+      if (selectedHeatAlertTitle) {
+        selectedHeatAlertTitle.textContent = isTestMode
+          ? `테스트 ${alertTitle}`
+          : `긴급 ${alertTitle}`;
+      }
+
+      if (selectedHeatAlertMessage) {
+        selectedHeatAlertMessage.textContent =
+          `${isTestMode ? "화면 테스트" : "기상청 발표"} · ` +
+          `${alertMessage} · ${safetyMessage}`;
+      }
+
+      if (selectedHeatAlert) {
+        selectedHeatAlert.dataset.level = alertLevel;
+        selectedHeatAlert.hidden = false;
+      }
+    } catch (error) {
+      console.error("폭염 안전 안내 조회 실패:", error);
+      hideSelectedHeatAlert();
+    }
+  }
+  /* 03*/
 
   function updateDongPanel(feature) {
     const dongInfo = getDongInfo(feature);
@@ -1076,7 +1405,7 @@
 
     if (dongBaseDateElement) {
       dongBaseDateElement.textContent = formatBaseDate(
-        heatData ? heatDataBaseDate ?? dongInfo.baseDate : dongInfo.baseDate,
+        heatData ? (heatDataBaseDate ?? dongInfo.baseDate) : dongInfo.baseDate,
       );
     }
 
@@ -1093,6 +1422,52 @@
 
     updateIndicatorBreakdown(heatData?.indicators);
   }
+
+  // jisu_03_추가 / 팝업 / 팝업 열기·닫기 함수
+  // 클릭한 행정동의 기본 정보로 상세 팝업을 연다.
+  function openRegionPopup(feature) {
+    if (!regionPopup) {
+      return;
+    }
+
+    const dongInfo = getDongInfo(feature);
+    const heatData = heatDataByDongCode.get(dongInfo.code);
+    const riskStyle = RISK_STYLES[heatData?.riskLevel ?? "none"];
+
+    regionPopupLocation.textContent = `${getDistrictName(feature)} · 선택 행정구역`;
+    regionPopupTitle.textContent = dongInfo.name;
+    regionPopupRisk.textContent = riskStyle.label;
+    regionPopupScore.textContent = heatData
+      ? `${Number(heatData.score).toFixed(1)}점`
+      : "-";
+
+    regionPopupDongCode = dongInfo.code;
+
+    showShelterPlaceholder();
+    hideSelectedHeatAlert();
+
+    regionPopup.hidden = false;
+    document.body.classList.add("has-region-popup");
+
+    // 팝업이 화면에 표시된 후 지도를 생성해야 크기를 정상 계산할 수 있다.
+    window.setTimeout(() => {
+      renderRegionPopupMap(dongInfo.code);
+      regionPopupClose?.focus();
+    }, 0);
+  }
+
+  // 상세 팝업과 팝업 전용 상태를 초기화한다.
+  function closeRegionPopup() {
+    if (!regionPopup || regionPopup.hidden) {
+      return;
+    }
+
+    regionPopup.hidden = true;
+    regionPopupDongCode = null;
+    document.body.classList.remove("has-region-popup");
+    hideSelectedHeatAlert();
+  }
+  //
 
   function clearSelectionEffects() {
     if (selectionAnimationFrame !== null) {
@@ -1162,8 +1537,7 @@
       new naver.maps.LatLng(35.35, 128.1),
     ];
     const selectedOuterPaths = polygonGroups.map(
-      (polygonCoordinates) =>
-        polygonCoordinatesToPaths(polygonCoordinates)[0],
+      (polygonCoordinates) => polygonCoordinatesToPaths(polygonCoordinates)[0],
     );
 
     const focusMask = new naver.maps.Polygon({
@@ -1194,17 +1568,29 @@
     });
   }
 
+  // jisu_03_추가수정 / 팝업 / selectDong() 교체
   function selectDong(feature, shouldFocus = true) {
     if (selectedFeature && selectedFeature !== feature) {
       applyDongPolygonStyle(selectedFeature);
     }
 
     selectedFeature = feature;
+    hideSelectedHeatAlert();
+
+    // master에 원래 있던 지도 선택 효과는 유지한다.
     showSelectionEffects(feature);
     animateSelectedFeature(feature);
 
     const dongInfo = getDongInfo(feature);
+    const requestId = ++selectedRegionRequestId;
+
     updateDongPanel(feature);
+
+    // 날씨와 특보를 서로 기다리지 않고 동시에 조회한다.
+    Promise.allSettled([
+      updateWeatherPanel(dongInfo.code, requestId),
+      updateHeatAlert(dongInfo.code, requestId),
+    ]);
 
     if (shouldFocus) {
       focusFeature(feature);
@@ -1212,6 +1598,7 @@
 
     setStatus(`${dongInfo.name}을 선택했습니다.`);
   }
+  // 03
 
   function focusFeature(feature) {
     const dongCode = getFeatureValue(feature, ["ADM_CD", "adm_cd", "code"]);
@@ -1304,7 +1691,13 @@
     setStatus(`선택 구·군: ${districtName}`);
   }
 
+  // jisu_03_추가 / 팝업 / 초기화 시 팝업·날씨 정리
   function clearSelection() {
+    // 이전 날씨·특보 요청이 늦게 도착해도 반영되지 않게 한다.
+    selectedRegionRequestId += 1;
+
+    closeRegionPopup();
+    hideSelectedHeatAlert();
     clearSelectionEffects();
 
     if (selectedFeature) {
@@ -1340,6 +1733,7 @@
     }
 
     updateIndicatorBreakdown();
+    resetWeatherPanel(); // jisu_03_추가 / 팝업 / 초기화 시 팝업·날씨 정리
   }
 
   function searchDong() {
@@ -1423,6 +1817,8 @@
     lastHandledDongClickAt = handledAt;
     hoverInfoWindow.close();
     clearDongHover();
+    // jisu_03_추가 / 팝업 / 지도 클릭 시 팝업 열기
+    openRegionPopup(feature);
     selectDong(feature);
     console.info("선택한 행정동:", {
       name: dongInfo.name,
@@ -1488,8 +1884,7 @@
     }
 
     const feature =
-      hoveredDongFeature ??
-      findDongFeatureAtCoordinate(event.coord);
+      hoveredDongFeature ?? findDongFeatureAtCoordinate(event.coord);
 
     if (feature) {
       handleDongClick(feature);
@@ -1497,6 +1892,25 @@
   });
 
   mapElement.addEventListener("mouseleave", scheduleDongHoverClear);
+
+  // jisu_03_추가 / 팝업 / 팝업 닫기 이벤트
+  // 닫기 버튼
+  regionPopupClose?.addEventListener("click", closeRegionPopup);
+
+  // 팝업 카드 바깥 영역 클릭
+  regionPopup?.addEventListener("click", (event) => {
+    if (event.target === regionPopup) {
+      closeRegionPopup();
+    }
+  });
+
+  // Esc 키
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeRegionPopup();
+    }
+  });
+  //
 
   searchButton?.addEventListener("click", searchDong);
 
@@ -1795,7 +2209,7 @@
         analysisPlaceholder.textContent =
           heatPayload.status === "ready" && heatDataByDongCode.size > 0
             ? `${heatDataByDongCode.size}개 행정동의 폭염 취약도 분석 결과를 표시 중입니다.`
-            : heatPayload.message ?? "폭염 취약도 데이터를 준비 중입니다.";
+            : (heatPayload.message ?? "폭염 취약도 데이터를 준비 중입니다.");
       }
 
       console.info("대구광역시 지도 레이어 초기화가 완료됐습니다.");

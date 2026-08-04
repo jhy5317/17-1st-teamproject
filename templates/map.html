@@ -10,7 +10,6 @@
       rel="stylesheet"
       href="{{ url_for('static', path='/css/map.css') }}?v={{ static_version }}"
     />
-
     {% if map_api_configured %}
     <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId={{ naver_map_client_id }}"></script>
     {% endif %}
@@ -165,7 +164,47 @@
               <dd id="district-data-status">-</dd>
             </div>
           </dl>
-          <section class="indicator-breakdown" aria-labelledby="indicator-title">
+          <!--jisu_03_추가 / 팝업 / 선택 행정동의 기상청 초단기실황을 표시하는 패널 영역-->
+          <section class="live-weather" aria-labelledby="weather-title">
+            <div class="panel-section-heading">
+              <h3 id="weather-title">현재 날씨</h3>
+              <span id="weather-source">지역 선택 후 조회</span>
+            </div>
+            <p id="weather-message" class="panel-data-message">
+              행정동을 선택하면 실시간 날씨를 확인할 수 있습니다.
+            </p>
+            <dl class="weather-metrics">
+              <div>
+                <dt>날씨</dt>
+                <dd id="weather-condition">-</dd>
+              </div>
+              <div>
+                <dt>기온</dt>
+                <dd id="weather-temperature">-</dd>
+              </div>
+              <div>
+                <dt>습도</dt>
+                <dd id="weather-humidity">-</dd>
+              </div>
+              <div>
+                <dt>체감온도</dt>
+                <dd id="weather-feels-like">-</dd>
+              </div>
+              <div>
+                <dt>풍속</dt>
+                <dd id="weather-wind">-</dd>
+              </div>
+              <div>
+                <dt>1시간 강수량</dt>
+                <dd id="weather-rainfall">-</dd>
+              </div>
+            </dl>
+          </section>
+          <!--------------------------------------------------------->
+          <section
+            class="indicator-breakdown"
+            aria-labelledby="indicator-title"
+          >
             <h3 id="indicator-title">세부 취약 요인 정규화값 (0~1)</h3>
             <div class="indicator-row">
               <div>
@@ -241,8 +280,8 @@
             </div>
           </section>
           <p class="panel-guide">
-            지도에서 행정동을 클릭하거나 검색하면 해당 지역의 분석 정보를
-            확인할 수 있습니다.
+            지도에서 행정동을 클릭하거나 검색하면 해당 지역의 분석 정보를 확인할
+            수 있습니다.
           </p>
           <div id="analysis-placeholder" class="analysis-placeholder">
             폭염 취약도 데이터를 준비 중입니다.
@@ -290,6 +329,134 @@
       <p class="map-error">NAVER_MAP_CLIENT_ID가 설정되지 않았습니다.</p>
       {% endif %}
     </main>
+
+    <!--
+      jisu_03_추가 / 팝업
+      행정동 클릭 상세 팝업: map.js가 오른쪽 패널과 동일한 API 결과를 채운다.
+      SVG에는 배경지도 없이 선택 경계와 해당 경계 안의 쉼터 위치만 표시한다.
+    -->
+    <div id="region-popup" class="region-popup-backdrop" hidden>
+      <div class="region-popup-shell">
+        <!-- 선택 지역 특보가 있을 때만 팝업 카드 바깥 상단에 표시한다. -->
+        <div
+          id="selected-heat-alert"
+          class="selected-heat-alert"
+          role="alert"
+          aria-live="assertive"
+          hidden
+        >
+          <strong id="selected-heat-alert-title">긴급 기상특보</strong>
+          <div class="selected-heat-alert-track">
+            <span id="selected-heat-alert-message"></span>
+          </div>
+          <small>기상청 실시간 특보</small>
+        </div>
+
+        <section
+          class="region-popup"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="region-popup-title"
+        >
+          <header class="region-popup-header">
+            <div>
+              <p id="region-popup-location">선택 행정구역</p>
+              <h2 id="region-popup-title">행정동 정보</h2>
+            </div>
+            <button
+              id="region-popup-close"
+              class="region-popup-close"
+              type="button"
+              aria-label="지역 상세 팝업 닫기"
+            >
+              ×
+            </button>
+          </header>
+
+          <div class="region-popup-summary">
+            <div>
+              <span>폭염 취약도</span>
+              <strong id="region-popup-risk">-</strong>
+            </div>
+            <div>
+              <span>종합 점수</span>
+              <strong id="region-popup-score">-</strong>
+            </div>
+          </div>
+
+          <!-- jisu_03_추가 / 팝업 / 팝업 SVG를 지도 요소로 교체
+          선택한 행정동의 실제 네이버 지도와 행정구역 경계를 표시한다. -->
+          <section
+            class="region-popup-map-card"
+            aria-label="선택 행정구역 지도"
+          >
+            <div
+              id="region-popup-map"
+              role="region"
+              aria-label="선택한 행정동의 지도와 행정구역 경계"
+            ></div>
+          </section>
+          <!-- 03 -->
+
+          <div class="region-popup-grid">
+            <section
+              class="region-popup-card"
+              aria-labelledby="region-popup-weather-title"
+            >
+              <div class="region-popup-card-heading">
+                <div>
+                  <small>LIVE WEATHER</small>
+                  <h3 id="region-popup-weather-title">현재 날씨</h3>
+                </div>
+                <span id="region-popup-weather-source">조회 중</span>
+              </div>
+              <p id="region-popup-weather-message" class="region-popup-message">
+                실시간 날씨를 조회하고 있습니다.
+              </p>
+              <dl class="region-popup-weather">
+                <div>
+                  <dt>날씨</dt>
+                  <dd id="region-popup-weather-condition">-</dd>
+                </div>
+                <div>
+                  <dt>기온</dt>
+                  <dd id="region-popup-weather-temperature">-</dd>
+                </div>
+                <div>
+                  <dt>습도</dt>
+                  <dd id="region-popup-weather-humidity">-</dd>
+                </div>
+                <div>
+                  <dt>체감온도</dt>
+                  <dd id="region-popup-weather-feels-like">-</dd>
+                </div>
+              </dl>
+            </section>
+
+            <section
+              class="region-popup-card"
+              aria-labelledby="region-popup-shelter-title"
+            >
+              <div class="region-popup-card-heading">
+                <div>
+                  <small>COOLING SHELTER</small>
+                  <h3 id="region-popup-shelter-title">무더위쉼터</h3>
+                </div>
+                <strong id="region-popup-shelter-count">조회 중</strong>
+              </div>
+              <p id="region-popup-shelter-message" class="region-popup-message">
+                선택 경계 내부 쉼터를 조회하고 있습니다.
+              </p>
+              <ul
+                id="region-popup-shelter-list"
+                class="region-popup-shelter-list"
+              ></ul>
+            </section>
+          </div>
+        </section>
+      </div>
+    </div>
+    <!-- 03 -->
     <!-- jisu_01_추가수정 / <script src= 수정 -->
     {% if map_api_configured %}
     <script src="{{ url_for('static', path='/js/map.js') }}?v={{ static_version }}"></script>

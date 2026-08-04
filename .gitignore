@@ -14,6 +14,9 @@ wheels/
 .idea/
 outputs/
 
+# jisu_03_추가 / 팝업 / 실행 중 생성되는 실시간 날씨 SQLite 파일
+data/runtime/
+#-----
 data/raw/
 data/processed/
 
