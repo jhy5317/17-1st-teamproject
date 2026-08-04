@@ -1710,7 +1710,9 @@ header p {
   border-radius: 999px;
 }
 
+/* [수정] span 요소인 그래프 막대를 block으로 만들어 JS에서 지정한 width가 적용되게 한다. */
 .district-chart-bar {
+  display: block;
   height: 100%;
   border-radius: inherit;
 }
