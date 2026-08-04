@@ -84,9 +84,11 @@
   const regionPopupWeatherSource = document.getElementById(
     "region-popup-weather-source",
   );
-  const regionPopupWeatherMessage = document.getElementById(
-    "region-popup-weather-message",
+  //jisu_07_추가수정 / 현재 시간 및 기준
+  const regionPopupWeatherTitle = document.getElementById(
+    "region-popup-weather-title",
   );
+  //
   const regionPopupWeatherCondition = document.getElementById(
     "region-popup-weather-condition",
   );
@@ -1130,7 +1132,9 @@
     weatherRainfall.textContent = "-";
     if (regionPopupWeatherSource) {
       regionPopupWeatherSource.textContent = "조회 중";
-      regionPopupWeatherMessage.textContent = message;
+      // jisu_07_추가수정 / 현재 시간 및 기준
+      regionPopupWeatherTitle.textContent = message;
+      //
       regionPopupWeatherCondition.textContent = "-";
       regionPopupWeatherTemperature.textContent = "-";
       regionPopupWeatherHumidity.textContent = "-";
@@ -1158,14 +1162,65 @@
       }
 
       weatherSource.textContent = weather.source ?? "날씨 정보";
+
+      // jisu_07_추가수정 / 현재 시간 및 기준
+      //
       // DB의 최신 정시 자료가 없어서 이전 자료를 반환한 경우 관측시각과
       // 지연 안내를 함께 표시해 사용자가 현재값으로 오해하지 않게 한다.
+      // 관측시각을 오늘(화) 15:00 형식으로 표시한다.
+      function formatWeatherObservedAt(value) {
+        if (!value) {
+          return "현재";
+        }
+
+        const observedDate = new Date(value);
+
+        if (Number.isNaN(observedDate.getTime())) {
+          return "현재";
+        }
+
+        const getDateParts = (date) => {
+          const parts = new Intl.DateTimeFormat("ko-KR", {
+            timeZone: "Asia/Seoul",
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            weekday: "short",
+            hour: "2-digit",
+            minute: "2-digit",
+            hourCycle: "h23",
+          }).formatToParts(date);
+
+          return Object.fromEntries(
+            parts
+              .filter((part) => part.type !== "literal")
+              .map((part) => [part.type, part.value]),
+          );
+        };
+
+        const observed = getDateParts(observedDate);
+        const today = getDateParts(new Date());
+
+        const isToday =
+          observed.year === today.year &&
+          observed.month === today.month &&
+          observed.day === today.day;
+
+        const dateText = isToday
+          ? `오늘(${observed.weekday})`
+          : `${observed.month}/${observed.day}(${observed.weekday})`;
+
+        return `${dateText} ${observed.hour}:${observed.minute}`;
+      }
+
+      const observedAtText = formatWeatherObservedAt(weather.observedAt);
+
       const weatherTimeMessage =
         weather.status === "ready"
-          ? `${weather.observedAt ?? "현재"} 기준${
+          ? `${observedAtText} 기준${
               weather.isStale && weather.message ? ` · ${weather.message}` : ""
             }`
-          : (weather.message ?? "날씨 정보를 사용할 수 없습니다.");
+          : weather.message;
       weatherMessage.textContent = weatherTimeMessage;
       weatherCondition.textContent = weather.condition ?? "-";
       weatherTemperature.textContent = formatMetric(weather.temperature, "℃");
@@ -1175,7 +1230,12 @@
       weatherRainfall.textContent = formatMetric(weather.precipitation1h, "mm");
       if (regionPopupWeatherSource) {
         regionPopupWeatherSource.textContent = weather.source ?? "날씨 정보";
-        regionPopupWeatherMessage.textContent = weatherTimeMessage;
+        // jisu_07_추가수정 / 현재 시간 및 기준
+        regionPopupWeatherTitle.textContent =
+          weather.status === "ready"
+            ? `${observedAtText} 기준`
+            : (weather.message ?? "날씨 정보 없음");
+        //
         regionPopupWeatherCondition.textContent = weather.condition ?? "-";
         regionPopupWeatherTemperature.textContent = formatMetric(
           weather.temperature,

@@ -437,6 +437,19 @@ header p {
   font-size: 18px;
 }
 
+/* jisu_07_추가수정 / 현재 시간 및 기준
+팝업 날씨 기준시각의 글자 크기와 높이를 고정한다. */
+#region-popup-weather-title {
+  min-height: 24px;
+  margin: 4px 0 14px;
+  color: #0f172a;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
 .region-popup-card-heading > span,
 .region-popup-card-heading > strong {
   color: #475569;
