@@ -351,36 +351,41 @@ header p {
   outline-offset: 2px;
 }
 
-.region-popup-summary {
+/* jisu_06_추가수정 / 기존 요약 CSS 교체
+취약도와 종합 점수를 파란 팝업 헤더 오른쪽에 표시한다. */
+.region-popup-header .region-popup-summary {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  padding: 20px 24px 0;
+  grid-template-columns: repeat(2, auto);
+  gap: 28px;
+  margin-left: auto;
+  padding: 0;
 }
 
-.region-popup-summary > div {
-  padding: 14px 16px;
-  background: #ffffff;
-  border: 1px solid #dbe3ee;
-  border-radius: 12px;
+.region-popup-header .region-popup-summary > div {
+  min-width: 76px;
+  padding: 0;
+  text-align: center;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
 }
 
-.region-popup-summary span,
-.region-popup-summary strong {
+.region-popup-header .region-popup-summary span,
+.region-popup-header .region-popup-summary strong {
   display: block;
 }
 
-.region-popup-summary span {
-  margin-bottom: 5px;
-  color: #64748b;
-  font-size: 12px;
+.region-popup-header .region-popup-summary span {
+  margin-bottom: 4px;
+  color: #bfdbfe;
+  font-size: 15px;
 }
 
-.region-popup-summary strong {
-  color: #0f172a;
-  font-size: 17px;
+.region-popup-header .region-popup-summary strong {
+  color: #ffffff;
+  font-size: 18px;
 }
-
+/*----------------------------------------------*/
 .region-popup-map-card {
   margin: 16px 24px 0;
   overflow: hidden;
@@ -469,6 +474,16 @@ header p {
   color: #0f172a;
   font-size: 15px;
   font-weight: 800;
+}
+/* jisu_06_추가 / 날씨 출처
+팝업 하단의 날씨 데이터 출처 */
+.region-popup-source {
+  margin: 0;
+  padding: 0 24px 18px;
+  color: #94a3b8;
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: right;
 }
 
 .region-popup-shelter-list {
@@ -1026,6 +1041,23 @@ header p {
   .ranking-list {
     grid-template-columns: 1fr;
   }
+
+  /* jisu_06_추가 / 취약점수 이동 / 모바일 팝업 디자인 -- 굳이..? */
+  .ranking-sidebar {
+    grid-template-columns: 1fr;
+  }
+  .region-popup-header {
+    flex-wrap: wrap;
+  }
+
+  .region-popup-header .region-popup-summary {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    padding-top: 12px;
+    border-top: 1px solid rgb(255 255 255 / 20%);
+  }
+  /*----------------------------------------------------------*/
 
   /* jisu_03_추가 / 팝업 / 모바일 팝업 디자인 -- 굳이..? */
   .region-popup-backdrop {

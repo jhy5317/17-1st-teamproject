@@ -103,7 +103,7 @@
 
       <div class="map-layout">
         <div id="map" aria-label="대구광역시 행정동 지도"></div>
-        <!-- 상·하위 취약지역 순위를 지도 오른쪽에 세로로 표시한다. -->
+        <!--jisu_05_추가 / 상·하위 취약지역 순위를 지도 오른쪽에 세로로 표시한다. -->
         <aside class="ranking-sidebar" aria-label="폭염 취약지역 순위">
           <section class="risk-ranking" aria-labelledby="risk-ranking-title">
             <div class="ranking-heading">
@@ -350,11 +350,25 @@
           aria-modal="true"
           aria-labelledby="region-popup-title"
         >
+        <!--jisu_06_추가수정 / 점수 위치 변경 / 팝업 헤더 교체-->
           <header class="region-popup-header">
-            <div>
+            <div class="region-popup-title">
               <p id="region-popup-location">선택 행정구역</p>
               <h2 id="region-popup-title">행정동 정보</h2>
             </div>
+
+            <!-- 취약도와 점수를 파란 헤더 오른쪽에 표시한다. -->
+            <div class="region-popup-summary">
+              <div>
+                <span>폭염 취약도</span>
+                <strong id="region-popup-risk">-</strong>
+              </div>
+              <div>
+                <span>종합 점수</span>
+                <strong id="region-popup-score">-</strong>
+              </div>
+            </div>
+
             <button
               id="region-popup-close"
               class="region-popup-close"
@@ -364,17 +378,7 @@
               ×
             </button>
           </header>
-
-          <div class="region-popup-summary">
-            <div>
-              <span>폭염 취약도</span>
-              <strong id="region-popup-risk">-</strong>
-            </div>
-            <div>
-              <span>종합 점수</span>
-              <strong id="region-popup-score">-</strong>
-            </div>
-          </div>
+          <!------------------------------------------------------>
 
           <!-- jisu_03_추가 / 팝업 / 팝업 SVG를 지도 요소로 교체
           선택한 행정동의 실제 네이버 지도와 행정구역 경계를 표시한다. -->
@@ -397,10 +401,8 @@
             >
               <div class="region-popup-card-heading">
                 <div>
-                  <small>LIVE WEATHER</small>
                   <h3 id="region-popup-weather-title">현재 날씨</h3>
                 </div>
-                <span id="region-popup-weather-source">조회 중</span>
               </div>
               <p id="region-popup-weather-message" class="region-popup-message">
                 실시간 날씨를 조회하고 있습니다.
@@ -431,7 +433,6 @@
             >
               <div class="region-popup-card-heading">
                 <div>
-                  <small>COOLING SHELTER</small>
                   <h3 id="region-popup-shelter-title">무더위쉼터</h3>
                 </div>
                 <strong id="region-popup-shelter-count">조회 중</strong>
@@ -445,6 +446,11 @@
               ></ul>
             </section>
           </div>
+          <!--jisu_06_추가 / 날씨 출처 위치-->
+          <footer class="region-popup-source">
+            출처:
+            <span id="region-popup-weather-source">조회 중</span>
+          </footer>
         </section>
       </div>
     </div>
