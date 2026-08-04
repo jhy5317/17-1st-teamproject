@@ -124,8 +124,9 @@ header p {
   white-space: nowrap;
 }
 
+/* jisu_04_추가수정 */
 .summary-grid {
-  display: grid;
+  display: none;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
   margin-bottom: 16px;
@@ -161,10 +162,11 @@ header p {
   color: #b91c1c;
 }
 
+/*jisu_04_수정*/
 .map-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
-  gap: 16px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
 }
 
 /* jisu_03_추가 / 팝업 / 팝업·특보 디자인 */
@@ -561,6 +563,7 @@ header p {
 }
 
 .dong-panel {
+  display: none; /*jisu_04_추가수정*/
   align-self: start;
   padding: 22px;
   background: #ffffff;
@@ -715,13 +718,14 @@ header p {
   text-align: left;
 }
 /**/
-
+/*
 .panel-guide {
   margin: 20px 0;
   color: #475569;
   font-size: 13px;
   line-height: 1.6;
 }
+
 
 .analysis-placeholder {
   padding: 16px;
@@ -732,6 +736,7 @@ header p {
   border: 1px dashed #94a3b8;
   border-radius: 10px;
 }
+jisu_04_삭제 / 선택.. */
 
 .map-legend {
   display: flex;

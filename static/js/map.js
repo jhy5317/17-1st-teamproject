@@ -44,12 +44,10 @@
   const dongBaseDateElement = document.getElementById("dong-base-date");
   const dongRiskLevelElement = document.getElementById("dong-risk-level");
   const dongRiskScoreElement = document.getElementById("dong-risk-score");
-  const analysisPlaceholder = document.getElementById("analysis-placeholder");
   const summaryAnalyzed = document.getElementById("summary-analyzed");
   const summaryAverage = document.getElementById("summary-average");
   const summaryHighRisk = document.getElementById("summary-high-risk");
   const summaryBaseDate = document.getElementById("summary-base-date");
-  const summaryDataStatus = document.getElementById("summary-data-status");
   const riskRankingList = document.getElementById("risk-ranking-list");
   const lowRiskRankingList = document.getElementById("low-risk-ranking-list");
 
@@ -508,13 +506,6 @@
 
     if (summaryBaseDate) {
       summaryBaseDate.textContent = payload.base_date ?? "-";
-    }
-
-    if (summaryDataStatus) {
-      summaryDataStatus.textContent =
-        analyzedCount > 0
-          ? `행정동 데이터 ${analyzedCount}/150`
-          : (payload.message ?? "데이터 준비 중");
     }
   }
 
@@ -2204,13 +2195,6 @@
       restorePolygonOverlays();
       updateAnalysisSummary(heatPayload);
       renderRiskRankings();
-
-      if (analysisPlaceholder) {
-        analysisPlaceholder.textContent =
-          heatPayload.status === "ready" && heatDataByDongCode.size > 0
-            ? `${heatDataByDongCode.size}개 행정동의 폭염 취약도 분석 결과를 표시 중입니다.`
-            : (heatPayload.message ?? "폭염 취약도 데이터를 준비 중입니다.");
-      }
 
       console.info("대구광역시 지도 레이어 초기화가 완료됐습니다.");
     } catch (error) {
