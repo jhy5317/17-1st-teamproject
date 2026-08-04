@@ -1279,9 +1279,6 @@
       return;
     }
 
-    const heatData = heatDataByDongCode.get(dongCode);
-    const riskStyle = RISK_STYLES[heatData?.riskLevel ?? "none"];
-
     // 팝업 지도는 최초 한 번만 생성하고 이후에는 재사용한다.
     if (!regionPopupMap) {
       regionPopupMap = new naver.maps.Map(regionPopupMapElement, {
@@ -1312,7 +1309,9 @@
       const polygon = new naver.maps.Polygon({
         map: regionPopupMap,
         paths: polygonCoordinatesToPaths(polygonCoordinates),
-        fillColor: riskStyle.color,
+        // jisu_10_추가수정 / 팝업 지도 속 행정동 색상만 낮음 색상으로 통일//
+        // 팝업 지도 경계는 실제 위험도와 관계없이 '낮음' 색상으로 표시한다.
+        fillColor: RISK_STYLES.low.color,
         fillOpacity: 0.48,
         strokeColor: "#1e3a8a",
         strokeOpacity: 1,
