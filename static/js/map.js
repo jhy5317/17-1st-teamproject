@@ -288,6 +288,10 @@
   const regionPopupBoundaryPolygons = [];
   //
 
+  // jisu_08_추가 / 팝업 쉼터 데이터와 지도 마커
+  let regionPopupShelterRecords = [];
+  const regionPopupShelterMarkers = [];
+
   /*
    * GeoJSON 요청
    */
@@ -1320,6 +1324,10 @@
       regionPopupBoundaryPolygons.push(polygon);
     });
 
+    // jisu_08_추가 / 무더위 쉼터
+    // 선택 행정동 경계 안의 쉼터를 팝업 지도에 표시한다.
+    renderRegionPopupShelterMarkers(regionPopupShelterRecords);
+
     // 팝업이 열린 후 지도 크기를 다시 계산하고 행정동 경계에 맞춘다.
     window.requestAnimationFrame(() => {
       naver.maps.Event.trigger(regionPopupMap, "resize");
@@ -1327,23 +1335,158 @@
     });
   }
 
-  // jisu_03_추가 / 팝업 / 쉼터 임시 안내 함수
-  // 쉼터 API를 연결하기 전까지 팝업에 안내 문구만 표시한다.
-  function showShelterPlaceholder() {
+  // 03 -> jisu_08_추가수정 / 무더위 쉼터-----------------------------------------//
+  // 외부 쉼터 문자열이 HTML 태그로 실행되지 않도록 변환한다.
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  // 이전에 표시한 팝업 쉼터 마커를 제거한다.
+  function clearRegionPopupShelterMarkers() {
+    regionPopupShelterMarkers
+      .splice(0)
+      .forEach((marker) => marker.setMap(null));
+  }
+
+  // 선택 행정동의 쉼터를 팝업 네이버 지도에 표시한다.
+  function renderRegionPopupShelterMarkers(shelters) {
+    clearRegionPopupShelterMarkers();
+
+    if (!regionPopupMap) {
+      return;
+    }
+
+    shelters.forEach((shelter) => {
+      const latitude = Number(shelter.latitude);
+      const longitude = Number(shelter.longitude);
+
+      if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+        return;
+      }
+
+      const marker = new naver.maps.Marker({
+        map: regionPopupMap,
+        position: new naver.maps.LatLng(latitude, longitude),
+        title: shelter.name ?? "무더위쉼터",
+        icon: {
+          content: '<div class="region-popup-shelter-marker"></div>',
+          anchor: new naver.maps.Point(9, 9),
+        },
+        zIndex: 30,
+      });
+
+      regionPopupShelterMarkers.push(marker);
+    });
+  }
+
+  // 팝업의 쉼터 개수와 목록을 초기 상태로 되돌린다.
+  function resetPopupShelters() {
+    regionPopupShelterRecords = [];
+    clearRegionPopupShelterMarkers();
+
     if (regionPopupShelterCount) {
-      regionPopupShelterCount.textContent = "추후 연결";
+      regionPopupShelterCount.textContent = "조회 중";
     }
 
     if (regionPopupShelterMessage) {
       regionPopupShelterMessage.textContent =
-        "무더위쉼터 정보는 다음 기능에서 연결합니다.";
+        "선택 경계 내부 쉼터를 조회하고 있습니다.";
     }
 
     if (regionPopupShelterList) {
-      regionPopupShelterList.innerHTML =
-        '<li class="region-popup-shelter-empty">현재는 쉼터 데이터가 연결되지 않았습니다.</li>';
+      regionPopupShelterList.innerHTML = "";
     }
   }
+
+  // 선택 행정동의 쉼터 이름과 주소를 팝업에 표시한다.
+  function renderPopupShelterList(shelters) {
+    if (!regionPopupShelterList) {
+      return;
+    }
+
+    if (shelters.length === 0) {
+      regionPopupShelterList.innerHTML =
+        '<li class="region-popup-shelter-empty">표시할 무더위쉼터가 없습니다.</li>';
+      return;
+    }
+
+    regionPopupShelterList.innerHTML = shelters
+      .slice(0, 8)
+      .map(
+        (shelter) => `
+        <li>
+          <strong>${escapeHtml(shelter.name ?? "무더위쉼터")}</strong>
+          <span>${escapeHtml(shelter.address ?? "주소 정보 없음")}</span>
+        </li>
+      `,
+      )
+      .join("");
+  }
+
+  // 선택 행정동 경계 안의 무더위쉼터를 서버에서 조회한다.
+  async function updateShelters(dongCode, requestId) {
+    if (
+      !regionPopup ||
+      regionPopup.hidden ||
+      regionPopupDongCode !== dongCode
+    ) {
+      return;
+    }
+
+    resetPopupShelters();
+
+    try {
+      const response = await fetch(
+        `/api/shelters?regionCode=${encodeURIComponent(dongCode)}`,
+      );
+
+      if (!response.ok) {
+        throw new Error(`쉼터 API HTTP ${response.status}`);
+      }
+
+      const payload = await response.json();
+
+      if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+        throw new Error("쉼터 API 응답 형식이 올바르지 않습니다.");
+      }
+
+      if (
+        requestId !== selectedRegionRequestId ||
+        regionPopupDongCode !== dongCode
+      ) {
+        return;
+      }
+
+      const shelters = Array.isArray(payload.shelters) ? payload.shelters : [];
+
+      regionPopupShelterRecords = shelters;
+
+      regionPopupShelterCount.textContent = `${shelters.length}곳`;
+      regionPopupShelterMessage.textContent =
+        payload.message ?? "선택 행정동 안의 무더위쉼터 정보입니다.";
+
+      renderPopupShelterList(shelters);
+
+      // 쉼터 응답이 도착한 뒤 경계와 마커를 함께 다시 표시한다.
+      renderRegionPopupMap(dongCode);
+    } catch (error) {
+      console.error("쉼터 조회 실패:", error);
+
+      if (requestId === selectedRegionRequestId) {
+        regionPopupShelterCount.textContent = "조회 실패";
+        regionPopupShelterMessage.textContent =
+          "쉼터 정보를 불러오지 못했습니다.";
+        renderPopupShelterList([]);
+        clearRegionPopupShelterMarkers();
+      }
+    }
+  }
+  //--------------------------------------------------------------------------------//
 
   // jisu_03_추가 / 팝업 / 폭염특보 함수
   // 지역 변경·특보 없음·팝업 종료 시 이전 특보를 숨긴다.
@@ -1494,7 +1637,7 @@
 
     regionPopupDongCode = dongInfo.code;
 
-    showShelterPlaceholder();
+    resetPopupShelters();
     hideSelectedHeatAlert();
 
     regionPopup.hidden = false;
@@ -1515,6 +1658,10 @@
 
     regionPopup.hidden = true;
     regionPopupDongCode = null;
+    // jisu_08_추가 / 무더위 쉼터 -------------------------//
+    regionPopupShelterRecords = [];
+    clearRegionPopupShelterMarkers();
+    //--------------------------------------------------//
     document.body.classList.remove("has-region-popup");
     hideSelectedHeatAlert();
   }
@@ -1640,6 +1787,7 @@
     // 날씨와 특보를 서로 기다리지 않고 동시에 조회한다.
     Promise.allSettled([
       updateWeatherPanel(dongInfo.code, requestId),
+      updateShelters(dongInfo.code, requestId), //jisu_08_추가 / 무더위 쉼터
       updateHeatAlert(dongInfo.code, requestId),
     ]);
 

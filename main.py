@@ -5,7 +5,9 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Request # jisu_03_추가 / 팝업 / HTTPException 추가
+# jisu_03_추가 / 팝업 / HTTPException 추가
+# jisu_08_추가 / 무더위 쉼터 / Query 추가
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -50,6 +52,11 @@ REGION_DATA_FILE = (
 )
 WEATHER_DB_FILE = BASE_DIR / "data" / "runtime" / "weather_observations.sqlite3"
 
+# jisu_08_추가 / 무더위쉼터 좌표 데이터-------------#
+SHELTER_DATA_FILE = (
+    BASE_DIR / "data" / "processed" / "cooling_shelters.json"
+)
+# 08--------------------------------------------#
 KMA_WARNING_API_URL = (
     "https://apis.data.go.kr/1360000/WthrWrnInfoService/getPwnStatus"
 )
@@ -563,6 +570,134 @@ def handle_shutdown() -> None:
     """서버 종료 과정에서 기상 실황 자동 수집을 중단한다."""
     stop_weather_scheduler()
 
+# jisu_08_추가 / 무더위쉼터 데이터 처리---------------------------------#
+@lru_cache(maxsize=1)
+def load_shelters() -> list[dict[str, Any]]:
+    """무더위쉼터 JSON 파일을 읽어 메모리에 캐시한다."""
+    if not SHELTER_DATA_FILE.exists():
+        return []
+
+    try:
+        payload = json.loads(SHELTER_DATA_FILE.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise HTTPException(
+            status_code=500,
+            detail="무더위쉼터 좌표 데이터를 읽을 수 없습니다.",
+        ) from error
+
+    shelters = (
+        payload.get("shelters", payload)
+        if isinstance(payload, dict)
+        else payload
+    )
+
+    if not isinstance(shelters, list):
+        raise HTTPException(
+            status_code=500,
+            detail="무더위쉼터 데이터 형식이 올바르지 않습니다.",
+        )
+
+    return shelters
+
+
+def point_in_ring(
+    longitude: float,
+    latitude: float,
+    ring: list[Any],
+) -> bool:
+    """위·경도 좌표가 하나의 다각형 고리 안에 있는지 확인한다."""
+    if not isinstance(ring, list) or len(ring) < 3:
+        return False
+
+    inside = False
+    previous = ring[-1]
+
+    for current in ring:
+        try:
+            current_longitude = float(current[0])
+            current_latitude = float(current[1])
+            previous_longitude = float(previous[0])
+            previous_latitude = float(previous[1])
+        except (IndexError, TypeError, ValueError):
+            previous = current
+            continue
+
+        crosses_latitude = (
+            current_latitude > latitude
+        ) != (
+            previous_latitude > latitude
+        )
+
+        if crosses_latitude:
+            intersection_longitude = (
+                (previous_longitude - current_longitude)
+                * (latitude - current_latitude)
+                / (previous_latitude - current_latitude)
+                + current_longitude
+            )
+
+            if longitude < intersection_longitude:
+                inside = not inside
+
+        previous = current
+
+    return inside
+
+
+def geometry_contains_point(
+    geometry: dict[str, Any],
+    longitude: float,
+    latitude: float,
+) -> bool:
+    """좌표가 Polygon 또는 MultiPolygon 행정동 경계 안에 있는지 확인한다."""
+    geometry_type = geometry.get("type")
+    coordinates = geometry.get("coordinates", [])
+
+    if geometry_type == "Polygon":
+        polygons = [coordinates]
+    elif geometry_type == "MultiPolygon":
+        polygons = coordinates
+    else:
+        return False
+
+    for polygon in polygons:
+        if not polygon or not point_in_ring(longitude, latitude, polygon[0]):
+            continue
+
+        # 첫 번째 고리는 외곽선이며 이후 고리는 다각형 내부의 빈 영역이다.
+        if not any(
+            point_in_ring(longitude, latitude, hole)
+            for hole in polygon[1:]
+        ):
+            return True
+
+    return False
+
+
+def haversine_distance(
+    latitude: float,
+    longitude: float,
+    target_latitude: float,
+    target_longitude: float,
+) -> float:
+    """두 위·경도 사이의 직선거리를 미터 단위로 계산한다."""
+    from math import asin, cos, radians, sin, sqrt
+
+    latitude_delta = radians(target_latitude - latitude)
+    longitude_delta = radians(target_longitude - longitude)
+    start_latitude = radians(latitude)
+    end_latitude = radians(target_latitude)
+
+    value = (
+        sin(latitude_delta / 2) ** 2
+        + cos(start_latitude)
+        * cos(end_latitude)
+        * sin(longitude_delta / 2) ** 2
+    )
+
+    return 6_371_000 * 2 * asin(sqrt(value))
+# 08 -----------------------------------------------#
+
 
 @app.get("/")
 def root(request: Request):
@@ -742,6 +877,99 @@ def region_weather(region_code: str):
     }
 #------------------------------------------------------------------------------------------#
 
+# jisu_08_추가 / 선택 행정동의 무더위쉼터 API--------------------------------------------#
+@app.get("/api/shelters")
+def shelters(regionCode: str | None = None):
+    """전체 또는 선택 행정동 경계 안의 무더위쉼터를 반환한다."""
+    records = load_shelters()
+
+    if regionCode:
+        feature = find_region_feature(regionCode)
+        geometry = feature.get("geometry", {})
+        filtered_records = []
+
+        for shelter in records:
+            try:
+                latitude = float(shelter["latitude"])
+                longitude = float(shelter["longitude"])
+            except (KeyError, TypeError, ValueError):
+                continue
+
+            if geometry_contains_point(geometry, longitude, latitude):
+                filtered_records.append(shelter)
+
+        records = filtered_records
+
+    return {
+        "status": "ready" if records else "unavailable",
+        "regionCode": regionCode,
+        "shelters": records,
+        "source": "data/processed/cooling_shelters.json",
+        "message": (
+            None
+            if records
+            else "선택 행정동 안에서 표시할 무더위쉼터를 찾지 못했습니다."
+        ),
+    }
+
+
+@app.get("/api/shelters/nearby")
+def nearby_shelters(
+    latitude: float,
+    longitude: float,
+    limit: int = Query(default=3, ge=1, le=20),
+):
+    """현재 위치에서 가까운 무더위쉼터를 거리순으로 반환한다."""
+    if not (-90 <= latitude <= 90 and -180 <= longitude <= 180):
+        raise HTTPException(
+            status_code=422,
+            detail="올바르지 않은 좌표입니다.",
+        )
+
+    ranked = []
+
+    for shelter in load_shelters():
+        try:
+            target_latitude = float(shelter["latitude"])
+            target_longitude = float(shelter["longitude"])
+        except (KeyError, TypeError, ValueError):
+            continue
+
+        distance = haversine_distance(
+            latitude,
+            longitude,
+            target_latitude,
+            target_longitude,
+        )
+
+        ranked.append(
+            {
+                **shelter,
+                "distanceMeters": round(distance),
+                "walkingMinutes": max(1, round(distance / 75)),
+            }
+        )
+
+    ranked.sort(key=lambda shelter: shelter["distanceMeters"])
+    nearby = ranked[:limit]
+
+    return {
+        "status": "ready" if nearby else "unavailable",
+        "origin": {
+            "latitude": latitude,
+            "longitude": longitude,
+        },
+        "limit": limit,
+        "shelters": nearby,
+        "source": "data/processed/cooling_shelters.json",
+        "message": (
+            None
+            if nearby
+            else "표시할 무더위쉼터 좌표가 없습니다."
+        ),
+    }
+# 08---------------------------------------------------------------------------------------#
+
 # jisu_03_추가 / 팝업 / 폭염특보 API 추가-------------------------------------------------#
 def get_kma_warning_items() -> list[dict[str, Any]]:
     """기상청 현재 특보 현황을 60초 동안 캐시한다."""
@@ -876,7 +1104,7 @@ def heat_alerts(regionCode: str | None = None):
         is_daegu_warning = "대구" in warning_text
         if not is_daegu_warning:
             continue
-
+        # 열대야 폭염 확인
         if "폭염" in warning_text:
             title = "폭염경보" if "경보" in warning_text else "폭염주의보"
             level = "critical" if title == "폭염경보" else "warning"
