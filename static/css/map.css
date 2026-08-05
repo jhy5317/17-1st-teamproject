@@ -616,7 +616,7 @@ header p {
   font-variant-numeric: tabular-nums;
 
   /* tg 수정 / 온도 숫자의 자평을 줄여 가로 폭을 조금 좁게 표시한다. */
-  transform: scaleX(0.7);
+  transform: scaleX(0.88);
   transform-box: fill-box;
   transform-origin: center;
 }
@@ -627,7 +627,7 @@ header p {
   font-weight: 700;
 
   /* tg 수정 / 시간 글자의 자평을 줄여 시간 간격이 더 여유롭게 보이게 한다. */
-  transform: scaleX(0.7);
+  transform: scaleX(0.88);
   transform-box: fill-box;
   transform-origin: center;
 }
@@ -767,6 +767,32 @@ header p {
   border: 3px solid #ffffff;
   border-radius: 50%;
   box-shadow: 0 2px 6px rgb(15 23 42 / 35%);
+}
+
+/* tg 추가 / 목록에서 선택한 쉼터 마커만 위아래로 흔들어 위치를 강조한다. */
+.region-popup-shelter-marker-active {
+  background: #f97316;
+  box-shadow:
+    0 0 0 5px rgb(249 115 22 / 22%),
+    0 6px 14px rgb(15 23 42 / 38%);
+  animation: region-popup-shelter-marker-bounce 0.45s ease-in-out 4;
+}
+
+@keyframes region-popup-shelter-marker-bounce {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-12px) scale(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .region-popup-shelter-marker-active {
+    animation: none;
+  }
 }
 /*---------------------------------------------------*/
 

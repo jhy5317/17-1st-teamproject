@@ -324,6 +324,9 @@
   let regionPopupShelterRecords = [];
   const regionPopupShelterMarkers = [];
 
+  // tg 추가 / 목록에서 선택한 마커의 흔들림 애니메이션 타이머를 관리한다.
+  let regionPopupShelterMarkerAnimationTimer = null;
+
   /*
    * GeoJSON 요청
    */
@@ -1661,6 +1664,11 @@
 
   // 이전에 표시한 팝업 쉼터 마커를 제거한다.
   function clearRegionPopupShelterMarkers() {
+    if (regionPopupShelterMarkerAnimationTimer !== null) {
+      window.clearTimeout(regionPopupShelterMarkerAnimationTimer);
+      regionPopupShelterMarkerAnimationTimer = null;
+    }
+
     regionPopupShelterMarkers
       .splice(0)
       .forEach((marker) => marker.setMap(null));
@@ -1719,7 +1727,34 @@
     // 선택한 마커를 다른 마커보다 위에 표시한다.
     regionPopupShelterMarkers.forEach((shelterMarker, index) => {
       shelterMarker.setZIndex(index === shelterIndex ? 60 : 30);
+
+      const markerElement = shelterMarker.getElement?.();
+      const markerDot = markerElement?.querySelector(
+        ".region-popup-shelter-marker",
+      );
+
+      markerDot?.classList.toggle(
+        "region-popup-shelter-marker-active",
+        index === shelterIndex,
+      );
     });
+
+    // tg 추가 / 연속으로 다른 목록을 눌러도 이전 타이머가 남지 않게 정리한다.
+    if (regionPopupShelterMarkerAnimationTimer !== null) {
+      window.clearTimeout(regionPopupShelterMarkerAnimationTimer);
+    }
+
+    // 선택 마커만 약 1.8초 동안 위아래로 흔들리게 표시한다.
+    regionPopupShelterMarkerAnimationTimer = window.setTimeout(() => {
+      regionPopupShelterMarkers.forEach((shelterMarker) => {
+        const markerElement = shelterMarker.getElement?.();
+        markerElement
+          ?.querySelector(".region-popup-shelter-marker")
+          ?.classList.remove("region-popup-shelter-marker-active");
+      });
+
+      regionPopupShelterMarkerAnimationTimer = null;
+    }, 1800);
   }
 
   // 선택 행정동의 쉼터를 팝업 네이버 지도에 표시한다.
