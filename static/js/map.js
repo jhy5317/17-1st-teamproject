@@ -1688,6 +1688,40 @@
     targetItem.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
+  // tg 추가 / 무더위쉼터 목록을 클릭하면 연결된 마커 위치로 지도를 이동한다.
+  function focusPopupShelterMarker(shelterIndex) {
+    if (!regionPopupMap) {
+      return;
+    }
+
+    const marker = regionPopupShelterMarkers[shelterIndex];
+
+    if (!marker) {
+      return;
+    }
+
+    const markerPosition = marker.getPosition();
+
+    if (!markerPosition) {
+      return;
+    }
+
+    // 목록과 마커가 같은 항목임을 화면에서도 확인할 수 있게 목록을 함께 강조한다.
+    focusPopupShelterListItem(shelterIndex);
+
+    // 선택한 쉼터 마커가 잘 보이도록 중심 이동 후 확대한다.
+    regionPopupMap.panTo(markerPosition);
+
+    if (regionPopupMap.getZoom() < 16) {
+      regionPopupMap.setZoom(16);
+    }
+
+    // 선택한 마커를 다른 마커보다 위에 표시한다.
+    regionPopupShelterMarkers.forEach((shelterMarker, index) => {
+      shelterMarker.setZIndex(index === shelterIndex ? 60 : 30);
+    });
+  }
+
   // 선택 행정동의 쉼터를 팝업 네이버 지도에 표시한다.
   function renderRegionPopupShelterMarkers(shelters) {
     clearRegionPopupShelterMarkers();
@@ -1778,7 +1812,13 @@
     regionPopupShelterList.innerHTML = shelters
       .map(
         (shelter, shelterIndex) => `
-        <li class="region-popup-shelter-item" data-shelter-index="${shelterIndex}">
+        <li
+          class="region-popup-shelter-item"
+          data-shelter-index="${shelterIndex}"
+          role="button"
+          tabindex="0"
+          aria-label="${escapeHtml(shelter.name ?? "무더위쉼터")} 위치로 이동"
+        >
           <strong>${escapeHtml(shelter.name ?? "무더위쉼터")}</strong>
           <span>${escapeHtml(shelter.address ?? "주소 정보 없음")}</span>
           <span class="region-popup-shelter-schedule">
@@ -1790,6 +1830,41 @@
       )
       .join("");
   }
+
+  // tg 추가 / 쉼터 목록 클릭 또는 Enter·Space 입력 시 해당 마커로 이동한다.
+  regionPopupShelterList?.addEventListener("click", (event) => {
+    const shelterItem = event.target.closest(".region-popup-shelter-item");
+
+    if (!shelterItem || !regionPopupShelterList.contains(shelterItem)) {
+      return;
+    }
+
+    const shelterIndex = Number(shelterItem.dataset.shelterIndex);
+
+    if (Number.isInteger(shelterIndex)) {
+      focusPopupShelterMarker(shelterIndex);
+    }
+  });
+
+  regionPopupShelterList?.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") {
+      return;
+    }
+
+    const shelterItem = event.target.closest(".region-popup-shelter-item");
+
+    if (!shelterItem || !regionPopupShelterList.contains(shelterItem)) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const shelterIndex = Number(shelterItem.dataset.shelterIndex);
+
+    if (Number.isInteger(shelterIndex)) {
+      focusPopupShelterMarker(shelterIndex);
+    }
+  });
 
   // 선택 행정동 경계 안의 무더위쉼터를 서버에서 조회한다.
   async function updateShelters(dongCode, requestId) {
