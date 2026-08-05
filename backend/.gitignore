@@ -1,0 +1,36 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+*.pyc
+
+# Virtual environments
+.venv
+.env
+.vscode/
+.idea/
+outputs/
+
+# jisu_03_추가 / 팝업 / 실행 중 생성되는 실시간 날씨 SQLite 파일
+data/runtime/
+
+# 데이터 원본, 가공
+data/raw/
+data/processed/
+
+*.csv
+*.xlsx
+*.zip
+
+# 지도 실행과 분석 재현에 필요한 정제 결과만 버전 관리한다.
+!data/processed/
+!data/processed/heat_indicators.csv
+!data/processed/heat_vulnerability_district_summary.csv
+!data/processed/heat_temporal_context.csv
+!data/processed/heat_vulnerability.json
+!data/processed/heat_data_assessment.json
+!data/processed/heat_data_validation.json
+!data/processed/source_profile.json
