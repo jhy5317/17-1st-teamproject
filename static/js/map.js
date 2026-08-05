@@ -112,6 +112,26 @@
     "region-popup-weather-feels-like",
   );
 
+  // tg 추가 / 팝업 시간별 온도 변화 그래프 HTML 요소 참조
+  const regionPopupTemperatureChartMessage = document.getElementById(
+    "region-popup-temperature-chart-message",
+  );
+  const regionPopupTemperatureChartSvg = document.getElementById(
+    "region-popup-temperature-chart-svg",
+  );
+  const regionPopupTemperatureChartGrid = document.getElementById(
+    "region-popup-temperature-chart-grid",
+  );
+  const regionPopupTemperatureChartLine = document.getElementById(
+    "region-popup-temperature-chart-line",
+  );
+  const regionPopupTemperatureChartPoints = document.getElementById(
+    "region-popup-temperature-chart-points",
+  );
+  const regionPopupTemperatureChartLabels = document.getElementById(
+    "region-popup-temperature-chart-labels",
+  );
+
   const regionPopupShelterCount = document.getElementById(
     "region-popup-shelter-count",
   );
@@ -1184,6 +1204,233 @@
     return Number.isFinite(numericValue) ? `${numericValue}${suffix}` : "-";
   }
 
+  // tg 추가 / SVG 네임스페이스로 온도 그래프 요소를 생성한다.
+  function createTemperatureChartSvgElement(tagName, attributes = {}) {
+    const element = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      tagName,
+    );
+
+    Object.entries(attributes).forEach(([name, value]) => {
+      element.setAttribute(name, String(value));
+    });
+
+    return element;
+  }
+
+  // tg 수정 / 날짜가 바뀌어도 '내일' 문구 없이 시간만 간단히 표시한다.
+  function formatTemperatureChartHour(value) {
+    const forecastDate = new Date(value);
+
+    if (Number.isNaN(forecastDate.getTime())) {
+      return "-";
+    }
+
+    const hourPart = new Intl.DateTimeFormat("ko-KR", {
+      timeZone: "Asia/Seoul",
+      hour: "2-digit",
+      hourCycle: "h23",
+    })
+      .formatToParts(forecastDate)
+      .find((part) => part.type === "hour");
+
+    return hourPart ? `${hourPart.value}시` : "-";
+  }
+
+  // tg 추가 / 지역 변경 또는 조회 실패 시 이전 온도 그래프를 초기화한다.
+  function resetTemperatureChart(
+    message = "시간별 온도 자료를 불러오는 중입니다.",
+  ) {
+    if (regionPopupTemperatureChartMessage) {
+      regionPopupTemperatureChartMessage.textContent = message;
+      regionPopupTemperatureChartMessage.hidden = false;
+      // tg 수정 / hidden 속성과 CSS 충돌 여부와 관계없이 안내문을 확실히 표시한다.
+      regionPopupTemperatureChartMessage.style.display = "grid";
+    }
+
+    if (regionPopupTemperatureChartSvg) {
+      regionPopupTemperatureChartSvg.hidden = true;
+      // tg 수정 / 초기화 상태에서는 이전 그래프를 확실히 숨긴다.
+      regionPopupTemperatureChartSvg.style.display = "none";
+    }
+
+    if (regionPopupTemperatureChartLine) {
+      regionPopupTemperatureChartLine.setAttribute("points", "");
+    }
+
+    // tg 수정 / 다른 행정동 조회 전 이전 12시간 그래프의 확장 너비를 초기화한다.
+    if (regionPopupTemperatureChartSvg) {
+      regionPopupTemperatureChartSvg.removeAttribute("width");
+      regionPopupTemperatureChartSvg.removeAttribute("height");
+      regionPopupTemperatureChartSvg.style.width = "";
+      regionPopupTemperatureChartSvg.style.minWidth = "";
+      regionPopupTemperatureChartSvg.setAttribute("viewBox", "0 0 520 190");
+    }
+
+    regionPopupTemperatureChartGrid?.replaceChildren();
+    regionPopupTemperatureChartPoints?.replaceChildren();
+    regionPopupTemperatureChartLabels?.replaceChildren();
+  }
+
+  // tg 수정 / main.py가 반환한 향후 12시간 기온예보를 가로형 SVG 그래프로 표시한다.
+  function renderTemperatureChart(hourlyTemperatures) {
+    const records = Array.isArray(hourlyTemperatures)
+      ? hourlyTemperatures
+          .map((item) => ({
+            observedAt: item?.observedAt,
+            temperature: Number(item?.temperature),
+          }))
+          .filter(
+            (item) =>
+              item.observedAt &&
+              Number.isFinite(item.temperature),
+          )
+      : [];
+
+    if (records.length < 2) {
+      resetTemperatureChart(
+        records.length === 1
+          ? "표시할 미래 시간별 기온예보가 충분하지 않습니다."
+          : "표시할 12시간 기온예보가 없습니다.",
+      );
+      return;
+    }
+
+    if (
+      !regionPopupTemperatureChartSvg ||
+      !regionPopupTemperatureChartLine ||
+      !regionPopupTemperatureChartGrid ||
+      !regionPopupTemperatureChartPoints ||
+      !regionPopupTemperatureChartLabels
+    ) {
+      return;
+    }
+
+    const chartHeight = 190;
+    const pointSpacing = 44;
+    const padding = {
+      top: 34,
+      right: 32,
+      bottom: 48,
+      left: 32,
+    };
+
+    // tg 수정 / 12개 예보값이 과하게 벌어지지 않도록 시간 간격을 줄인다.
+    const chartWidth = Math.max(
+      520,
+      padding.left + padding.right + pointSpacing * (records.length - 1),
+    );
+    const plotWidth = chartWidth - padding.left - padding.right;
+
+    // tg 추가 / 데이터 개수에 맞춰 SVG 자체 너비와 좌표계를 함께 확장한다.
+    regionPopupTemperatureChartSvg.setAttribute(
+      "viewBox",
+      `0 0 ${chartWidth} ${chartHeight}`,
+    );
+    // tg 수정 / 12시간 그래프 전체가 카드 안에 한 번에 보이도록 SVG를 100% 너비로 표시한다.
+    regionPopupTemperatureChartSvg.setAttribute("width", "100%");
+    regionPopupTemperatureChartSvg.setAttribute("height", String(chartHeight));
+    regionPopupTemperatureChartSvg.style.width = "100%";
+    regionPopupTemperatureChartSvg.style.minWidth = "0";
+    const plotHeight = chartHeight - padding.top - padding.bottom;
+    const temperatures = records.map((item) => item.temperature);
+    const minimumTemperature = Math.min(...temperatures);
+    const maximumTemperature = Math.max(...temperatures);
+    const temperatureRange = Math.max(
+      maximumTemperature - minimumTemperature,
+      2,
+    );
+    const chartMinimum = minimumTemperature - 1;
+    const chartMaximum = chartMinimum + temperatureRange + 2;
+    const xStep = plotWidth / (records.length - 1);
+
+    const points = records.map((item, index) => {
+      const x = padding.left + xStep * index;
+      const ratio =
+        (item.temperature - chartMinimum) /
+        (chartMaximum - chartMinimum);
+      const y = padding.top + plotHeight - ratio * plotHeight;
+
+      return {
+        ...item,
+        x,
+        y,
+      };
+    });
+
+    regionPopupTemperatureChartGrid.replaceChildren();
+    [0, 0.5, 1].forEach((ratio) => {
+      const y = padding.top + plotHeight * ratio;
+      regionPopupTemperatureChartGrid.append(
+        createTemperatureChartSvgElement("line", {
+          x1: padding.left,
+          y1: y,
+          x2: chartWidth - padding.right,
+          y2: y,
+          class: "temperature-chart-grid-line",
+        }),
+      );
+    });
+
+    regionPopupTemperatureChartLine.setAttribute(
+      "points",
+      points.map((point) => `${point.x},${point.y}`).join(" "),
+    );
+
+    regionPopupTemperatureChartPoints.replaceChildren();
+    regionPopupTemperatureChartLabels.replaceChildren();
+
+    // tg 추가 / 각 점에 단위를 반복하지 않고 그래프 오른쪽 위에 °C를 한 번만 표시한다.
+    const unitLabel = createTemperatureChartSvgElement("text", {
+      x: chartWidth - 14,
+      y: 18,
+      "text-anchor": "end",
+      class: "temperature-chart-unit",
+    });
+    unitLabel.textContent = "°C";
+    regionPopupTemperatureChartLabels.append(unitLabel);
+
+    points.forEach((point) => {
+      const circle = createTemperatureChartSvgElement("circle", {
+        cx: point.x,
+        cy: point.y,
+        r: 5,
+        class: "temperature-chart-point",
+      });
+      const temperatureLabel = createTemperatureChartSvgElement("text", {
+        x: point.x,
+        y: point.y - 14,
+        "text-anchor": "middle",
+        class: "temperature-chart-value",
+      });
+      const timeLabel = createTemperatureChartSvgElement("text", {
+        x: point.x,
+        y: chartHeight - 16,
+        "text-anchor": "middle",
+        class: "temperature-chart-time",
+      });
+
+      // tg 수정 / 각 지점에는 단위를 반복하지 않고 숫자만 표시한다.
+      temperatureLabel.textContent = point.temperature.toFixed(1);
+      timeLabel.textContent = formatTemperatureChartHour(
+        point.observedAt,
+      );
+
+      regionPopupTemperatureChartPoints.append(circle, temperatureLabel);
+      regionPopupTemperatureChartLabels.append(timeLabel);
+    });
+
+    if (regionPopupTemperatureChartMessage) {
+      regionPopupTemperatureChartMessage.hidden = true;
+      // tg 수정 / 그래프 표시 시 로딩 안내문이 공간을 차지하지 않도록 직접 숨긴다.
+      regionPopupTemperatureChartMessage.style.display = "none";
+    }
+
+    regionPopupTemperatureChartSvg.hidden = false;
+    // tg 수정 / hidden 속성과 CSS 상태를 모두 해제해 SVG 그래프를 확실히 표시한다.
+    regionPopupTemperatureChartSvg.style.display = "block";
+  }
+
   // 새 지역을 조회하기 전 패널과 팝업의 이전 날씨 값을 초기 상태로 되돌린다.
   function resetWeatherPanel(message = "행정동을 선택하면 조회합니다.") {
     weatherSource.textContent = "지역 선택 후 조회";
@@ -1194,6 +1441,10 @@
     weatherFeelsLike.textContent = "-";
     weatherWind.textContent = "-";
     weatherRainfall.textContent = "-";
+
+    // tg 추가 / 다른 행정동의 이전 그래프가 남지 않도록 함께 초기화한다.
+    resetTemperatureChart();
+
     if (regionPopupWeatherSource) {
       regionPopupWeatherSource.textContent = "조회 중";
       // jisu_07_추가수정 / 현재 시간 및 기준
@@ -1313,6 +1564,9 @@
           weather.feelsLike,
           "℃",
         );
+
+        // tg 추가 / main.py의 hourlyTemperatures 배열로 온도 변화 그래프를 그린다.
+        renderTemperatureChart(weather.hourlyTemperatures);
       }
     } catch (error) {
       console.error("날씨 조회 실패:", error);

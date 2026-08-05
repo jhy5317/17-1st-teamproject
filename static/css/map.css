@@ -286,7 +286,7 @@ header p {
 
 .region-popup-shell {
   display: grid;
-  width: min(820px, 100%);
+  width: min(1240px, 100%);
   max-height: calc(100vh - 48px);
   gap: 10px;
 }
@@ -299,6 +299,30 @@ header p {
   border: 1px solid #cbd5e1;
   border-radius: 20px;
   box-shadow: 0 28px 80px rgb(15 23 42 / 38%);
+  animation: region-popup-enter 180ms ease-out;
+}
+
+/* tg 추가 / 메인 팝업과 무더위쉼터 패널을 서로 독립된 영역으로 배치한다. */
+.region-popup-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  align-items: stretch;
+  gap: 18px;
+  min-height: 0;
+}
+
+/* tg 추가 / 오른쪽 무더위쉼터 전용 독립 패널 */
+.region-popup-shelter-panel {
+  display: flex;
+  min-width: 0;
+  max-height: min(760px, calc(100vh - 106px));
+  flex-direction: column;
+  padding: 18px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 20px;
+  box-shadow: 0 28px 80px rgb(15 23 42 / 28%);
   animation: region-popup-enter 180ms ease-out;
 }
 
@@ -407,7 +431,7 @@ header p {
 /*jisu_09_추가수정 / 무더위 쉼터 / 가로 박스비율 / 개별 속성 변경-------------------*/
 .region-popup-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.95fr) minmax(210px, 0.65fr);
   align-items: stretch;
   gap: 16px;
 
@@ -415,6 +439,26 @@ header p {
   padding-right: 24px;
   padding-bottom: 6px;
   padding-left: 24px;
+}
+
+/* tg 추가 / 지도 아래 12시간 그래프와 현재 날씨 영역의 전용 배치 */
+.region-popup-weather-grid {
+  align-items: stretch;
+}
+
+.region-popup-chart-card,
+.region-popup-current-weather-card {
+  min-height: 220px;
+}
+
+.region-popup-current-weather-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.region-popup-current-weather-card .region-popup-weather {
+  flex: 1;
+  align-content: stretch;
 }
 /*--------------------------------------------------------*/
 
@@ -480,6 +524,119 @@ header p {
 }
 /*-------------------------------------------------*/
 
+/* tg 수정 / 팝업 왼쪽 날씨 카드의 향후 12시간 온도 예보 그래프 */
+.region-popup-temperature-chart {
+  width: 100%;
+  min-height: 156px;
+  margin: 12px 0 14px;
+  padding: 8px 4px 0;
+  /* tg 수정 / 12시간 그래프가 카드 너비를 넘으면 가로 스크롤로 확인한다. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 #eff6ff;
+}
+
+.region-popup-temperature-chart svg {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: 156px;
+  max-width: 100%;
+  overflow: visible;
+}
+
+.region-popup-temperature-chart svg[hidden] {
+  display: none;
+}
+
+/* tg 수정 / 12시간 그래프의 가로 스크롤바를 작고 눈에 띄게 표시한다. */
+.region-popup-temperature-chart::-webkit-scrollbar {
+  height: 8px;
+}
+
+.region-popup-temperature-chart::-webkit-scrollbar-track {
+  background: #eff6ff;
+  border-radius: 999px;
+}
+
+.region-popup-temperature-chart::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 999px;
+}
+
+.region-popup-temperature-chart::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+.region-popup-temperature-chart-message {
+  display: grid;
+  min-height: 145px;
+  margin: 0;
+  padding: 16px;
+  place-items: center;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* tg 추가 / 그래프가 표시될 때 로딩 안내문을 확실히 숨긴다. */
+.region-popup-temperature-chart-message[hidden] {
+  display: none;
+}
+
+.temperature-chart-grid-line {
+  stroke: #dbeafe;
+  stroke-width: 1;
+  stroke-dasharray: 4 5;
+}
+
+.temperature-chart-line {
+  fill: none;
+  stroke: #2563eb;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.temperature-chart-point {
+  fill: #ffffff;
+  stroke: #2563eb;
+  stroke-width: 4;
+}
+
+.temperature-chart-value {
+  fill: #0f172a;
+  font-size: 17px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+
+  /* tg 수정 / 온도 숫자의 자평을 줄여 가로 폭을 조금 좁게 표시한다. */
+  transform: scaleX(0.7);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.temperature-chart-time {
+  fill: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+
+  /* tg 수정 / 시간 글자의 자평을 줄여 시간 간격이 더 여유롭게 보이게 한다. */
+  transform: scaleX(0.7);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* tg 수정 / 그래프가 추가되어도 좌우 팝업 카드가 자연스럽게 늘어나도록 유지 */
+.region-popup-card {
+  align-self: stretch;
+}
+
 .region-popup-weather {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -517,11 +674,42 @@ header p {
 
 /* jisu_08_추가수정 / 무더위쉼터 사이즈 조정 / 쉼터 목록 세로 높이 줄이기 */
 .region-popup-shelter-list {
-  max-height: 160px; /*쉼터 목록 세로 높이 줄이기*/
-  overflow: auto;
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
   margin: 12px 0 0;
-  padding: 0;
+  padding: 0 4px 0 0;
   list-style: none;
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 transparent;
+}
+
+.region-popup-shelter-panel .region-popup-card-heading {
+  flex: 0 0 auto;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.region-popup-shelter-panel .region-popup-card-heading h3 {
+  margin-top: 0;
+}
+
+.region-popup-shelter-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.region-popup-shelter-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.region-popup-shelter-list::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 999px;
+}
+
+.region-popup-shelter-list::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
 }
 /*------------------------------------------------------*/
 
@@ -1044,6 +1232,19 @@ header p {
 }
 
 @media (max-width: 900px) {
+  /* tg 추가 / 화면이 좁아지면 독립 쉼터 패널을 메인 팝업 아래로 이동한다. */
+  .region-popup-shell {
+    width: min(760px, 100%);
+  }
+
+  .region-popup-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .region-popup-shelter-panel {
+    max-height: 320px;
+  }
+
   .map-toolbar {
     flex-wrap: wrap;
   }
@@ -1146,6 +1347,17 @@ header p {
   .region-popup-summary,
   .region-popup-grid {
     grid-template-columns: 1fr;
+  }
+
+  /* tg 추가 / 모바일에서는 메인 팝업과 쉼터 패널을 위아래로 쌓는다. */
+  .region-popup-layout {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .region-popup-shelter-panel {
+    max-height: 280px;
+    border-radius: 18px 18px 0 0;
   }
 
   .region-popup-header {

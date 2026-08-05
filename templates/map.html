@@ -442,118 +442,166 @@
           <small>기상청 실시간 특보</small>
         </div>
 
-        <section
-          class="region-popup"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="region-popup-title"
-        >
-          <!--jisu_06_추가수정 / 점수 위치 변경 / 팝업 헤더 교체-->
-          <header class="region-popup-header">
-            <div class="region-popup-title">
-              <p id="region-popup-location">선택 행정구역</p>
-              <h2 id="region-popup-title">행정동 정보</h2>
-            </div>
-
-            <!-- 취약도와 점수를 파란 헤더 오른쪽에 표시한다. -->
-            <div class="region-popup-summary">
-              <div>
-                <span>폭염 취약도</span>
-                <strong id="region-popup-risk">-</strong>
-              </div>
-              <div>
-                <span>종합 점수</span>
-                <strong id="region-popup-score">-</strong>
-              </div>
-            </div>
-
-            <button
-              id="region-popup-close"
-              class="region-popup-close"
-              type="button"
-              aria-label="지역 상세 팝업 닫기"
-            >
-              ×
-            </button>
-          </header>
-          <!------------------------------------------------------>
-
-          <!-- jisu_03_추가 / 팝업 / 팝업 SVG를 지도 요소로 교체
-          선택한 행정동의 실제 네이버 지도와 행정구역 경계를 표시한다. -->
+        <!-- tg 수정 / 왼쪽 메인 팝업과 오른쪽 무더위쉼터 패널을 독립 영역으로 분리한다. -->
+        <div class="region-popup-layout">
           <section
-            class="region-popup-map-card"
-            aria-label="선택 행정구역 지도"
+            class="region-popup"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="region-popup-title"
           >
-            <div
-              id="region-popup-map"
-              role="region"
-              aria-label="선택한 행정동의 지도와 행정구역 경계"
-            ></div>
+            <!--jisu_06_추가수정 / 점수 위치 변경 / 팝업 헤더 교체-->
+            <header class="region-popup-header">
+              <div class="region-popup-title">
+                <p id="region-popup-location">선택 행정구역</p>
+                <h2 id="region-popup-title">행정동 정보</h2>
+              </div>
+
+              <!-- 취약도와 점수를 파란 헤더 오른쪽에 표시한다. -->
+              <div class="region-popup-summary">
+                <div>
+                  <span>폭염 취약도</span>
+                  <strong id="region-popup-risk">-</strong>
+                </div>
+                <div>
+                  <span>종합 점수</span>
+                  <strong id="region-popup-score">-</strong>
+                </div>
+              </div>
+
+              <button
+                id="region-popup-close"
+                class="region-popup-close"
+                type="button"
+                aria-label="지역 상세 팝업 닫기"
+              >
+                ×
+              </button>
+            </header>
+            <!------------------------------------------------------>
+
+            <!-- jisu_03_추가 / 팝업 / 팝업 SVG를 지도 요소로 교체
+            선택한 행정동의 실제 네이버 지도와 행정구역 경계를 표시한다. -->
+            <section
+              class="region-popup-map-card"
+              aria-label="선택 행정구역 지도"
+            >
+              <div
+                id="region-popup-map"
+                role="region"
+                aria-label="선택한 행정동의 지도와 행정구역 경계"
+              ></div>
+            </section>
+            <!-- 03 -->
+
+            <!-- tg 수정 / 지도 아래 왼쪽에는 12시간 그래프, 오른쪽에는 현재 날씨 지표를 배치한다. -->
+            <div class="region-popup-grid region-popup-weather-grid">
+              <section
+                class="region-popup-card region-popup-chart-card"
+                aria-labelledby="region-popup-forecast-title"
+              >
+                <div class="region-popup-card-heading">
+                  <div>
+                    <h3 id="region-popup-forecast-title">향후 12시간 기온</h3>
+                  </div>
+                </div>
+
+                <div
+                  id="region-popup-temperature-chart"
+                  class="region-popup-temperature-chart"
+                  aria-label="향후 12시간 기온 예보 그래프"
+                >
+                  <p
+                    id="region-popup-temperature-chart-message"
+                    class="region-popup-temperature-chart-message"
+                  >
+                    향후 12시간 기온 예보를 불러오는 중입니다.
+                  </p>
+
+                  <svg
+                    id="region-popup-temperature-chart-svg"
+                    viewBox="0 0 520 190"
+                    role="img"
+                    aria-label="향후 12시간 기온 예보 꺾은선 그래프"
+                    preserveAspectRatio="none"
+                    hidden
+                  >
+                    <g id="region-popup-temperature-chart-grid"></g>
+                    <polyline
+                      id="region-popup-temperature-chart-line"
+                      class="temperature-chart-line"
+                      points=""
+                    ></polyline>
+                    <g id="region-popup-temperature-chart-points"></g>
+                    <g id="region-popup-temperature-chart-labels"></g>
+                  </svg>
+                </div>
+              </section>
+
+              <section
+                class="region-popup-card region-popup-current-weather-card"
+                aria-labelledby="region-popup-weather-title"
+              >
+                <div class="region-popup-card-heading">
+                  <div>
+                    <!--jisu_07_추가수정 / 현재 시간 및 기준-->
+                    <h3 id="region-popup-weather-title">날씨 조회 중</h3>
+                  </div>
+                </div>
+
+                <dl class="region-popup-weather">
+                  <div>
+                    <dt>날씨</dt>
+                    <dd id="region-popup-weather-condition">-</dd>
+                  </div>
+                  <div>
+                    <dt>기온</dt>
+                    <dd id="region-popup-weather-temperature">-</dd>
+                  </div>
+                  <div>
+                    <dt>습도</dt>
+                    <dd id="region-popup-weather-humidity">-</dd>
+                  </div>
+                  <div>
+                    <dt>체감온도</dt>
+                    <dd id="region-popup-weather-feels-like">-</dd>
+                  </div>
+                </dl>
+              </section>
+            </div>
+
+            <!--jisu_06_추가 / 날씨 출처 위치-->
+            <footer class="region-popup-source">
+              출처:
+              <span id="region-popup-weather-source">조회 중</span>
+            </footer>
           </section>
-          <!-- 03 -->
 
-          <div class="region-popup-grid">
-            <section
-              class="region-popup-card"
-              aria-labelledby="region-popup-weather-title"
-            >
-              <div class="region-popup-card-heading">
-                <div>
-                  <!--jisu_07_추가수정 / 현재 시간 및 기준-->
-                  <h3 id="region-popup-weather-title">날씨 조회 중</h3>
-                </div>
+          <!-- tg 수정 / 무더위쉼터 목록을 메인 팝업 오른쪽의 독립 패널로 이동한다. -->
+          <aside
+            class="region-popup-shelter-panel"
+            aria-labelledby="region-popup-shelter-title"
+          >
+            <div class="region-popup-card-heading">
+              <div>
+                <h3 id="region-popup-shelter-title">무더위쉼터</h3>
               </div>
-              <dl class="region-popup-weather">
-                <div>
-                  <dt>날씨</dt>
-                  <dd id="region-popup-weather-condition">-</dd>
-                </div>
-                <div>
-                  <dt>기온</dt>
-                  <dd id="region-popup-weather-temperature">-</dd>
-                </div>
-                <div>
-                  <dt>습도</dt>
-                  <dd id="region-popup-weather-humidity">-</dd>
-                </div>
-                <div>
-                  <dt>체감온도</dt>
-                  <dd id="region-popup-weather-feels-like">-</dd>
-                </div>
-              </dl>
-            </section>
+              <strong id="region-popup-shelter-count">조회 중</strong>
+            </div>
 
-            <!--jisu_08_추가수정 / 무더위 쉼터--------------------->
-            <section
-              class="region-popup-card region-popup-shelter-card"
-              aria-labelledby="region-popup-shelter-title"
-            >
-              <!--08---------------------------------------------->
-              <div class="region-popup-card-heading">
-                <div>
-                  <h3 id="region-popup-shelter-title">무더위쉼터</h3>
-                </div>
-                <strong id="region-popup-shelter-count">조회 중</strong>
-              </div>
-              <!-- jisu_09_추가수정 / JavaScript에서 상태값은 유지하되 화면에는 표시하지 않는다. -->
-              <p
-                id="region-popup-shelter-message"
-                class="region-popup-message"
-                hidden
-              ></p>
-              <!--------------------------------------------------------------------------->
-              <ul
-                id="region-popup-shelter-list"
-                class="region-popup-shelter-list"
-              ></ul>
-            </section>
-          </div>
-          <!--jisu_06_추가 / 날씨 출처 위치-->
-          <footer class="region-popup-source">
-            출처:
-            <span id="region-popup-weather-source">조회 중</span>
-          </footer>
-        </section>
+            <!-- jisu_09_추가수정 / JavaScript에서 상태값은 유지하되 화면에는 표시하지 않는다. -->
+            <p
+              id="region-popup-shelter-message"
+              class="region-popup-message"
+              hidden
+            ></p>
+
+            <ul
+              id="region-popup-shelter-list"
+              class="region-popup-shelter-list"
+            ></ul>
+          </aside>
+        </div>
       </div>
     </div>
     <!-- 03 -->
