@@ -5,9 +5,10 @@ import os
 import re
 from pathlib import Path
 
-import httpx
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Query, Request # jisu_03_추가 / 팝업 / HTTPException 추가
+# jisu_03_추가 / 팝업 / HTTPException 추가
+# jisu_08_추가 / 무더위 쉼터 / Query 추가
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -23,7 +24,7 @@ from functools import lru_cache
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
-from urllib.request import urlopen
+from urllib.request import Request as URLRequest, urlopen
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -45,14 +46,7 @@ templates = Jinja2Templates(
 )
 
 HEAT_DATA_FILE = BASE_DIR / "data" / "processed" / "heat_vulnerability.json"
-
-# [지명 검색 기능 추가]
-# 사용자가 입력한 장소명(예: 이월드)을 검색하기 위한 NAVER 지역 검색 API 주소이다.
-# 인증 정보는 코드에 직접 작성하지 않고 .env의
-# NAVER_SEARCH_CLIENT_ID, NAVER_SEARCH_CLIENT_SECRET 값을 사용한다.
-NAVER_LOCAL_SEARCH_URL = (
-    "https://naverapihub.apigw.ntruss.com/search/v1/local"
-)
+NAVER_LOCAL_SEARCH_URL = "https://naverapihub.apigw.ntruss.com/search/v1/local"
 
 # jisu_03_추가 -> 행정동 경계 및 실시간 기상 데이터 설정-------------#
 REGION_DATA_FILE = (
@@ -60,11 +54,17 @@ REGION_DATA_FILE = (
 )
 WEATHER_DB_FILE = BASE_DIR / "data" / "runtime" / "weather_observations.sqlite3"
 
+# jisu_08_추가 / 무더위쉼터 좌표 데이터-------------#
+SHELTER_DATA_FILE = (
+    BASE_DIR / "data" / "processed" / "cooling_shelters.json"
+)
+# 08--------------------------------------------#
 KMA_WARNING_API_URL = (
     "https://apis.data.go.kr/1360000/WthrWrnInfoService/getPwnStatus"
 )
 KMA_CURRENT_WEATHER_API_URL = (
     "https://apis.data.go.kr/1360000/"
+    # 초단기실황 getUltraSrtNcst / 초단기예보 getUltraSrtFcst
     "VilageFcstInfoService_2.0/getUltraSrtNcst"
 )
 
@@ -296,8 +296,8 @@ def current_kma_base_datetime(now: datetime | None = None) -> datetime:
     current_time = now or datetime.now(KOREA_TIMEZONE)
     if current_time.tzinfo is None:
         current_time = current_time.replace(tzinfo=KOREA_TIMEZONE)
-    # 실황은 매시 40분 이후 제공되므로 45분 전 시각을 정시로 내림한다.
-    return (current_time - timedelta(minutes=45)).replace(
+    # 실황은 매시 10분 이후 제공하므로 11로 수정
+    return (current_time - timedelta(minutes=11)).replace(
         minute=0,
         second=0,
         microsecond=0,
@@ -520,19 +520,19 @@ def collect_hourly_weather() -> dict[str, int]:
 
 
 def seconds_until_next_weather_update(now: datetime | None = None) -> float:
-    """다음 매시 45분 자동 수집까지 남은 초를 계산한다."""
+    """다음 매시 11분 자동 수집까지 남은 초를 계산한다."""
     current_time = now or datetime.now(KOREA_TIMEZONE)
     if current_time.tzinfo is None:
         current_time = current_time.replace(tzinfo=KOREA_TIMEZONE)
-    next_update = current_time.replace(minute=45, second=0, microsecond=0)
+    next_update = current_time.replace(minute=11, second=0, microsecond=0) # 11분에 수집
     if next_update <= current_time:
         next_update += timedelta(hours=1)
     return max((next_update - current_time).total_seconds(), 0.0)
 
 
-def weather_scheduler_loop() -> None:
-    """서버 실행 중 매시 45분에 기상 실황 수집 작업을 반복한다."""
-    # 시작 직후에도 한 번 수집해 45분까지 기다리지 않고 최신 DB를 준비한다.
+def weather_scheduler_loop():
+    """서버 실행 중 매시 11분에 기상 실황 수집 작업을 반복한다."""
+    # 시작 직후에도 한 번 수집해 11분까지 기다리지 않고 최신 DB를 준비한다.
     collect_hourly_weather()
     while not WEATHER_SCHEDULER_STOP.wait(seconds_until_next_weather_update()):
         collect_hourly_weather()
@@ -572,6 +572,134 @@ def handle_startup() -> None:
 def handle_shutdown() -> None:
     """서버 종료 과정에서 기상 실황 자동 수집을 중단한다."""
     stop_weather_scheduler()
+
+# jisu_08_추가 / 무더위쉼터 데이터 처리---------------------------------#
+@lru_cache(maxsize=1)
+def load_shelters() -> list[dict[str, Any]]:
+    """무더위쉼터 JSON 파일을 읽어 메모리에 캐시한다."""
+    if not SHELTER_DATA_FILE.exists():
+        return []
+
+    try:
+        payload = json.loads(SHELTER_DATA_FILE.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise HTTPException(
+            status_code=500,
+            detail="무더위쉼터 좌표 데이터를 읽을 수 없습니다.",
+        ) from error
+
+    shelters = (
+        payload.get("shelters", payload)
+        if isinstance(payload, dict)
+        else payload
+    )
+
+    if not isinstance(shelters, list):
+        raise HTTPException(
+            status_code=500,
+            detail="무더위쉼터 데이터 형식이 올바르지 않습니다.",
+        )
+
+    return shelters
+
+
+def point_in_ring(
+    longitude: float,
+    latitude: float,
+    ring: list[Any],
+) -> bool:
+    """위·경도 좌표가 하나의 다각형 고리 안에 있는지 확인한다."""
+    if not isinstance(ring, list) or len(ring) < 3:
+        return False
+
+    inside = False
+    previous = ring[-1]
+
+    for current in ring:
+        try:
+            current_longitude = float(current[0])
+            current_latitude = float(current[1])
+            previous_longitude = float(previous[0])
+            previous_latitude = float(previous[1])
+        except (IndexError, TypeError, ValueError):
+            previous = current
+            continue
+
+        crosses_latitude = (
+            current_latitude > latitude
+        ) != (
+            previous_latitude > latitude
+        )
+
+        if crosses_latitude:
+            intersection_longitude = (
+                (previous_longitude - current_longitude)
+                * (latitude - current_latitude)
+                / (previous_latitude - current_latitude)
+                + current_longitude
+            )
+
+            if longitude < intersection_longitude:
+                inside = not inside
+
+        previous = current
+
+    return inside
+
+
+def geometry_contains_point(
+    geometry: dict[str, Any],
+    longitude: float,
+    latitude: float,
+) -> bool:
+    """좌표가 Polygon 또는 MultiPolygon 행정동 경계 안에 있는지 확인한다."""
+    geometry_type = geometry.get("type")
+    coordinates = geometry.get("coordinates", [])
+
+    if geometry_type == "Polygon":
+        polygons = [coordinates]
+    elif geometry_type == "MultiPolygon":
+        polygons = coordinates
+    else:
+        return False
+
+    for polygon in polygons:
+        if not polygon or not point_in_ring(longitude, latitude, polygon[0]):
+            continue
+
+        # 첫 번째 고리는 외곽선이며 이후 고리는 다각형 내부의 빈 영역이다.
+        if not any(
+            point_in_ring(longitude, latitude, hole)
+            for hole in polygon[1:]
+        ):
+            return True
+
+    return False
+
+
+def haversine_distance(
+    latitude: float,
+    longitude: float,
+    target_latitude: float,
+    target_longitude: float,
+) -> float:
+    """두 위·경도 사이의 직선거리를 미터 단위로 계산한다."""
+    from math import asin, cos, radians, sin, sqrt
+
+    latitude_delta = radians(target_latitude - latitude)
+    longitude_delta = radians(target_longitude - longitude)
+    start_latitude = radians(latitude)
+    end_latitude = radians(target_latitude)
+
+    value = (
+        sin(latitude_delta / 2) ** 2
+        + cos(start_latitude)
+        * cos(end_latitude)
+        * sin(longitude_delta / 2) ** 2
+    )
+
+    return 6_371_000 * 2 * asin(sqrt(value))
+# 08 -----------------------------------------------#
 
 
 @app.get("/")
@@ -675,6 +803,98 @@ def heat_vulnerability():
         "message": None,
     }
 
+
+@app.get("/api/place-search")
+def place_search(
+    query: str = Query(..., min_length=1, max_length=100),
+):
+    """네이버 지역 검색 결과 중 대구에 있는 장소만 반환한다."""
+    client_id = os.getenv("NAVER_SEARCH_CLIENT_ID", "").strip()
+    client_secret = os.getenv("NAVER_SEARCH_CLIENT_SECRET", "").strip()
+
+    # 검색 키가 없어도 브라우저의 행정동 자동완성은 계속 사용할 수 있다.
+    if not client_id or not client_secret:
+        return {
+            "status": "unconfigured",
+            "items": [],
+            "message": "네이버 장소 검색 API가 설정되지 않았습니다.",
+        }
+
+    search_query = query.strip()
+    if not search_query:
+        raise HTTPException(status_code=400, detail="검색어를 입력해 주세요.")
+
+    if "대구" not in search_query:
+        search_query = f"대구 {search_query}"
+
+    search_params = urlencode({
+        'query': search_query,
+        'display': 5,
+        'start': 1,
+        'sort': 'random',
+    })
+    request_url = f"{NAVER_LOCAL_SEARCH_URL}?{search_params}"
+    search_request = URLRequest(
+        request_url,
+        headers={
+            "X-NCP-APIGW-API-KEY-ID": client_id,
+            "X-NCP-APIGW-API-KEY": client_secret,
+        },
+    )
+
+    try:
+        with urlopen(search_request, timeout=10) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except HTTPError as error:
+        return JSONResponse(
+            status_code=502,
+            content={
+                "status": "error",
+                "items": [],
+                "message": f"네이버 장소 검색에 실패했습니다. 응답 상태: {error.code}",
+            },
+        )
+    except URLError:
+        return JSONResponse(
+            status_code=504,
+            content={
+                "status": "error",
+                "items": [],
+                "message": "네이버 장소 검색 서버에 연결할 수 없습니다.",
+            },
+        )
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return JSONResponse(
+            status_code=502,
+            content={
+                "status": "error",
+                "items": [],
+                "message": "네이버 장소 검색 결과를 읽을 수 없습니다.",
+            },
+        )
+
+    items = []
+    for item in payload.get("items", []):
+        title = re.sub(r"<[^>]+>", "", str(item.get("title", ""))).strip()
+        address = str(item.get("address", "")).strip()
+        road_address = str(item.get("roadAddress", "")).strip()
+
+        if "대구" not in f"{address} {road_address}":
+            continue
+
+        items.append(
+            {
+                "title": title,
+                "category": str(item.get("category", "")).strip(),
+                "address": address,
+                "road_address": road_address,
+                "mapx": str(item.get("mapx", "")).strip(),
+                "mapy": str(item.get("mapy", "")).strip(),
+            }
+        )
+
+    return {"status": "ready", "items": items, "message": None}
+
 # jisu_03_추가 / 팝업 / 날씨 API 추가---------------------------------------------------#
 
 @app.get("/api/weather/{region_code}")
@@ -752,6 +972,99 @@ def region_weather(region_code: str):
     }
 #------------------------------------------------------------------------------------------#
 
+# jisu_08_추가 / 선택 행정동의 무더위쉼터 API--------------------------------------------#
+@app.get("/api/shelters")
+def shelters(regionCode: str | None = None):
+    """전체 또는 선택 행정동 경계 안의 무더위쉼터를 반환한다."""
+    records = load_shelters()
+
+    if regionCode:
+        feature = find_region_feature(regionCode)
+        geometry = feature.get("geometry", {})
+        filtered_records = []
+
+        for shelter in records:
+            try:
+                latitude = float(shelter["latitude"])
+                longitude = float(shelter["longitude"])
+            except (KeyError, TypeError, ValueError):
+                continue
+
+            if geometry_contains_point(geometry, longitude, latitude):
+                filtered_records.append(shelter)
+
+        records = filtered_records
+
+    return {
+        "status": "ready" if records else "unavailable",
+        "regionCode": regionCode,
+        "shelters": records,
+        "source": "data/processed/cooling_shelters.json",
+        "message": (
+            None
+            if records
+            else "선택 행정동 안에서 표시할 무더위쉼터를 찾지 못했습니다."
+        ),
+    }
+
+
+@app.get("/api/shelters/nearby")
+def nearby_shelters(
+    latitude: float,
+    longitude: float,
+    limit: int = Query(default=3, ge=1, le=20),
+):
+    """현재 위치에서 가까운 무더위쉼터를 거리순으로 반환한다."""
+    if not (-90 <= latitude <= 90 and -180 <= longitude <= 180):
+        raise HTTPException(
+            status_code=422,
+            detail="올바르지 않은 좌표입니다.",
+        )
+
+    ranked = []
+
+    for shelter in load_shelters():
+        try:
+            target_latitude = float(shelter["latitude"])
+            target_longitude = float(shelter["longitude"])
+        except (KeyError, TypeError, ValueError):
+            continue
+
+        distance = haversine_distance(
+            latitude,
+            longitude,
+            target_latitude,
+            target_longitude,
+        )
+
+        ranked.append(
+            {
+                **shelter,
+                "distanceMeters": round(distance),
+                "walkingMinutes": max(1, round(distance / 75)),
+            }
+        )
+
+    ranked.sort(key=lambda shelter: shelter["distanceMeters"])
+    nearby = ranked[:limit]
+
+    return {
+        "status": "ready" if nearby else "unavailable",
+        "origin": {
+            "latitude": latitude,
+            "longitude": longitude,
+        },
+        "limit": limit,
+        "shelters": nearby,
+        "source": "data/processed/cooling_shelters.json",
+        "message": (
+            None
+            if nearby
+            else "표시할 무더위쉼터 좌표가 없습니다."
+        ),
+    }
+# 08---------------------------------------------------------------------------------------#
+
 # jisu_03_추가 / 팝업 / 폭염특보 API 추가-------------------------------------------------#
 def get_kma_warning_items() -> list[dict[str, Any]]:
     """기상청 현재 특보 현황을 60초 동안 캐시한다."""
@@ -824,26 +1137,43 @@ def get_kma_warning_items() -> list[dict[str, Any]]:
     KMA_ALERT_CACHE["expires_at"] = now + 60
     return normalized_items
 
+# jisu_12_추가수정 / 폭염, 열대야
+def iter_current_warning_entries(
+    item: dict[str, Any],
+) -> list[tuple[str, str]]:
+    """특보현황의 t6에서 특보명과 해당 지역을 항목별로 분리한다."""
+    status_text = item.get("t6")
 
-def item_text(item: dict[str, Any]) -> str:
-    """필드명이 바뀌어도 특보 문구를 판별할 수 있도록 값을 평탄화한다."""
-    # 기상청 응답은 운영 시점에 따라 특보 문구가 들어가는 키가 달라질 수
-    # 있어 특정 필드명 대신 모든 문자열 값을 모아 지역/폭염 키워드를 찾는다.
-    values: list[str] = []
+    if not isinstance(status_text, str) or not status_text.strip():
+        return []
 
-    def collect(value: Any) -> None:
-        """중첩된 기상청 응답의 모든 원시 값을 문자열 목록에 모은다."""
-        if isinstance(value, dict):
-            for nested in value.values():
-                collect(nested)
-        elif isinstance(value, list):
-            for nested in value:
-                collect(nested)
-        elif value is not None:
-            values.append(str(value))
+    # 기상청 응답의 줄바꿈 형식을 통일한다.
+    normalized_text = (
+        status_text
+        .replace("\r\n", "\n")
+        .replace("\r", "\n")
+        .replace("<br />", "\n")
+        .replace("<br/>", "\n")
+        .replace("<br>", "\n")
+    )
 
-    collect(item)
-    return " ".join(values)
+    entries: list[tuple[str, str]] = []
+
+    # 예: "o 폭염주의보 : 대구광역시"
+    for line in normalized_text.splitlines():
+        normalized_line = " ".join(line.split()).lstrip("o○- ").strip()
+
+        if ":" not in normalized_line:
+            continue
+
+        warning_name, affected_areas = normalized_line.split(":", 1)
+        warning_name = warning_name.strip()
+        affected_areas = affected_areas.strip()
+
+        if warning_name and affected_areas:
+            entries.append((warning_name, affected_areas))
+
+    return entries
 
 
 @app.get("/api/heat-alerts")
@@ -852,6 +1182,11 @@ def heat_alerts(regionCode: str | None = None):
     record = find_vulnerability_record(regionCode) if regionCode else None
     district = str(record.get("district", "")) if record else ""
     dong = str(record.get("dong", "")) if record else ""
+
+    # jisu_12_추가수정 / 폭염, 열대야 주의보 / 지역명 생성
+    region_name = " ".join(
+    name for name in (district, dong) if name
+    )
 
     # 실제 특보 API 키가 준비되기 전에 팝업 배너 모양과 애니메이션만 확인한다.
     # 운영 시에는 반드시 KMA_ALERT_TEST_MODE=false로 두어 테스트 문구가 노출되지 않게 한다.
@@ -865,6 +1200,7 @@ def heat_alerts(regionCode: str | None = None):
         return {
             "status": "active",
             "regionCode": regionCode,
+            "regionName": region_name, # 지역명 추가
             "alerts": [
                 {
                     "level": "warning",
@@ -877,45 +1213,69 @@ def heat_alerts(regionCode: str | None = None):
             "message": "특보 배너 화면 테스트 응답입니다.",
             "testMode": True,
         }
-
     alerts: list[dict[str, str]] = []
-    detected_titles: set[str] = set()
+
+    # jisu_12_추가수정 / 폭염, 열대야 경보
+    #
+    # 폭염주의보 / 폭염경보 / 폭염중대경보
+    # 열대야주의보 / 열대야경보 / 열대야중대경보
+    detected_alerts: set[tuple[str, str]] = set()
 
     for item in get_kma_warning_items():
-        warning_text = item_text(item)
-        is_daegu_warning = "대구" in warning_text
-        if not is_daegu_warning:
-            continue
+        # t6의 현재 발효 특보를 종류와 적용 지역으로 나누어 확인한다.
+        for warning_name, affected_areas in iter_current_warning_entries(item):
+            # 해당 특보의 적용 지역에 대구가 포함된 경우만 사용한다.
+            if "대구" not in affected_areas:
+                continue
 
-        if "폭염" in warning_text:
-            title = "폭염경보" if "경보" in warning_text else "폭염주의보"
-            level = "critical" if title == "폭염경보" else "warning"
-            category = "heatwave"
-        elif "열대야" in warning_text:
-            # 열대야가 공식 특보명이 아닌 형태로 제공될 수도 있으므로 원문에
-            # '주의보'가 있을 때만 주의보로 표기하고, 나머지는 알림으로 구분한다.
-            title = "열대야주의보" if "주의보" in warning_text else "열대야 알림"
-            level = "warning"
-            category = "tropical-night"
-        else:
-            continue
+            # 특보 종류를 구분한다.
+            if "폭염" in warning_name:
+                category = "heatwave"
+                alert_name = "폭염"
+            elif "열대야" in warning_name:
+                category = "tropical-night"
+                alert_name = "열대야"
+            else:
+                continue
 
-        if title in detected_titles:
-            continue
-        detected_titles.add(title)
-        alerts.append(
-            {
-                "level": level,
-                "category": category,
-                "title": title,
-                "message": f"{district} {dong} 지역에 {title}가 발표 중입니다.",
-            }
-        )
+            # 기상청 특보강도 0·1·2에 대응한다.
+            if "중대경보" in warning_name:
+                severity_name = "중대경보"
+                level = "critical"
+            elif "경보" in warning_name:
+                severity_name = "경보"
+                level = "critical"
+            elif "주의보" in warning_name:
+                severity_name = "주의보"
+                level = "warning"
+            else:
+                continue
+
+            title = f"{alert_name}{severity_name}"
+            alert_key = (category, title)
+
+            # 같은 종류와 단계가 여러 줄에 있어도 한 번만 표시한다.
+            if alert_key in detected_alerts:
+                continue
+
+            detected_alerts.add(alert_key)
+            alerts.append(
+                {
+                    "level": level,
+                    "category": category,
+                    "title": title,
+                    "message": (
+                        f"{district} {dong} 지역에 "
+                        f"{title}가 발표 중입니다."
+                    ),
+                }
+            )
 
     if alerts:
         return {
             "status": "active",
             "regionCode": regionCode,
+            "regionName": region_name,
             "alerts": alerts,
             "source": "기상청 기상특보 조회서비스",
             "message": "선택 지역의 기상청 실시간 특보·알림 현황입니다.",
@@ -924,6 +1284,7 @@ def heat_alerts(regionCode: str | None = None):
     return {
         "status": "unavailable",
         "regionCode": regionCode,
+        "regionName": region_name,
         "alerts": [],
         "source": "기상청 기상특보 API",
         "message": (
@@ -932,136 +1293,3 @@ def heat_alerts(regionCode: str | None = None):
         ),
     }
 #-----------------------------------------------------------------------------------------#
-
-# ---------------------------------------------------------------------------
-# [지명 검색 기능 추가]
-# 프론트엔드(map.js)가 직접 NAVER API를 호출하지 않고 이 FastAPI 경로를 호출한다.
-# 이렇게 구성하면 Client Secret이 브라우저에 노출되지 않는다.
-#
-# 처리 순서
-# 1. 사용자가 입력한 장소명을 query로 전달받는다.
-# 2. 검색어 앞에 '대구'를 붙여 대구 지역 결과를 우선 검색한다.
-# 3. NAVER 지역 검색 API 결과 중 대구 주소를 가진 항목만 남긴다.
-# 4. 장소명, 주소, 좌표(mapx, mapy)를 map.js에 반환한다.
-# ---------------------------------------------------------------------------
-@app.get("/api/place-search")
-async def place_search(
-    query: str = Query(
-        ...,
-        min_length=1,
-        max_length=100,
-    ),
-):
-    """네이버 지역 검색 API를 이용해 대구 장소를 검색한다."""
-
-    client_id = os.getenv("NAVER_SEARCH_CLIENT_ID", "").strip()
-    client_secret = os.getenv("NAVER_SEARCH_CLIENT_SECRET", "").strip()
-
-    if not client_id or not client_secret:
-        return JSONResponse(
-            status_code=500,
-            content={
-                "status": "error",
-                "items": [],
-                "message": "네이버 장소 검색 API 키가 설정되지 않았습니다.",
-            },
-        )
-
-    search_query = query.strip()
-
-    # 검색 결과를 대구 지역 중심으로 제한하기 위해 검색어에 대구를 붙임
-    if "대구" not in search_query:
-        search_query = f"대구 {search_query}"
-
-    headers = {
-        "X-NCP-APIGW-API-KEY-ID": client_id,
-        "X-NCP-APIGW-API-KEY": client_secret,
-    }
-
-    params = {
-        "query": search_query,
-        "display": 5,
-        "start": 1,
-        "sort": "random",
-    }
-
-    try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            response = await client.get(
-                NAVER_LOCAL_SEARCH_URL,
-                headers=headers,
-                params=params,
-            )
-
-            response.raise_for_status()
-            payload = response.json()
-
-    except httpx.TimeoutException:
-        return JSONResponse(
-            status_code=504,
-            content={
-                "status": "error",
-                "items": [],
-                "message": "네이버 장소 검색 요청 시간이 초과되었습니다.",
-            },
-        )
-
-    except httpx.HTTPStatusError as error:
-        return JSONResponse(
-            status_code=502,
-            content={
-                "status": "error",
-                "items": [],
-                "message": (
-                    "네이버 장소 검색 API 호출에 실패했습니다. "
-                    f"응답 상태: {error.response.status_code}"
-                ),
-            },
-        )
-
-    except (httpx.RequestError, ValueError):
-        return JSONResponse(
-            status_code=502,
-            content={
-                "status": "error",
-                "items": [],
-                "message": "네이버 장소 검색 결과를 불러올 수 없습니다.",
-            },
-        )
-
-    raw_items = payload.get("items", [])
-    items = []
-
-    for item in raw_items:
-        # NAVER 검색 결과의 장소명에는 <b> 태그가 포함될 수 있으므로 제거한다.
-        title = re.sub(
-            r"<[^>]+>",
-            "",
-            str(item.get("title", "")),
-        ).strip()
-
-        address = str(item.get("address", "")).strip()
-        road_address = str(item.get("roadAddress", "")).strip()
-
-        # 대구가 아닌 검색 결과 제외
-        combined_address = f"{address} {road_address}"
-
-        if "대구" not in combined_address:
-            continue
-
-        items.append(
-            {
-                "title": title,
-                "category": str(item.get("category", "")).strip(),
-                "address": address,
-                "road_address": road_address,
-                "mapx": str(item.get("mapx", "")).strip(),
-                "mapy": str(item.get("mapy", "")).strip(),
-            }
-        )
-
-    return {
-        "status": "ready",
-        "items": items,
-        "message": None,
-    }
