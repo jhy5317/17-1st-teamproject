@@ -53,6 +53,16 @@ HEAT_INDICATORS_FILE = (
     BASE_DIR / "data" / "processed" / "heat_indicators.csv"
 )
 
+# tg 추가 / 행정동별 건물밀도 원본 CSV
+BUILDING_DENSITY_FILE = (
+    BASE_DIR / "data" / "processed" / "building_density_by_dong.csv"
+)
+
+# tg 추가 / 2026년 7월 행정동별 인구 현황 CSV
+POPULATION_FILE = (
+    BASE_DIR / "data" / "processed" / "population_by_dong_202607.csv"
+)
+
 NAVER_LOCAL_SEARCH_URL = "https://naverapihub.apigw.ntruss.com/search/v1/local"
 
 # jisu_03_추가 -> 행정동 경계 및 실시간 기상 데이터 설정-------------#
@@ -119,20 +129,22 @@ def load_heat_payload() -> dict[str, Any]:
             detail="폭염 취약도 데이터 형식이 올바르지 않습니다.",
         )
 
-    # tg 추가 / 내부 조회 함수에서도 녹지율이 포함된 레코드를 사용한다.
+    # tg 수정 / 내부 조회 함수에서도 녹지율과 건물밀도가 포함된 레코드를 사용한다.
     payload = dict(payload)
-    payload["records"] = add_green_ratio_to_records(payload["records"])
+    payload["records"] = add_environment_metrics_to_records(
+        payload["records"]
+    )
 
     return payload
 
 
 @lru_cache(maxsize=1)
-def load_green_ratio_by_region() -> dict[str, float]:
-    """heat_indicators.csv의 행정동별 green_ratio_pct를 읽는다."""
+def load_green_ratio_by_region() -> dict[str, dict[str, float]]:
+    """heat_indicators.csv의 행정동별 녹지율과 불투수면율을 읽는다."""
     if not HEAT_INDICATORS_FILE.exists():
         return {}
 
-    green_ratio_by_region: dict[str, float] = {}
+    environment_ratio_by_region: dict[str, dict[str, float]] = {}
 
     try:
         with HEAT_INDICATORS_FILE.open(
@@ -152,40 +164,196 @@ def load_green_ratio_by_region() -> dict[str, float]:
                 ).strip()
 
                 green_ratio_value = row.get("green_ratio_pct")
+                # tg 추가 / 같은 heat_indicators.csv의 impervious_ratio_pct도 함께 읽는다.
+                impervious_ratio_value = row.get("impervious_ratio_pct")
 
-                if not region_code or green_ratio_value in (None, ""):
+                if not region_code:
                     continue
+
+                metrics: dict[str, float] = {}
 
                 try:
-                    green_ratio = float(green_ratio_value)
+                    if green_ratio_value not in (None, ""):
+                        metrics["green_ratio_pct"] = float(green_ratio_value)
                 except (TypeError, ValueError):
-                    continue
+                    pass
 
-                green_ratio_by_region[region_code] = green_ratio
+                try:
+                    if impervious_ratio_value not in (None, ""):
+                        metrics["impervious_ratio_pct"] = float(impervious_ratio_value)
+                except (TypeError, ValueError):
+                    pass
+
+                if metrics:
+                    environment_ratio_by_region[region_code] = metrics
     except OSError:
         return {}
 
-    return green_ratio_by_region
+    return environment_ratio_by_region
 
 
 def add_green_ratio_to_records(
     records: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
     """폭염 취약도 레코드에 green_ratio_pct를 병합한다."""
-    green_ratio_by_region = load_green_ratio_by_region()
+    environment_ratio_by_region = load_green_ratio_by_region()
     enriched_records: list[dict[str, Any]] = []
 
     for record in records:
         enriched_record = dict(record)
         region_code = str(record.get("adm_cd", "")).strip()
 
-        # tg 추가 / 동일 행정동 코드의 녹지율을 API 응답에 포함한다.
-        enriched_record["green_ratio_pct"] = green_ratio_by_region.get(
-            region_code
+        metrics = environment_ratio_by_region.get(region_code, {})
+        # tg 수정 / 동일 행정동 코드의 녹지율과 불투수면율을 API 응답에 함께 포함한다.
+        enriched_record["green_ratio_pct"] = metrics.get("green_ratio_pct")
+        enriched_record["impervious_ratio_pct"] = metrics.get(
+            "impervious_ratio_pct"
         )
         enriched_records.append(enriched_record)
 
     return enriched_records
+
+
+@lru_cache(maxsize=1)
+def load_building_density_by_region() -> dict[str, float]:
+    """building_density_by_dong.csv의 행정동별 건물밀도를 읽는다."""
+    if not BUILDING_DENSITY_FILE.exists():
+        return {}
+
+    building_density_by_region: dict[str, float] = {}
+
+    try:
+        with BUILDING_DENSITY_FILE.open(
+            "r",
+            encoding="utf-8-sig",
+            newline="",
+        ) as csv_file:
+            reader = csv.DictReader(csv_file)
+
+            for row in reader:
+                region_code = str(row.get("adm_cd") or "").strip()
+                density_value = row.get("building_density_pct")
+
+                if not region_code or density_value in (None, ""):
+                    continue
+
+                try:
+                    building_density = float(density_value)
+                except (TypeError, ValueError):
+                    continue
+
+                building_density_by_region[region_code] = building_density
+    except OSError:
+        return {}
+
+    return building_density_by_region
+
+
+def add_building_density_to_records(
+    records: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """폭염 취약도 레코드에 building_density_pct를 병합한다."""
+    building_density_by_region = load_building_density_by_region()
+    enriched_records: list[dict[str, Any]] = []
+
+    for record in records:
+        enriched_record = dict(record)
+        region_code = str(record.get("adm_cd", "")).strip()
+
+        # tg 추가 / 동일 행정동 코드의 건물밀도를 API 응답에 포함한다.
+        enriched_record["building_density_pct"] = (
+            building_density_by_region.get(region_code)
+        )
+        enriched_records.append(enriched_record)
+
+    return enriched_records
+
+
+# tg 추가 / 행정동 이름의 구분 기호 차이를 제거해 인구 CSV와 기존 분석 레코드를 안정적으로 연결한다.
+def normalize_population_region_name(value: Any) -> str:
+    return re.sub(r"[\s.·,]", "", str(value or "").strip())
+
+
+@lru_cache(maxsize=1)
+def load_population_by_region() -> dict[str, dict[str, Any]]:
+    """population_by_dong_202607.csv의 행정동별 인구 정보를 읽는다."""
+    if not POPULATION_FILE.exists():
+        return {}
+
+    population_by_region: dict[str, dict[str, Any]] = {}
+
+    try:
+        with POPULATION_FILE.open(
+            "r",
+            encoding="utf-8-sig",
+            newline="",
+        ) as csv_file:
+            reader = csv.DictReader(csv_file)
+
+            for row in reader:
+                district = normalize_population_region_name(row.get("district"))
+                dong = normalize_population_region_name(row.get("dong"))
+
+                if not district or not dong:
+                    continue
+
+                try:
+                    population_total = int(float(row.get("population_total") or 0))
+                    population_under_65 = int(float(row.get("population_under_65") or 0))
+                    population_65_plus = int(float(row.get("population_65_plus") or 0))
+                    elderly_ratio_pct = float(row.get("elderly_ratio_pct") or 0)
+                except (TypeError, ValueError):
+                    continue
+
+                population_by_region[f"{district}|{dong}"] = {
+                    "population_total": population_total,
+                    "population_under_65": population_under_65,
+                    "population_65_plus": population_65_plus,
+                    "elderly_ratio_pct": elderly_ratio_pct,
+                    "population_reference_year_month": str(
+                        row.get("reference_year_month") or ""
+                    ).strip(),
+                }
+    except OSError:
+        return {}
+
+    return population_by_region
+
+
+def add_population_to_records(
+    records: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """폭염 취약도 레코드에 행정동별 인구 정보를 병합한다."""
+    population_by_region = load_population_by_region()
+    enriched_records: list[dict[str, Any]] = []
+
+    for record in records:
+        enriched_record = dict(record)
+        district = normalize_population_region_name(
+            record.get("district") or record.get("sigungu")
+        )
+        dong = normalize_population_region_name(
+            record.get("dong") or record.get("adm_nm") or record.get("region_name")
+        )
+        population = population_by_region.get(f"{district}|{dong}", {})
+
+        # tg 추가 / 선택 행정동의 총인구·65세 미만·65세 이상·노인비율을 API 응답에 포함한다.
+        enriched_record.update(population)
+        enriched_records.append(enriched_record)
+
+    return enriched_records
+
+
+def add_environment_metrics_to_records(
+    records: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """녹지율·불투수면율·건물밀도·인구 정보를 행정동 레코드에 함께 병합한다."""
+    records_with_green_ratio = add_green_ratio_to_records(records)
+    records_with_building_density = add_building_density_to_records(
+        records_with_green_ratio
+    )
+    # tg 수정 / 기존 환경 지표 병합 결과에 행정동별 인구 정보도 추가한다.
+    return add_population_to_records(records_with_building_density)
 
 
 @lru_cache(maxsize=1)
@@ -1053,8 +1221,8 @@ def heat_vulnerability():
             },
         )
 
-    # tg 추가 / 프런트엔드가 녹지율 카드를 채울 수 있도록 CSV 값을 병합한다.
-    records = add_green_ratio_to_records(records)
+    # tg 수정 / 프런트엔드가 녹지율·건물밀도·인구수 카드를 채울 수 있도록 CSV 값을 병합한다.
+    records = add_environment_metrics_to_records(records)
 
     return {
         "status": "ready",

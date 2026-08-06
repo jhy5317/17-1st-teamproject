@@ -177,6 +177,40 @@
   const regionPopupBuildingComparison = document.getElementById(
     "region-popup-building-comparison",
   );
+
+  // tg 추가 / 불투수면율 값과 대구 평균 비교 요소 참조
+  const regionPopupImperviousRatio = document.getElementById(
+    "region-popup-impervious-ratio",
+  );
+  const regionPopupImperviousBar = document.getElementById(
+    "region-popup-impervious-bar",
+  );
+  const regionPopupImperviousBarFill = document.getElementById(
+    "region-popup-impervious-bar-fill",
+  );
+  const regionPopupImperviousAverageMarker = document.getElementById(
+    "region-popup-impervious-average-marker",
+  );
+  const regionPopupImperviousCurrentLabel = document.getElementById(
+    "region-popup-impervious-current-label",
+  );
+  const regionPopupImperviousAverageLabel = document.getElementById(
+    "region-popup-impervious-average-label",
+  );
+  const regionPopupImperviousComparison = document.getElementById(
+    "region-popup-impervious-comparison",
+  );
+
+  // tg 추가 / 행정동 인구수와 연령대별 인구 표시 요소 참조
+  const regionPopupPopulationTotal = document.getElementById(
+    "region-popup-population-total",
+  );
+  const regionPopupPopulationUnder65 = document.getElementById(
+    "region-popup-population-under-65",
+  );
+  const regionPopupPopulationElderly = document.getElementById(
+    "region-popup-population-elderly",
+  );
   const regionPopupKeyFactors = document.getElementById(
     "region-popup-key-factors",
   );
@@ -484,6 +518,14 @@
       }
 
       const greenRatioPct = Number(record.green_ratio_pct);
+      const buildingDensityPct = Number(record.building_density_pct);
+      // tg 추가 / heat_indicators.csv에서 병합한 불투수면율을 숫자로 변환한다.
+      const imperviousRatioPct = Number(record.impervious_ratio_pct);
+      // tg 추가 / 백엔드에서 병합한 행정동별 인구 값을 숫자로 변환한다.
+      const populationTotal = Number(record.population_total);
+      const populationUnder65 = Number(record.population_under_65);
+      const population65Plus = Number(record.population_65_plus);
+      const elderlyRatioPct = Number(record.elderly_ratio_pct);
 
       heatDataByDongCode.set(dongCode, {
         score: Math.max(0, Math.min(100, score)),
@@ -493,6 +535,30 @@
         // tg 추가 / heat_indicators.csv에서 병합된 행정동별 녹지율을 저장한다.
         greenRatioPct: Number.isFinite(greenRatioPct)
           ? greenRatioPct
+          : null,
+
+        // tg 추가 / building_density_by_dong.csv에서 병합된 행정동별 건물밀도를 저장한다.
+        buildingDensityPct: Number.isFinite(buildingDensityPct)
+          ? buildingDensityPct
+          : null,
+
+        // tg 추가 / 불투수면율 카드와 평균 비교에 사용할 값을 저장한다.
+        imperviousRatioPct: Number.isFinite(imperviousRatioPct)
+          ? imperviousRatioPct
+          : null,
+
+        // tg 추가 / 인구수 카드에 사용할 총인구와 연령대별 인구 정보를 저장한다.
+        populationTotal: Number.isFinite(populationTotal)
+          ? populationTotal
+          : null,
+        populationUnder65: Number.isFinite(populationUnder65)
+          ? populationUnder65
+          : null,
+        population65Plus: Number.isFinite(population65Plus)
+          ? population65Plus
+          : null,
+        elderlyRatioPct: Number.isFinite(elderlyRatioPct)
+          ? elderlyRatioPct
           : null,
       });
     });
@@ -1540,7 +1606,8 @@
       });
       const timeLabel = createTemperatureChartSvgElement("text", {
         x: point.x,
-        y: chartHeight - 16,
+        // tg 수정 / 시간 라벨이 하단 스크롤바에 가려지지 않도록 위쪽으로 이동한다.
+        y: chartHeight - 34,
         "text-anchor": "middle",
         class: "temperature-chart-time",
       });
@@ -1571,6 +1638,28 @@
   function getAverageGreenRatio() {
     const values = [...heatDataByDongCode.values()]
       .map((item) => Number(item.greenRatioPct))
+      .filter(Number.isFinite);
+
+    return values.length > 0
+      ? values.reduce((sum, value) => sum + value, 0) / values.length
+      : null;
+  }
+
+  // tg 추가 / 전체 행정동 건물밀도의 단순 평균을 계산한다.
+  function getAverageBuildingDensity() {
+    const values = [...heatDataByDongCode.values()]
+      .map((item) => Number(item.buildingDensityPct))
+      .filter(Number.isFinite);
+
+    return values.length > 0
+      ? values.reduce((sum, value) => sum + value, 0) / values.length
+      : null;
+  }
+
+  // tg 추가 / 전체 행정동 불투수면율의 단순 평균을 계산한다.
+  function getAverageImperviousRatio() {
+    const values = [...heatDataByDongCode.values()]
+      .map((item) => Number(item.imperviousRatioPct))
       .filter(Number.isFinite);
 
     return values.length > 0
@@ -1712,9 +1801,15 @@
 
     updatePopupKeyFactors(dongCode);
 
-    // tg 수정 / 건물밀집도는 실제 데이터가 연결될 때까지 비교 막대도 비활성 상태로 유지한다.
+    // tg 수정 / 건물밀도 실제 값과 대구 평균을 팝업 및 비교 막대에 표시한다.
+    const buildingDensityPct = Number(heatData?.buildingDensityPct);
+    const averageBuildingDensity = getAverageBuildingDensity();
+
     if (regionPopupBuildingDensity) {
-      regionPopupBuildingDensity.textContent = "자료 준비 중";
+      regionPopupBuildingDensity.textContent =
+        Number.isFinite(buildingDensityPct)
+          ? `${buildingDensityPct.toFixed(1)}%`
+          : "자료 없음";
     }
 
     updateAverageComparisonBar({
@@ -1723,13 +1818,114 @@
       marker: regionPopupBuildingAverageMarker,
       currentLabel: regionPopupBuildingCurrentLabel,
       averageLabel: regionPopupBuildingAverageLabel,
-      currentValue: Number.NaN,
-      averageValue: Number.NaN,
+      currentValue: buildingDensityPct,
+      averageValue: averageBuildingDensity,
       unit: "%",
     });
 
     if (regionPopupBuildingComparison) {
-      regionPopupBuildingComparison.textContent = "자료 연결 대기 중";
+      if (
+        Number.isFinite(buildingDensityPct) &&
+        Number.isFinite(averageBuildingDensity)
+      ) {
+        const difference =
+          buildingDensityPct - averageBuildingDensity;
+        const direction = difference >= 0 ? "높음" : "낮음";
+
+        regionPopupBuildingComparison.textContent =
+          `대구 평균보다 ${Math.abs(difference).toFixed(1)}%p ${direction}`;
+        regionPopupBuildingComparison.classList.toggle(
+          "metric-positive",
+          difference < 0,
+        );
+        regionPopupBuildingComparison.classList.toggle(
+          "metric-negative",
+          difference >= 0,
+        );
+      } else {
+        regionPopupBuildingComparison.textContent =
+          "대구 평균 비교 불가";
+        regionPopupBuildingComparison.classList.remove(
+          "metric-positive",
+          "metric-negative",
+        );
+      }
+    }
+
+    // tg 추가 / 불투수면율 실제 값과 대구 평균을 팝업 및 비교 막대에 표시한다.
+    const imperviousRatioPct = Number(heatData?.imperviousRatioPct);
+    const averageImperviousRatio = getAverageImperviousRatio();
+
+    if (regionPopupImperviousRatio) {
+      regionPopupImperviousRatio.textContent = Number.isFinite(imperviousRatioPct)
+        ? `${imperviousRatioPct.toFixed(1)}%`
+        : "자료 없음";
+    }
+
+    updateAverageComparisonBar({
+      container: regionPopupImperviousBar,
+      fill: regionPopupImperviousBarFill,
+      marker: regionPopupImperviousAverageMarker,
+      currentLabel: regionPopupImperviousCurrentLabel,
+      averageLabel: regionPopupImperviousAverageLabel,
+      currentValue: imperviousRatioPct,
+      averageValue: averageImperviousRatio,
+      unit: "%",
+    });
+
+    if (regionPopupImperviousComparison) {
+      if (
+        Number.isFinite(imperviousRatioPct) &&
+        Number.isFinite(averageImperviousRatio)
+      ) {
+        const difference = imperviousRatioPct - averageImperviousRatio;
+        const direction = difference >= 0 ? "높음" : "낮음";
+        regionPopupImperviousComparison.textContent =
+          `대구 평균보다 ${Math.abs(difference).toFixed(1)}%p ${direction}`;
+        regionPopupImperviousComparison.classList.toggle(
+          "metric-positive",
+          difference < 0,
+        );
+        regionPopupImperviousComparison.classList.toggle(
+          "metric-negative",
+          difference >= 0,
+        );
+      } else {
+        regionPopupImperviousComparison.textContent = "대구 평균 비교 불가";
+        regionPopupImperviousComparison.classList.remove(
+          "metric-positive",
+          "metric-negative",
+        );
+      }
+    }
+
+    // tg 추가 / 인구밀도 대신 총인구와 65세 미만·65세 이상 인구를 표시한다.
+    const populationTotal = Number(heatData?.populationTotal);
+    const populationUnder65 = Number(heatData?.populationUnder65);
+    const population65Plus = Number(heatData?.population65Plus);
+    const elderlyRatioPct = Number(heatData?.elderlyRatioPct);
+
+    if (regionPopupPopulationTotal) {
+      regionPopupPopulationTotal.textContent = Number.isFinite(populationTotal)
+        ? `${populationTotal.toLocaleString("ko-KR")}명`
+        : "자료 없음";
+    }
+
+    if (regionPopupPopulationUnder65) {
+      regionPopupPopulationUnder65.textContent = Number.isFinite(populationUnder65)
+        ? `일반인 ${populationUnder65.toLocaleString("ko-KR")}명`
+        : "일반인 자료 없음";
+    }
+
+    if (regionPopupPopulationElderly) {
+      const elderlyCountText = Number.isFinite(population65Plus)
+        ? `${population65Plus.toLocaleString("ko-KR")}명`
+        : "자료 없음";
+      const elderlyRatioText = Number.isFinite(elderlyRatioPct)
+        ? ` · ${elderlyRatioPct.toFixed(1)}%`
+        : "";
+      regionPopupPopulationElderly.textContent =
+        `65세 이상 ${elderlyCountText}${elderlyRatioText}`;
     }
   }
 

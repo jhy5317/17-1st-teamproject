@@ -2519,7 +2519,8 @@ body.district-chart-open {
 
 .region-popup-metric-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* tg 수정 / 인구수 카드를 포함한 지표를 두 열로 읽기 쉽게 배치한다. */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin: 16px 0 0;
 }
@@ -2552,11 +2553,38 @@ body.district-chart-open {
   font-weight: 850;
 }
 
-/* tg 수정 / 아직 값이 없는 건물밀집도만 준비 중 안내 스타일을 유지한다. */
+/* tg 수정 / 건물밀집도 실제 값도 녹지율과 동일한 글자 크기·굵기·색상으로 표시한다. */
 #region-popup-building-density {
-  color: #94a3b8;
-  font-size: 13px;
+  color: #0f172a;
+  font-size: 20px;
   font-weight: 850;
+}
+
+/* tg 추가 / 불투수면율 실제 값도 다른 도시환경 지표와 동일하게 표시한다. */
+#region-popup-impervious-ratio {
+  color: #0f172a;
+  font-size: 20px;
+  font-weight: 850;
+}
+
+/* tg 추가 / 인구수는 핵심값을 크게 표시하고 연령대별 인구는 작은 회색 글자로 구분한다. */
+#region-popup-population-total {
+  color: #0f172a;
+  font-size: 20px;
+  font-weight: 850;
+}
+
+/* tg 수정 / 불투수면율과 인구수를 마지막 행의 두 칸으로 나란히 배치한다. */
+.region-popup-population-metric {
+  grid-column: auto;
+}
+
+.region-popup-population-metric small {
+  display: block;
+  margin-top: 5px;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .region-popup-metric-time {
@@ -3156,4 +3184,608 @@ body.shelter-finder-open #map {
 
 .temperature-chart-unit {
   font-size: 10px !important;
+}
+
+
+/* tg 수정 / 큰 수치와 중복되는 '해당 동 00.0%' 작은 라벨은 숨긴다. */
+#region-popup-green-current-label,
+#region-popup-building-current-label {
+  display: none;
+}
+
+/* tg 추가 / 점수 체계 개편에 대비해 팝업 본문을 실시간 기상 위험과 지역 취약성 2열로 나눈다. */
+.region-popup-risk-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  align-items: start;
+  gap: 18px;
+  padding: 16px 24px 10px;
+}
+
+/* tg 추가 / 각 위험 영역을 독립된 흰색 카드로 표시한다. */
+.region-popup-risk-column {
+  min-width: 0;
+  padding: 18px;
+  background: #ffffff;
+  border: 1px solid #dbe3ee;
+  border-radius: 14px;
+}
+
+/* tg 추가 / 좌측 실시간 기상 위험 4개 지표를 2열 2행으로 배치한다. */
+.region-popup-weather-risk-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0 0;
+}
+
+.region-popup-weather-risk-grid > div {
+  min-height: 104px;
+  padding: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+}
+
+.region-popup-weather-risk-grid dt,
+.region-popup-local-metric-list dt,
+.region-popup-population-card dt {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.region-popup-weather-risk-grid dd {
+  margin: 7px 0 0;
+  color: #0f172a;
+  font-size: 24px;
+  font-weight: 850;
+}
+
+.region-popup-weather-risk-grid small {
+  display: block;
+  margin-top: 6px;
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+/* tg 수정 / 향후 12시간 기온 그래프를 좌측 기상 위험 영역의 하단 카드로 표시한다. */
+.region-popup-weather-forecast-card {
+  margin-top: 14px;
+  padding: 15px 16px 12px;
+  background: #ffffff;
+}
+
+.region-popup-weather-forecast-card .region-popup-temperature-chart {
+  min-height: 190px;
+  margin-bottom: 0;
+}
+
+.region-popup-weather-forecast-card #region-popup-temperature-chart-svg {
+  height: 190px;
+}
+
+/* tg 추가 / 우측 지역 취약성 지표를 위에서 아래로 자연스럽게 이어지게 한다. */
+.region-popup-local-vulnerability-column {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* tg 수정 / 인구수 지표를 우측 최상단의 독립 카드로 강조한다. */
+.region-popup-population-card {
+  margin: 0;
+}
+
+.region-popup-population-card .region-popup-population-metric {
+  display: grid;
+  gap: 5px;
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+}
+
+.region-popup-population-card dd {
+  margin: 2px 0 0;
+  color: #0f172a;
+  font-size: 24px;
+  font-weight: 850;
+}
+
+.region-popup-population-card small {
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+/* tg 수정 / 파이차트는 기존 디자인을 유지하면서 우측 열 너비에 맞춘다. */
+.region-popup-local-vulnerability-column > .region-popup-shelter-chart-card {
+  margin: 0;
+  min-height: 0;
+}
+
+.region-popup-local-vulnerability-column > .region-popup-shelter-chart-card #region-popup-shelter-chart {
+  max-width: 380px;
+}
+
+/* tg 추가 / 지역 취약성의 도시 환경 지표를 파이차트 아래에 한 줄씩 세로 배치한다. */
+.region-popup-local-metric-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.region-popup-local-metric-list > div {
+  padding: 15px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+}
+
+.region-popup-local-metric-list dd {
+  margin: 5px 0 0;
+  color: #0f172a;
+  font-size: 20px;
+  font-weight: 850;
+}
+
+/* tg 수정 / 새 2열 구조에서는 기존 팝업 바로 아래 카드의 고정 배치 규칙을 적용하지 않는다. */
+.region-popup > .region-popup-metric-section,
+.region-popup > .region-popup-shelter-chart-card {
+  width: auto;
+  margin: 0;
+}
+
+/* tg 추가 / 화면이 좁아지면 두 위험 영역을 위아래로 쌓는다. */
+@media (max-width: 900px) {
+  .region-popup-risk-layout {
+    grid-template-columns: 1fr;
+    padding: 14px;
+  }
+}
+
+@media (max-width: 560px) {
+  .region-popup-weather-risk-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .region-popup-risk-column {
+    padding: 14px;
+  }
+}
+
+/* tg 수정 / 기존 팝업의 과거 grid-area 규칙이 새 2열 본문을 한쪽 좁은 칸에 밀어 넣지 않도록 팝업 자체를 세로 흐름으로 되돌린다. */
+.region-popup {
+  display: block;
+}
+
+/* tg 수정 / 새 위험 영역이 팝업 전체 너비를 사용하도록 기존 grid 자동 배치 영향을 제거한다. */
+.region-popup > .region-popup-risk-layout {
+  width: 100%;
+  margin: 0;
+}
+
+/* tg 수정 / 출처 영역도 새 세로 흐름에 맞춰 팝업 하단 전체 너비를 사용한다. */
+.region-popup > .region-popup-source {
+  width: 100%;
+  margin: 0;
+  padding: 0 24px 18px;
+}
+
+/* tg 수정 / 우측 열 안에서 파이차트와 요약 카드가 너무 좁아져 글자가 세로로 쪼개지지 않도록 최소 너비를 보장한다. */
+.region-popup-local-vulnerability-column,
+.region-popup-local-vulnerability-column > .region-popup-shelter-chart-card,
+.region-popup-shelter-analysis,
+.region-popup-shelter-chart-wrap,
+.region-popup-shelter-summary {
+  min-width: 0;
+}
+
+/* tg 수정 / 파이차트와 요약 수치는 우측 열 안에서 안정적으로 나란히 배치한다. */
+.region-popup-local-vulnerability-column .region-popup-shelter-analysis {
+  grid-template-columns: minmax(230px, 1fr) minmax(180px, 0.72fr);
+}
+
+/* tg 수정 / 파이차트 SVG가 카드 너비를 충분히 사용하도록 고정 축소를 방지한다. */
+.region-popup-local-vulnerability-column #region-popup-shelter-chart {
+  width: 100%;
+  max-width: 380px;
+  min-width: 230px;
+  height: 210px;
+}
+
+/* tg 수정 / 평가 문구가 글자 단위로 줄바꿈되지 않도록 일반적인 문장 단위 줄바꿈을 사용한다. */
+.region-popup-shelter-evaluation,
+.region-popup-shelter-evaluation .region-popup-shelter-comparison,
+.region-popup-shelter-chart-legend {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* tg 수정 / 화면 폭이 줄어들면 파이차트와 요약 카드를 위아래로 쌓아 폭 부족을 방지한다. */
+@media (max-width: 1080px) {
+  .region-popup-local-vulnerability-column .region-popup-shelter-analysis {
+    grid-template-columns: 1fr;
+  }
+
+  .region-popup-local-vulnerability-column #region-popup-shelter-chart {
+    min-width: 0;
+    margin: 0 auto;
+  }
+
+  .region-popup-local-vulnerability-column .region-popup-shelter-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .region-popup-local-vulnerability-column .region-popup-shelter-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* tg 수정 / 팝업 전체 내용을 한 화면에 가깝게 표시하도록 높이와 내부 간격을 압축한다. */
+.region-popup {
+  max-height: min(900px, calc(100vh - 28px));
+  overflow: hidden;
+}
+
+.region-popup-risk-layout {
+  align-items: stretch;
+  gap: 14px;
+  padding: 12px 18px 8px;
+}
+
+.region-popup-risk-column {
+  padding: 14px;
+}
+
+.region-popup-section-heading h3 {
+  margin: 0;
+}
+
+.region-popup-section-heading p {
+  margin-top: 5px;
+}
+
+/* tg 수정 / 좌측 실시간 기상 지표와 온도 그래프 높이를 줄여 세로 스크롤을 최소화한다. */
+.region-popup-weather-risk-grid {
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.region-popup-weather-risk-grid > div {
+  min-height: 86px;
+  padding: 11px 13px;
+}
+
+.region-popup-weather-risk-grid dd {
+  margin-top: 5px;
+  font-size: 22px;
+}
+
+.region-popup-weather-forecast-card {
+  margin-top: 10px;
+  padding: 12px 14px 9px;
+}
+
+.region-popup-weather-forecast-card .region-popup-temperature-chart,
+.region-popup-weather-forecast-card #region-popup-temperature-chart-svg {
+  min-height: 150px;
+  height: 150px;
+}
+
+/* tg 추가 / 인구수·건물밀집도·녹지율·불투수면율을 우측 상단 2열 2행으로 배치한다. */
+.region-popup-local-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.region-popup-local-overview-grid > div {
+  min-width: 0;
+  min-height: 122px;
+  padding: 11px 13px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+}
+
+.region-popup-local-overview-grid dt {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.region-popup-local-overview-grid dd {
+  margin: 4px 0 0;
+  color: #0f172a;
+  font-size: 20px;
+  font-weight: 850;
+}
+
+.region-popup-local-overview-grid .region-popup-population-metric {
+  display: grid;
+  gap: 3px;
+}
+
+.region-popup-local-overview-grid .region-popup-population-metric dd {
+  font-size: 22px;
+}
+
+.region-popup-local-overview-grid .region-popup-population-metric small {
+  color: #64748b;
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.region-popup-local-overview-grid .region-popup-average-bar {
+  margin-top: 8px;
+}
+
+.region-popup-local-overview-grid .region-popup-comparison-metric > small {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.3;
+}
+
+/* tg 수정 / 평균보다 유리한 비교 문구는 초록색, 불리한 비교 문구는 빨간색으로 표시한다. */
+.region-popup-local-overview-grid small.metric-positive,
+.region-popup-local-overview-grid .metric-positive {
+  color: #047857;
+}
+
+.region-popup-local-overview-grid small.metric-negative,
+.region-popup-local-overview-grid .metric-negative {
+  color: #b91c1c;
+}
+
+/* tg 수정 / 큰 수치와 중복되는 '해당 동' 작은 라벨은 네 지표 모두 숨긴다. */
+#region-popup-green-current-label,
+#region-popup-building-current-label,
+#region-popup-impervious-current-label {
+  display: none;
+}
+
+/* tg 수정 / 대구 평균 라벨만 남기되 공간을 적게 사용한다. */
+.region-popup-local-overview-grid .region-popup-average-labels {
+  justify-content: flex-end;
+  margin-top: 3px;
+  font-size: 9px;
+}
+
+/* tg 수정 / 파이차트 카드를 2x2 지표 아래에 작게 배치하여 한 화면 안에 들어오게 한다. */
+.region-popup-local-vulnerability-column {
+  gap: 9px;
+}
+
+.region-popup-local-vulnerability-column > .region-popup-shelter-chart-card {
+  padding: 11px 13px 9px;
+}
+
+.region-popup-local-vulnerability-column .region-popup-shelter-analysis {
+  grid-template-columns: minmax(190px, 0.9fr) minmax(160px, 0.7fr);
+  gap: 10px;
+}
+
+.region-popup-local-vulnerability-column #region-popup-shelter-chart {
+  min-width: 190px;
+  max-width: 285px;
+  height: 160px;
+}
+
+.region-popup-local-vulnerability-column .region-popup-shelter-chart-wrap,
+.region-popup-local-vulnerability-column #region-popup-shelter-chart-message {
+  min-height: 160px;
+}
+
+.region-popup-local-vulnerability-column .region-popup-shelter-summary {
+  gap: 6px;
+}
+
+.region-popup-local-vulnerability-column .region-popup-shelter-summary > div {
+  padding: 8px 10px;
+}
+
+.region-popup-local-vulnerability-column .region-popup-shelter-evaluation {
+  margin-top: 7px;
+  padding: 8px 10px;
+}
+
+.region-popup-local-vulnerability-column .region-popup-shelter-chart-legend {
+  margin-top: 3px;
+}
+
+/* tg 수정 / 주요 취약 요인과 출처 영역도 높이를 줄여 팝업 내부 스크롤을 방지한다. */
+.region-popup-local-vulnerability-column .region-popup-key-factor {
+  margin-top: 0;
+  padding: 8px 10px;
+}
+
+.region-popup-source {
+  padding-bottom: 8px !important;
+}
+
+@media (max-height: 820px) and (min-width: 901px) {
+  .region-popup-header {
+    padding: 14px 20px;
+  }
+
+  .region-popup-risk-layout {
+    padding-top: 8px;
+  }
+
+  .region-popup-weather-risk-grid > div {
+    min-height: 76px;
+  }
+
+  .region-popup-weather-forecast-card .region-popup-temperature-chart,
+  .region-popup-weather-forecast-card #region-popup-temperature-chart-svg {
+    min-height: 128px;
+    height: 128px;
+  }
+
+  .region-popup-local-overview-grid > div {
+    min-height: 108px;
+  }
+
+  .region-popup-local-vulnerability-column #region-popup-shelter-chart,
+  .region-popup-local-vulnerability-column .region-popup-shelter-chart-wrap,
+  .region-popup-local-vulnerability-column #region-popup-shelter-chart-message {
+    min-height: 138px;
+    height: 138px;
+  }
+}
+
+@media (max-width: 900px) {
+  .region-popup {
+    overflow: auto;
+  }
+
+  .region-popup-local-overview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* tg 추가 / 팝업 지표 제목 왼쪽에 작은 단색 SVG 아이콘 배지를 표시한다. */
+.region-popup-metric-label,
+.region-popup-heading-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.region-popup-metric-icon,
+.region-popup-heading-icon {
+  display: inline-grid;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  place-items: center;
+  color: #2563eb;
+  background: #eff6ff;
+  border-radius: 7px;
+}
+
+.region-popup-heading-icon {
+  width: 26px;
+  height: 26px;
+  flex-basis: 26px;
+}
+
+.region-popup-metric-icon svg,
+.region-popup-heading-icon svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* tg 추가 / 지표 성격별 아이콘 색상을 구분해 한눈에 찾기 쉽게 한다. */
+.metric-icon-temperature,
+.metric-icon-humidity,
+.metric-icon-feels,
+.metric-icon-wind {
+  color: #2563eb;
+  background: #eff6ff;
+}
+
+.metric-icon-population {
+  color: #7c3aed;
+  background: #f5f3ff;
+}
+
+.metric-icon-building {
+  color: #475569;
+  background: #f1f5f9;
+}
+
+.metric-icon-green {
+  color: #059669;
+  background: #ecfdf5;
+}
+
+.metric-icon-impervious {
+  color: #ea580c;
+  background: #fff7ed;
+}
+
+.metric-icon-shelter {
+  color: #0f766e;
+  background: #f0fdfa;
+}
+
+/* tg 수정 / 아이콘이 추가되어도 지표명과 수치 사이 간격이 과하게 벌어지지 않게 한다. */
+.region-popup-weather-risk-grid dt,
+.region-popup-local-overview-grid dt {
+  min-height: 24px;
+}
+
+.region-popup-weather-risk-grid dd,
+.region-popup-local-overview-grid dd {
+  margin-top: 6px;
+}
+
+/* tg 수정 / 그래프 시간 라벨이 하단 스크롤바에 가려지지 않도록 표시 영역을 확보한다. */
+.region-popup-weather-forecast-card .region-popup-temperature-chart {
+  padding-bottom: 6px;
+}
+
+.region-popup-weather-forecast-card .region-popup-temperature-scroll-inner {
+  min-height: 150px;
+}
+
+.region-popup-weather-forecast-card #region-popup-temperature-chart-svg {
+  overflow: visible;
+}
+
+.region-popup-weather-forecast-card .temperature-chart-time {
+  dominant-baseline: middle;
+}
+
+
+/* tg 수정 / 주요 취약 요인을 좌측 기온 예보 아래에 배치해 좌우 열의 시각적 균형을 맞춘다. */
+.region-popup-weather-risk-column .region-popup-key-factor {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 9px 12px;
+}
+
+.region-popup-weather-risk-column .region-popup-key-factor strong {
+  flex: 0 0 auto;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.region-popup-weather-risk-column .region-popup-key-factor p {
+  min-width: 0;
+  margin: 0;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* tg 수정 / 주요 취약 요인을 우측 열에서 제거했으므로 우측 열 전용 여백 규칙을 해제한다. */
+.region-popup-local-vulnerability-column .region-popup-key-factor {
+  margin: 0;
+}
+
+@media (max-width: 560px) {
+  .region-popup-weather-risk-column .region-popup-key-factor {
+    display: block;
+  }
+
+  .region-popup-weather-risk-column .region-popup-key-factor p {
+    margin-top: 4px;
+  }
 }
