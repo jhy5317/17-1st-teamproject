@@ -1533,7 +1533,7 @@ body {
 .popup-submit-btn:hover,
 .popup-submit-btn:focus-visible {
   background: #0d96b3;
-  /* 서현_ outline: 2px solid #7dd3e2;
+  /* 0806 서현_ 검색 테두리 outline: 2px solid #7dd3e2;
   outline-offset: 2px; 삭제*/
 }
 
