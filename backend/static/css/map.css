@@ -572,16 +572,16 @@ header p {
     transform: translateY(12px) scale(0.985);
   }
 }
-/**/
 
+/* 0806 서현_지도 높이, border-radius 수정 */
 #map {
   position: relative;
   width: 100%;
-  height: calc(100vh - 150px);
-  min-height: 600px;
+  height: calc(100vh - 210px);
+  min-height: 580px;
   overflow: hidden;
   border: 1px solid #cbd5e1;
-  border-radius: 16px;
+  border-radius: 8px;
 }
 
 .instant-zoom-control {
@@ -801,33 +801,20 @@ header p {
   border-radius: 3px;
 }
 
-.risk-low {
-  background: #fef3c7;
-}
-
-.risk-moderate {
-  background: #fdba74;
-}
-
-.risk-high {
-  background: #f97316;
-}
-
-.risk-critical {
-  background: #b91c1c;
-}
-
-.risk-none {
-  background: #e2e8f0;
-}
+/* 0806 서현_상대 취약도 중복 삭제 */
 
 /* jisu_05_추가수정 / 순위 사이드바 CSS 추가*/
 /* 지도 오른쪽 상·하위 순위 사이드바 */
+/* 0806 서현_랭킹 사이드바 길이를 지도와 통일 */
 .ranking-sidebar {
   display: grid;
   min-width: 0;
+  height: calc(100vh - 210px);      /* 추가 */
+  min-height: 500px;      /* 추가 */
   align-content: start;
-  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;      /* 추가 및 grid-template-columns: 1fr; 삭제 */
+  grid-column: 2;
+  grid-row: 1;
   gap: 16px;
 }
 
@@ -881,6 +868,10 @@ header p {
   background: #fafbfc;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
+  /* 0806 서현_랭킹 리스트 사이즈 맞게 수정 */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .ranking-heading {
@@ -910,10 +901,38 @@ header p {
   padding: 0;
   list-style: none;
   counter-reset: risk-rank;
+  /* 0806 서현_랭킹 리스트 사이즈 맞게 수정 */
+  flex: 1;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
 }
 
 .ranking-item {
   counter-increment: risk-rank;
+}
+
+/* 0806 서현_점수 색 순위 별 지정 (932-954줄) */
+.ranking-item:nth-child(1) .ranking-score {
+  color: #e73f3f !important;
+}
+
+.ranking-item:nth-child(2) .ranking-score {
+  color: #f78164 !important;
+}
+
+.ranking-item:nth-child(3) .ranking-score {
+  color: #fbb992 !important;
+}
+
+.ranking-low .ranking-item:nth-child(1) .ranking-score {
+  color: #62e3c9 !important;
+}
+
+.ranking-low .ranking-item:nth-child(2) .ranking-score {
+  color: #2be2a5 !important;
+}
+
+.ranking-low .ranking-item:nth-child(3) .ranking-score {
+  color: #17d48f !important;
 }
 
 .ranking-button {
@@ -1296,7 +1315,7 @@ body {
   position: relative;
   max-width: 900px;
   margin: 0 auto;
-  padding: 42px 20px 30px;
+  padding: 20px 20px 30px;
 }
 
 .close-popup-btn {
@@ -1326,7 +1345,7 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 8px 0 20px;
+  margin: 0px 0 8px;
 }
 
 .input-container {
@@ -1579,13 +1598,15 @@ body {
   grid-row: 1;
 }
 
+/* 0806 서현: 상대 취약도, 체크박스 여백 띄우기 */
 .map-top-bar {
   display: flex;
   width: 100%;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 0 4px 12px;
+  margin-top: 14px;
+  padding: 0 4px;
 }
 
 .legend-group,
@@ -1625,16 +1646,17 @@ body {
   border-radius: 3px;
 }
 
+/* 0806 서현_색상 더 눈에 띄게 수정 */
 .risk-low {
   background: #ffedc7;
 }
 
 .risk-moderate {
-  background: #ffa6a6;
+  background: #ffc7a6;
 }
 
 .risk-high {
-  background: #ff7070;
+  background: #ff8d70;
 }
 
 .risk-critical {

@@ -131,10 +131,18 @@
                 <option value="none">데이터 없음</option>
               </select>
             </label>
+
             <label class="popup-layer-toggle">
               <input id="vulnerability-toggle" type="checkbox" checked />
-              취약도 색상
+              <!-- 0806 서현_텍스트 수정 -->
+              취약도 색상 표시
             </label>
+              <!-- 0806 서현_무더위 쉼터 표시 체크박스 추가 -->
+            <label class="popup-layer-toggle">
+                <input type="checkbox" id="shelter-layer-toggle"> 무더위 쉼터 표시
+              </label>
+            </div>
+            
           </div>
           <p id="map-status" class="map-status" role="status" aria-live="polite">
             행정동 데이터를 불러오는 중입니다.
@@ -185,23 +193,20 @@
 
       <div class="map-layout">
         <div class="map-container">
-          <section class="map-top-bar" aria-label="폭염 상대 취약도 범례 및 경계 설정">
-            <div class="legend-group">
-              <strong class="legend-title">상대 취약도</strong>
-              <div class="legend-items">
-                <span><i class="risk-color risk-low"></i>낮음</span>
-                <span><i class="risk-color risk-moderate"></i>보통</span>
-                <span><i class="risk-color risk-high"></i>높음</span>
-                <span><i class="risk-color risk-critical"></i>매우 높음</span>
-                <span><i class="risk-color risk-none"></i>데이터 없음</span>
-              </div>
-            </div>
-            <label class="boundary-toggle-label">
-              <input id="boundary-toggle" type="checkbox" checked />
-              <span>행정동 경계 표시</span>
-            </label>
-          </section>
+          <!-- 0806 서현 : 상대 취약도, 체크박스(행정동 경계 표시->무더위 쉼터 표시) 위치 이동 -->
           <div id="map" aria-label="대구광역시 행정동 지도"></div>
+            <section class="map-top-bar" aria-label="폭염 상대 취약도 범례 및 경계 설정">
+              <div class="legend-group">
+                <strong class="legend-title">상대 취약도</strong>
+                <div class="legend-items">
+                  <span><i class="risk-color risk-low"></i>낮음</span>
+                  <span><i class="risk-color risk-moderate"></i>보통</span>
+                  <span><i class="risk-color risk-high"></i>높음</span>
+                  <span><i class="risk-color risk-critical"></i>매우 높음</span>
+                  <span><i class="risk-color risk-none"></i>데이터 없음</span>
+                </div>
+              </div>
+            </section>
         </div>
         <!--jisu_05_추가 / 상·하위 취약지역 순위를 지도 오른쪽에 세로로 표시한다. -->
         <aside id="ranking-sidebar" class="ranking-sidebar" aria-label="폭염 취약지역 순위">
