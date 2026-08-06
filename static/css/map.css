@@ -293,7 +293,8 @@ header p {
 
 .region-popup {
   width: 100%;
-  max-height: min(760px, calc(100vh - 106px));
+  /* tg 수정 / 분석 정보와 확대된 파이차트가 잘리지 않도록 팝업 세로 크기를 늘린다. */
+  max-height: min(840px, calc(100vh - 72px));
   overflow: auto;
   background: #f8fafc;
   border: 1px solid #cbd5e1;
@@ -315,7 +316,8 @@ header p {
 .region-popup-shelter-panel {
   display: flex;
   min-width: 0;
-  max-height: min(760px, calc(100vh - 106px));
+  /* tg 수정 / 메인 팝업과 높이를 맞춰 쉼터 목록을 더 길게 표시한다. */
+  max-height: min(840px, calc(100vh - 72px));
   flex-direction: column;
   padding: 18px;
   overflow: hidden;
@@ -411,7 +413,7 @@ header p {
 }
 /*----------------------------------------------*/
 .region-popup-map-card {
-  margin: 16px 24px 0;
+  margin: 0;
   overflow: hidden;
   background: #ffffff;
   border: 1px solid #dbe3ee;
@@ -422,8 +424,120 @@ header p {
 선택한 행정동을 실제 네이버 지도로 표시한다. */
 #region-popup-map {
   width: 100%;
-  height: 290px;
+  /* tg 수정 / 파이차트 확대에 맞춰 상단 행 높이를 늘리되 기존 지도보다 작게 유지한다. */
+  height: 220px;
   background: #e2e8f0;
+}
+
+
+/* tg 추가 / 파란 헤더 아래 왼쪽에는 축소 지도, 오른쪽에는 쉼터 이용대상 파이차트를 배치한다. */
+.region-popup-analysis-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+  align-items: stretch;
+  gap: 16px;
+  padding: 16px 24px 0;
+}
+
+/* tg 추가 / 지도와 파이차트 카드의 높이를 동일하게 맞춘다. */
+.region-popup-analysis-top > .region-popup-map-card,
+.region-popup-analysis-top > .region-popup-shelter-chart-card {
+  /* tg 수정 / 지도와 확대된 파이차트가 충분한 높이를 갖도록 상단 카드 높이를 늘린다. */
+  min-height: 220px;
+}
+
+.region-popup-shelter-chart-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 16px;
+}
+
+.region-popup-shelter-chart-card .region-popup-card-heading {
+  flex: 0 0 auto;
+}
+
+.region-popup-shelter-chart-card .region-popup-card-heading h3 {
+  margin-top: 0;
+  font-size: 16px;
+}
+
+.region-popup-shelter-chart-card .region-popup-card-heading p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.region-popup-shelter-chart-wrap {
+  position: relative;
+  display: grid;
+  /* tg 수정 / 확대된 파이차트가 들어갈 수 있도록 차트 영역 높이를 늘린다. */
+  min-height: 172px;
+  flex: 1;
+  place-items: center;
+}
+
+#region-popup-shelter-chart {
+  display: block;
+  width: 100%;
+  /* tg 수정 / 파이차트를 더 크게 표시한다. */
+  max-width: 380px;
+  height: 172px;
+  overflow: visible;
+}
+
+#region-popup-shelter-chart[hidden] {
+  display: none;
+}
+
+#region-popup-shelter-chart-message {
+  /* tg 수정 / 파이차트 로딩 문구 영역도 확대된 차트 높이에 맞춘다. */
+  min-height: 172px;
+  margin: 0;
+  place-items: center;
+  text-align: center;
+}
+
+.region-popup-shelter-chart-tooltip {
+  position: absolute;
+  z-index: 5;
+  min-width: 150px;
+  max-width: 220px;
+  padding: 10px 12px;
+  color: #ffffff;
+  font-size: 11px;
+  line-height: 1.5;
+  background: rgb(15 23 42 / 94%);
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgb(15 23 42 / 22%);
+  pointer-events: none;
+}
+
+.region-popup-shelter-chart-tooltip[hidden] {
+  display: none;
+}
+
+.region-popup-shelter-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 14px;
+  margin-top: 4px;
+  color: #475569;
+  font-size: 11px;
+}
+
+.region-popup-shelter-chart-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.region-popup-shelter-chart-legend-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
 }
 
 
@@ -1271,6 +1385,15 @@ header p {
     max-height: 320px;
   }
 
+  /* tg 추가 / 태블릿에서는 지도와 파이차트를 위아래로 쌓는다. */
+  .region-popup-analysis-top {
+    grid-template-columns: 1fr;
+  }
+
+  #region-popup-map {
+    height: 220px;
+  }
+
   .map-toolbar {
     flex-wrap: wrap;
   }
@@ -1394,12 +1517,23 @@ header p {
     padding: 16px 18px 0;
   }
 
+  /* tg 수정 / 모바일에서도 상단 분석 영역의 좌우 여백만 줄이고 카드 margin은 사용하지 않는다. */
+  .region-popup-analysis-top {
+    gap: 12px;
+    padding: 14px 18px 0;
+  }
+
   .region-popup-map-card {
-    margin: 14px 18px 0;
+    margin: 0;
   }
 
   #region-popup-map {
-    height: 250px;
+    height: 210px;
+  }
+
+  .region-popup-shelter-chart-card {
+    /* tg 수정 / 모바일에서도 확대된 파이차트가 잘리지 않도록 높이를 늘린다. */
+    min-height: 230px;
   }
 
   .region-popup-grid {
@@ -2278,4 +2412,748 @@ body.district-chart-open {
     justify-content: center;
     padding: 0;
   }
+}
+
+
+/* tg 추가 / 버거 버튼을 기준으로 기능 메뉴를 띄울 수 있도록 헤더를 기준 요소로 사용한다. */
+.main-header {
+  position: relative;
+}
+
+/* tg 추가 / 버거 버튼 클릭 시 표시되는 세로 기능 메뉴 */
+.header-function-menu {
+  position: absolute;
+  z-index: 2100;
+  top: calc(100% - 10px);
+  right: 20px;
+  display: grid;
+  width: 220px;
+  padding: 8px;
+  background: #ffffff;
+  border: 1px solid #dbe7eb;
+  border-radius: 14px;
+  box-shadow: 0 16px 38px rgb(15 23 42 / 18%);
+}
+
+.header-function-menu[hidden] {
+  display: none;
+}
+
+.header-function-menu-item {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 14px;
+  color: #1e293b;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 750;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.header-function-menu-item:hover,
+.header-function-menu-item:focus-visible {
+  color: #087d95;
+  background: #e6f8fb;
+  outline: none;
+}
+
+/* tg 추가 / 무더위쉼터 찾기 패널은 기존 구·군 분석 패널 디자인을 재사용한다. */
+.shelter-finder-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.shelter-finder-panel .region-popup-card-heading {
+  flex: 0 0 auto;
+  margin-top: 4px;
+  padding: 14px 0 10px;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.shelter-finder-panel .region-popup-shelter-list {
+  flex: 1;
+  min-height: 0;
+  margin-top: 8px;
+  overflow-y: auto;
+}
+
+/* tg 수정 / 새 분석 팝업은 오른쪽 쉼터 패널 없이 단일 카드로 표시한다. */
+.region-popup-shell {
+  width: min(1040px, 100%);
+}
+
+.region-popup {
+  max-height: min(860px, calc(100vh - 72px));
+}
+
+/* tg 추가 / 현재기온·습도·체감온도·풍속·환경지표 카드 영역 */
+.region-popup-metric-section {
+  margin: 18px 24px 0;
+  padding: 18px;
+  background: #ffffff;
+  border: 1px solid #dbe3ee;
+  border-radius: 14px;
+}
+
+.region-popup-section-heading h3,
+.region-popup-section-heading p {
+  margin: 0;
+}
+
+.region-popup-section-heading h3 {
+  color: #0f172a;
+  font-size: 18px;
+}
+
+.region-popup-section-heading p {
+  margin-top: 5px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.region-popup-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0 0;
+}
+
+.region-popup-metric-grid > div {
+  min-width: 0;
+  padding: 14px;
+  background: #f8fafc;
+  border: 1px solid #edf2f7;
+  border-radius: 11px;
+}
+
+.region-popup-metric-grid dt {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.region-popup-metric-grid dd {
+  margin: 6px 0 0;
+  color: #0f172a;
+  font-size: 20px;
+  font-weight: 850;
+}
+
+/* tg 수정 / 녹지율 실제 값은 다른 폭염 취약 요인 값과 같은 글자 크기와 굵기로 표시한다. */
+#region-popup-green-ratio {
+  color: #0f172a;
+  font-size: 20px;
+  font-weight: 850;
+}
+
+/* tg 수정 / 아직 값이 없는 건물밀집도만 준비 중 안내 스타일을 유지한다. */
+#region-popup-building-density {
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.region-popup-metric-time {
+  margin: 12px 0 0;
+  color: #64748b;
+  font-size: 11px;
+  text-align: right;
+}
+
+/* tg 수정 / 파이차트와 기온 그래프를 팝업 내부 독립 카드로 배치한다. */
+.region-popup > .region-popup-shelter-chart-card,
+.region-popup > .region-popup-chart-card {
+  margin: 16px 24px 0;
+}
+
+.region-popup > .region-popup-shelter-chart-card {
+  min-height: 270px;
+}
+
+.region-popup > .region-popup-chart-card {
+  min-height: 235px;
+  margin-bottom: 8px;
+}
+
+.region-popup > .region-popup-shelter-chart-card #region-popup-shelter-chart {
+  max-width: 420px;
+  height: 190px;
+}
+
+.region-popup > .region-popup-shelter-chart-card
+  .region-popup-shelter-chart-wrap {
+  min-height: 190px;
+}
+
+/* tg 수정 / 새 팝업에서는 과거의 지도·2열 날씨 레이아웃 스타일을 사용하지 않는다. */
+.region-popup-analysis-top,
+.region-popup-weather-grid,
+.region-popup-layout {
+  min-width: 0;
+}
+
+/* tg 추가 / 쉼터 찾기 모드에서 메인 지도 마커가 목록 선택과 연결됨을 보여준다. */
+body.shelter-finder-open #map {
+  box-shadow:
+    0 0 0 3px rgb(16 178 211 / 20%),
+    0 8px 24px rgb(15 23 42 / 12%);
+}
+
+@media (max-width: 900px) {
+  .header-function-menu {
+    right: 16px;
+  }
+
+  .region-popup-metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .header-function-menu {
+    top: calc(100% - 4px);
+    right: 12px;
+    width: min(220px, calc(100vw - 24px));
+  }
+
+  .region-popup-metric-section,
+  .region-popup > .region-popup-shelter-chart-card,
+  .region-popup > .region-popup-chart-card {
+    margin-right: 18px;
+    margin-left: 18px;
+  }
+
+  .region-popup-metric-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* tg 수정 / 팝업 상단은 좌측 폭염 취약 요인, 우측 무더위쉼터 이용 대상으로 배치한다. */
+.region-popup {
+  display: grid;
+  grid-template-columns:
+    24px
+    minmax(0, 1.08fr)
+    minmax(0, 0.92fr)
+    24px;
+  grid-template-areas:
+    "header header header header"
+    ". metrics shelter ."
+    ". forecast forecast ."
+    ". source source .";
+  column-gap: 16px;
+  row-gap: 16px;
+}
+
+/* tg 수정 / 파란 팝업 헤더는 상단 전체 너비를 사용한다. */
+.region-popup > .region-popup-header {
+  grid-area: header;
+}
+
+/* tg 수정 / 폭염 취약 요인 카드를 왼쪽 상단에 배치한다. */
+.region-popup > .region-popup-metric-section {
+  grid-area: metrics;
+  align-self: stretch;
+  margin: 2px 0 0;
+}
+
+/* tg 수정 / 지표 6개를 2열 3행으로 표시한다. */
+.region-popup-metric-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* tg 수정 / 무더위쉼터 이용 대상 차트를 오른쪽 상단에 배치한다. */
+.region-popup > .region-popup-shelter-chart-card {
+  grid-area: shelter;
+  align-self: stretch;
+  min-height: 0;
+  margin: 2px 0 0;
+}
+
+/* tg 수정 / 오른쪽 카드 안에서 파이차트가 중앙에 충분한 크기로 보이도록 한다. */
+.region-popup > .region-popup-shelter-chart-card
+  .region-popup-shelter-chart-wrap {
+  min-height: 210px;
+}
+
+.region-popup > .region-popup-shelter-chart-card
+  #region-popup-shelter-chart {
+  width: 100%;
+  max-width: 390px;
+  height: 210px;
+}
+
+/* tg 수정 / 향후 12시간 기온 그래프는 상단 두 카드 아래 전체 너비로 배치한다. */
+.region-popup > .region-popup-chart-card {
+  grid-area: forecast;
+  min-height: 235px;
+  margin: 0 0 8px;
+}
+
+/* tg 수정 / 출처는 팝업 최하단 전체 너비에 표시한다. */
+.region-popup > .region-popup-source {
+  grid-area: source;
+  margin: -8px 0 18px;
+}
+
+/* tg 수정 / 화면이 좁아지면 상단 두 카드를 세로로 배치한다. */
+@media (max-width: 900px) {
+  .region-popup {
+    grid-template-columns: 18px minmax(0, 1fr) 18px;
+    grid-template-areas:
+      "header header header"
+      ". metrics ."
+      ". shelter ."
+      ". forecast ."
+      ". source .";
+    column-gap: 0;
+  }
+
+  .region-popup > .region-popup-metric-section,
+  .region-popup > .region-popup-shelter-chart-card,
+  .region-popup > .region-popup-chart-card {
+    margin-right: 0;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .region-popup {
+    grid-template-columns: 14px minmax(0, 1fr) 14px;
+  }
+
+  .region-popup-metric-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* tg 추가 / 종합 점수 아래 행정동 순위를 작게 표시한다. */
+#region-popup-rank {
+  display: block;
+  margin-top: 4px;
+  color: rgb(255 255 255 / 78%);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* tg 수정 / 폭염 취약 요인 제목과 기준 시각을 한 줄에 정렬한다. */
+.region-popup-section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.region-popup-weather-time {
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 750;
+  white-space: nowrap;
+  background: #f1f5f9;
+  border-radius: 999px;
+}
+
+/* tg 추가 / 각 지표 아래 보조 설명과 평균 비교 문구 */
+.region-popup-metric-grid small {
+  display: block;
+  margin-top: 7px;
+  color: #94a3b8;
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.region-popup-metric-grid small.metric-positive {
+  color: #047857;
+}
+
+.region-popup-metric-grid small.metric-negative {
+  color: #b91c1c;
+}
+
+/* tg 추가 / 현재 데이터에서 큰 위험 요인을 한 문장으로 요약한다. */
+.region-popup-key-factor {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 10px;
+}
+
+.region-popup-key-factor strong {
+  color: #9a3412;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.region-popup-key-factor p {
+  margin: 0;
+  color: #7c2d12;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+
+/* tg 수정 / 파이차트와 핵심 수치를 한 카드 안에서 나란히 배치한다. */
+.region-popup-shelter-analysis {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(140px, 0.85fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.region-popup-shelter-summary {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.region-popup-shelter-summary > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 10px;
+  background: #f8fafc;
+  border: 1px solid #e8eef5;
+  border-radius: 9px;
+}
+
+.region-popup-shelter-summary dt {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.region-popup-shelter-summary dd {
+  margin: 0;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.region-popup-shelter-comparison {
+  margin: 8px 0 0;
+  padding: 9px 11px;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 650;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+#region-popup-forecast-summary {
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .region-popup-shelter-analysis {
+    grid-template-columns: 1fr;
+  }
+
+  .region-popup-shelter-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .region-popup-section-heading {
+    display: grid;
+  }
+
+  .region-popup-weather-time {
+    justify-self: start;
+  }
+
+  .region-popup-key-factor {
+    grid-template-columns: 1fr;
+  }
+
+  .region-popup-shelter-summary {
+    grid-template-columns: 1fr;
+  }
+
+  #region-popup-forecast-summary {
+    white-space: normal;
+    text-align: right;
+  }
+}
+
+
+/* tg 추가 / 녹지율·건물밀집도의 해당 동 값과 대구 평균을 한 줄에서 비교한다. */
+.region-popup-comparison-metric {
+  overflow: hidden;
+}
+
+.region-popup-average-bar {
+  position: relative;
+  height: 8px;
+  margin-top: 12px;
+  overflow: visible;
+  background: #e2e8f0;
+  border-radius: 999px;
+}
+
+.region-popup-average-bar-fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: #0ea5a8;
+  border-radius: inherit;
+  transition: width 0.25s ease;
+}
+
+.region-popup-average-marker {
+  position: absolute;
+  top: -4px;
+  left: 0;
+  width: 2px;
+  height: 16px;
+  background: #0f172a;
+  border-radius: 999px;
+  transform: translateX(-1px);
+  transition: left 0.25s ease;
+}
+
+.region-popup-average-marker::after {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  content: "";
+  background: #0f172a;
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+
+.region-popup-average-bar.is-empty .region-popup-average-bar-fill {
+  width: 0 !important;
+}
+
+.region-popup-average-bar.is-empty .region-popup-average-marker {
+  display: none;
+}
+
+.region-popup-average-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 7px;
+  color: #64748b;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.region-popup-average-labels span:last-child {
+  text-align: right;
+}
+
+@media (max-width: 520px) {
+  .region-popup-average-labels {
+    display: grid;
+    gap: 3px;
+  }
+
+  .region-popup-average-labels span:last-child {
+    text-align: left;
+  }
+}
+
+
+/* tg 수정 / 팝업 전체가 화면을 넘지 않도록 높이를 제한하고 본문을 스크롤한다. */
+.region-popup-shell {
+  max-height: min(900px, calc(100vh - 48px));
+}
+
+.region-popup {
+  max-height: min(900px, calc(100vh - 48px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+/* tg 추가 / 스크롤 중에도 선택 지역과 점수를 확인할 수 있도록 헤더를 고정한다. */
+.region-popup > .region-popup-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  box-shadow: 0 6px 14px rgb(15 23 42 / 8%);
+}
+
+/* tg 수정 / 쉼터 평가 문구를 파이차트와 구분되는 간결한 정보 영역으로 표시한다. */
+.region-popup-shelter-evaluation {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 9px;
+  align-items: center;
+  margin-top: 8px;
+  padding: 9px 11px;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.region-popup-shelter-evaluation > strong {
+  color: #334155;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.region-popup-shelter-evaluation .region-popup-shelter-comparison {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+/* tg 수정 / 녹지율 실제 값은 다른 기상 지표와 동일한 크기와 굵기로 표시한다. */
+#region-popup-green-ratio {
+  color: #0f172a;
+  font-size: 20px;
+  font-weight: 850;
+}
+
+@media (max-width: 520px) {
+  .region-popup-shell,
+  .region-popup {
+    max-height: calc(100vh - 20px);
+  }
+
+  .region-popup-shelter-evaluation {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* tg 수정 / 향후 12시간 기온 그래프를 무더위쉼터 카드 아래 빈 공간에 배치한다. */
+.region-popup-shelter-forecast {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.region-popup-shelter-forecast .region-popup-card-heading {
+  margin-bottom: 8px;
+}
+
+.region-popup-shelter-forecast .region-popup-card-heading h3 {
+  font-size: 15px;
+}
+
+#region-popup-forecast-summary {
+  font-size: 11px;
+}
+
+/* tg 추가 / 그래프 폭은 유지하고 좁은 카드에서는 가로 스크롤로 이동한다. */
+.region-popup-temperature-scroll {
+  width: 100%;
+  min-height: 155px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 #e2e8f0;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  background: #f8fbff;
+}
+
+.region-popup-temperature-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.region-popup-temperature-scroll::-webkit-scrollbar-track {
+  background: #e2e8f0;
+  border-radius: 999px;
+}
+
+.region-popup-temperature-scroll::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 999px;
+}
+
+.region-popup-temperature-scroll-inner {
+  position: relative;
+  width: 720px;
+  min-width: 720px;
+  height: 150px;
+}
+
+.region-popup-shelter-forecast
+  .region-popup-temperature-chart-message {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  margin: 0;
+}
+
+.region-popup-shelter-forecast
+  #region-popup-temperature-chart-svg {
+  display: block;
+  width: 720px;
+  height: 150px;
+}
+
+/* tg 수정 / 기존 하단 전체 너비 그래프용 그리드 영역은 사용하지 않는다. */
+.region-popup > .region-popup-chart-card {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .region-popup-temperature-scroll-inner,
+  .region-popup-shelter-forecast
+    #region-popup-temperature-chart-svg {
+    width: 680px;
+    min-width: 680px;
+  }
+}
+
+
+/* tg 수정 / 기존 720px 고정 폭이 JS의 간격 축소를 무효화하지 않도록 해제한다. */
+.region-popup-temperature-scroll-inner {
+  width: max-content;
+  min-width: 0;
+  height: 150px;
+}
+
+.region-popup-shelter-forecast #region-popup-temperature-chart-svg {
+  width: auto;
+  min-width: 0;
+  height: 150px;
+}
+
+/* tg 수정 / 온도값과 시간 글씨의 자평·크기·굵기를 줄여 조밀하게 보이도록 한다. */
+.temperature-chart-value {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.55px;
+}
+
+.temperature-chart-time {
+  font-size: 9px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.55px;
+}
+
+.temperature-chart-unit {
+  font-size: 10px !important;
 }

@@ -43,8 +43,8 @@
           id="header-menu-button"
           class="menu-button"
           type="button"
-          aria-label="구·군 평균 취약도 열기"
-          aria-controls="district-chart-panel"
+          aria-label="기능 메뉴 열기"
+          aria-controls="header-function-menu"
           aria-expanded="false"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -54,6 +54,29 @@
           </svg>
         </button>
       </div>
+
+      <!-- tg 추가 / 버거 버튼을 누르면 기능별 메뉴가 세로로 표시된다. -->
+      <nav
+        id="header-function-menu"
+        class="header-function-menu"
+        aria-label="폭염 분석 기능 메뉴"
+        hidden
+      >
+        <button
+          id="open-district-analysis-menu"
+          class="header-function-menu-item"
+          type="button"
+        >
+          구·군별 취약도
+        </button>
+        <button
+          id="open-shelter-finder-menu"
+          class="header-function-menu-item"
+          type="button"
+        >
+          무더위쉼터 찾기
+        </button>
+      </nav>
       {% endif %}
     </header>
 
@@ -181,6 +204,56 @@
         >
           <p class="district-chart-empty">분석 데이터를 준비 중입니다.</p>
         </div>
+      </aside>
+
+      <!-- tg 추가 / 팝업에서 분리한 무더위쉼터 찾기 전용 사이드 패널 -->
+      <div id="shelter-finder-backdrop" class="district-chart-backdrop" hidden></div>
+      <aside
+        id="shelter-finder-panel"
+        class="district-chart-panel shelter-finder-panel"
+        aria-labelledby="shelter-finder-title"
+        aria-hidden="true"
+        hidden
+      >
+        <div class="district-chart-panel-header">
+          <div>
+            <p>선택 행정동</p>
+            <h2 id="shelter-finder-title">무더위쉼터 찾기</h2>
+          </div>
+          <button
+            id="shelter-finder-close"
+            class="district-chart-close"
+            type="button"
+            aria-label="무더위쉼터 찾기 닫기"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+              <path d="M6 6L18 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+
+        <p id="shelter-finder-message" class="district-chart-description">
+          지도에서 행정동을 선택한 뒤 무더위쉼터 찾기를 실행하세요.
+        </p>
+
+        <div class="region-popup-card-heading">
+          <div>
+            <h3 id="region-popup-shelter-title">무더위쉼터</h3>
+          </div>
+          <strong id="region-popup-shelter-count">조회 전</strong>
+        </div>
+
+        <p
+          id="region-popup-shelter-message"
+          class="region-popup-message"
+          hidden
+        ></p>
+
+        <ul
+          id="region-popup-shelter-list"
+          class="region-popup-shelter-list"
+        ></ul>
       </aside>
 
       <div class="map-layout">
@@ -442,166 +515,285 @@
           <small>기상청 실시간 특보</small>
         </div>
 
-        <!-- tg 수정 / 왼쪽 메인 팝업과 오른쪽 무더위쉼터 패널을 독립 영역으로 분리한다. -->
-        <div class="region-popup-layout">
-          <section
-            class="region-popup"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="region-popup-title"
-          >
-            <!--jisu_06_추가수정 / 점수 위치 변경 / 팝업 헤더 교체-->
-            <header class="region-popup-header">
-              <div class="region-popup-title">
-                <p id="region-popup-location">선택 행정구역</p>
-                <h2 id="region-popup-title">행정동 정보</h2>
-              </div>
-
-              <!-- 취약도와 점수를 파란 헤더 오른쪽에 표시한다. -->
-              <div class="region-popup-summary">
-                <div>
-                  <span>폭염 취약도</span>
-                  <strong id="region-popup-risk">-</strong>
-                </div>
-                <div>
-                  <span>종합 점수</span>
-                  <strong id="region-popup-score">-</strong>
-                </div>
-              </div>
-
-              <button
-                id="region-popup-close"
-                class="region-popup-close"
-                type="button"
-                aria-label="지역 상세 팝업 닫기"
-              >
-                ×
-              </button>
-            </header>
-            <!------------------------------------------------------>
-
-            <!-- jisu_03_추가 / 팝업 / 팝업 SVG를 지도 요소로 교체
-            선택한 행정동의 실제 네이버 지도와 행정구역 경계를 표시한다. -->
-            <section
-              class="region-popup-map-card"
-              aria-label="선택 행정구역 지도"
-            >
-              <div
-                id="region-popup-map"
-                role="region"
-                aria-label="선택한 행정동의 지도와 행정구역 경계"
-              ></div>
-            </section>
-            <!-- 03 -->
-
-            <!-- tg 수정 / 지도 아래 왼쪽에는 12시간 그래프, 오른쪽에는 현재 날씨 지표를 배치한다. -->
-            <div class="region-popup-grid region-popup-weather-grid">
-              <section
-                class="region-popup-card region-popup-chart-card"
-                aria-labelledby="region-popup-forecast-title"
-              >
-                <div class="region-popup-card-heading">
-                  <div>
-                    <h3 id="region-popup-forecast-title">향후 12시간 기온</h3>
-                  </div>
-                </div>
-
-                <div
-                  id="region-popup-temperature-chart"
-                  class="region-popup-temperature-chart"
-                  aria-label="향후 12시간 기온 예보 그래프"
-                >
-                  <p
-                    id="region-popup-temperature-chart-message"
-                    class="region-popup-temperature-chart-message"
-                  >
-                    향후 12시간 기온 예보를 불러오는 중입니다.
-                  </p>
-
-                  <svg
-                    id="region-popup-temperature-chart-svg"
-                    viewBox="0 0 520 190"
-                    role="img"
-                    aria-label="향후 12시간 기온 예보 꺾은선 그래프"
-                    preserveAspectRatio="none"
-                    hidden
-                  >
-                    <g id="region-popup-temperature-chart-grid"></g>
-                    <polyline
-                      id="region-popup-temperature-chart-line"
-                      class="temperature-chart-line"
-                      points=""
-                    ></polyline>
-                    <g id="region-popup-temperature-chart-points"></g>
-                    <g id="region-popup-temperature-chart-labels"></g>
-                  </svg>
-                </div>
-              </section>
-
-              <section
-                class="region-popup-card region-popup-current-weather-card"
-                aria-labelledby="region-popup-weather-title"
-              >
-                <div class="region-popup-card-heading">
-                  <div>
-                    <!--jisu_07_추가수정 / 현재 시간 및 기준-->
-                    <h3 id="region-popup-weather-title">날씨 조회 중</h3>
-                  </div>
-                </div>
-
-                <dl class="region-popup-weather">
-                  <div>
-                    <dt>날씨</dt>
-                    <dd id="region-popup-weather-condition">-</dd>
-                  </div>
-                  <div>
-                    <dt>기온</dt>
-                    <dd id="region-popup-weather-temperature">-</dd>
-                  </div>
-                  <div>
-                    <dt>습도</dt>
-                    <dd id="region-popup-weather-humidity">-</dd>
-                  </div>
-                  <div>
-                    <dt>체감온도</dt>
-                    <dd id="region-popup-weather-feels-like">-</dd>
-                  </div>
-                </dl>
-              </section>
+        <!-- tg 수정 / 팝업에서는 지도와 쉼터 목록을 제거하고 폭염 취약 요인 분석 정보만 표시한다. -->
+        <section
+          class="region-popup"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="region-popup-title"
+        >
+          <!--jisu_06_추가수정 / 점수 위치 변경 / 팝업 헤더 교체-->
+          <header class="region-popup-header">
+            <div class="region-popup-title">
+              <p id="region-popup-location">선택 행정구역</p>
+              <h2 id="region-popup-title">행정동 정보</h2>
             </div>
 
-            <!--jisu_06_추가 / 날씨 출처 위치-->
-            <footer class="region-popup-source">
-              출처:
-              <span id="region-popup-weather-source">조회 중</span>
-            </footer>
+            <div class="region-popup-summary">
+              <div>
+                <span>폭염 취약도</span>
+                <strong id="region-popup-risk">-</strong>
+              </div>
+              <div>
+                <span>종합 점수</span>
+                <strong id="region-popup-score">-</strong>
+                <!-- tg 추가 / 점수의 상대적 위치를 행정동 순위로 표시한다. -->
+                <small id="region-popup-rank">순위 계산 중</small>
+              </div>
+            </div>
+
+            <button
+              id="region-popup-close"
+              class="region-popup-close"
+              type="button"
+              aria-label="지역 상세 팝업 닫기"
+            >
+              ×
+            </button>
+          </header>
+
+          <!-- tg 추가 / 현재 기상과 환경 정보를 한눈에 보는 분석 카드 영역 -->
+          <section
+            class="region-popup-metric-section"
+            aria-labelledby="region-popup-metric-title"
+          >
+            <div class="region-popup-section-heading">
+              <div>
+                <h3 id="region-popup-metric-title">폭염 취약 요인</h3>
+                <p>현재 기상과 도시 환경 지표를 함께 확인합니다.</p>
+              </div>
+              <!-- tg 수정 / 날씨 기준 시각을 카드 제목 오른쪽에 배치한다. -->
+              <span id="region-popup-weather-title" class="region-popup-weather-time">
+                조회 중
+              </span>
+            </div>
+
+            <dl class="region-popup-metric-grid">
+              <div>
+                <dt>현재기온</dt>
+                <dd id="region-popup-weather-temperature">-</dd>
+                <small id="region-popup-temperature-note">실시간 관측값</small>
+              </div>
+              <div>
+                <dt>현재습도</dt>
+                <dd id="region-popup-weather-humidity">-</dd>
+              </div>
+              <div>
+                <dt>체감온도</dt>
+                <dd id="region-popup-weather-feels-like">-</dd>
+                <small id="region-popup-feels-like-note">기온·습도·풍속 반영</small>
+              </div>
+              <div>
+                <dt>풍속</dt>
+                <dd id="region-popup-weather-wind">-</dd>
+              </div>
+              <div class="region-popup-comparison-metric">
+                <dt>녹지율</dt>
+                <dd id="region-popup-green-ratio">자료 준비 중</dd>
+
+                <!-- tg 추가 / 해당 동 값은 막대로, 대구 평균은 세로 기준선으로 비교한다. -->
+                <div
+                  id="region-popup-green-bar"
+                  class="region-popup-average-bar"
+                  role="img"
+                  aria-label="선택 행정동 녹지율과 대구 평균 비교"
+                >
+                  <span
+                    id="region-popup-green-bar-fill"
+                    class="region-popup-average-bar-fill"
+                  ></span>
+                  <i
+                    id="region-popup-green-average-marker"
+                    class="region-popup-average-marker"
+                    aria-hidden="true"
+                  ></i>
+                </div>
+
+                <div class="region-popup-average-labels">
+                  <span id="region-popup-green-current-label">해당 동 -</span>
+                  <span id="region-popup-green-average-label">대구 평균 -</span>
+                </div>
+
+                <small id="region-popup-green-comparison">대구 평균 비교 중</small>
+              </div>
+              <div class="region-popup-comparison-metric">
+                <dt>건물밀집도</dt>
+                <dd id="region-popup-building-density">자료 준비 중</dd>
+
+                <!-- tg 추가 / 건물밀집도 자료가 연결되면 같은 평균 비교 막대를 사용할 자리 -->
+                <div
+                  id="region-popup-building-bar"
+                  class="region-popup-average-bar is-empty"
+                  role="img"
+                  aria-label="건물밀집도 비교 자료 준비 중"
+                >
+                  <span
+                    id="region-popup-building-bar-fill"
+                    class="region-popup-average-bar-fill"
+                  ></span>
+                  <i
+                    id="region-popup-building-average-marker"
+                    class="region-popup-average-marker"
+                    aria-hidden="true"
+                  ></i>
+                </div>
+
+                <div class="region-popup-average-labels">
+                  <span id="region-popup-building-current-label">해당 동 -</span>
+                  <span id="region-popup-building-average-label">대구 평균 -</span>
+                </div>
+
+                <small id="region-popup-building-comparison">자료 연결 대기 중</small>
+              </div>
+            </dl>
+
+            <!-- tg 추가 / 현재 데이터에서 가장 큰 취약 요인을 자동 요약한다. -->
+            <div class="region-popup-key-factor">
+              <strong>주요 취약 요인</strong>
+              <p id="region-popup-key-factors">
+                선택 지역의 취약 요인을 분석하는 중입니다.
+              </p>
+            </div>
+            <span id="region-popup-weather-condition" hidden>-</span>
           </section>
 
-          <!-- tg 수정 / 무더위쉼터 목록을 메인 팝업 오른쪽의 독립 패널로 이동한다. -->
-          <aside
-            class="region-popup-shelter-panel"
-            aria-labelledby="region-popup-shelter-title"
+          <!-- tg 수정 / 쉼터 목록은 별도 메뉴로 이동하고, 쉼터 구성 파이차트만 분석 팝업에 유지한다. -->
+          <section
+            class="region-popup-card region-popup-shelter-chart-card"
+            aria-labelledby="region-popup-shelter-chart-title"
           >
             <div class="region-popup-card-heading">
               <div>
-                <h3 id="region-popup-shelter-title">무더위쉼터</h3>
+                <h3 id="region-popup-shelter-chart-title">
+                  무더위쉼터 이용 대상
+                </h3>
+                <!-- tg 수정 / 파이차트와 중복되지 않도록 설명을 간결하게 정리한다. -->
+                <p>일반 시민이 이용할 수 있는 쉼터의 비율입니다.</p>
               </div>
-              <strong id="region-popup-shelter-count">조회 중</strong>
             </div>
 
-            <!-- jisu_09_추가수정 / JavaScript에서 상태값은 유지하되 화면에는 표시하지 않는다. -->
-            <p
-              id="region-popup-shelter-message"
-              class="region-popup-message"
-              hidden
-            ></p>
+            <div class="region-popup-shelter-analysis">
+              <div class="region-popup-shelter-chart-wrap">
+                <p
+                  id="region-popup-shelter-chart-message"
+                  class="region-popup-message"
+                >
+                  무더위쉼터 이용 대상을 분석하는 중입니다.
+                </p>
 
-            <ul
-              id="region-popup-shelter-list"
-              class="region-popup-shelter-list"
-            ></ul>
-          </aside>
-        </div>
+                <svg
+                  id="region-popup-shelter-chart"
+                  viewBox="0 0 320 220"
+                  role="img"
+                  aria-label="모두 이용 가능한 쉼터와 특정 대상 중심 쉼터 비율"
+                  hidden
+                >
+                  <g id="region-popup-shelter-chart-slices"></g>
+                  <g id="region-popup-shelter-chart-center"></g>
+                </svg>
+
+                <div
+                  id="region-popup-shelter-chart-tooltip"
+                  class="region-popup-shelter-chart-tooltip"
+                  role="status"
+                  aria-live="polite"
+                  hidden
+                ></div>
+              </div>
+
+              <!-- tg 추가 / 파이차트의 핵심 수치를 글로 함께 제공한다. -->
+              <dl class="region-popup-shelter-summary">
+                <div>
+                  <dt>전체 쉼터</dt>
+                  <dd id="region-popup-shelter-total">-</dd>
+                </div>
+                <div>
+                  <dt>모두 이용 가능</dt>
+                  <dd id="region-popup-shelter-public">-</dd>
+                </div>
+                <div>
+                  <dt>특정 대상 중심</dt>
+                  <dd id="region-popup-shelter-restricted">-</dd>
+                </div>
+                <div>
+                  <dt>일반 이용률</dt>
+                  <dd id="region-popup-shelter-public-ratio">-</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div class="region-popup-shelter-evaluation">
+              <strong>이용 가능성 평가</strong>
+              <p
+                id="region-popup-shelter-comparison"
+                class="region-popup-shelter-comparison"
+              >
+                해당 동 쉼터 구성을 분석하는 중입니다.
+              </p>
+            </div>
+
+            <div
+              id="region-popup-shelter-chart-legend"
+              class="region-popup-shelter-chart-legend"
+              aria-label="무더위쉼터 이용 대상 범례"
+            ></div>
+
+          <!-- tg 수정 / 향후 12시간 기온 그래프를 무더위쉼터 카드 하단에 작게 배치한다. -->
+          <section
+            class="region-popup-shelter-forecast"
+            aria-labelledby="region-popup-forecast-title"
+          >
+            <div class="region-popup-card-heading">
+              <div>
+                <h3 id="region-popup-forecast-title">향후 12시간 기온</h3>
+              </div>
+              <!-- tg 추가 / 최고 예상 기온과 시각을 그래프 제목 옆에 요약한다. -->
+              <strong id="region-popup-forecast-summary">예보 분석 중</strong>
+            </div>
+
+            <!-- tg 추가 / 좁은 카드 안에서도 12시간 전체를 가로 스크롤로 확인한다. -->
+            <div
+              id="region-popup-temperature-chart"
+              class="region-popup-temperature-chart region-popup-temperature-scroll"
+              aria-label="향후 12시간 기온 예보 그래프"
+              tabindex="0"
+            >
+              <div class="region-popup-temperature-scroll-inner">
+              <p
+                id="region-popup-temperature-chart-message"
+                class="region-popup-temperature-chart-message"
+              >
+                향후 12시간 기온 예보를 불러오는 중입니다.
+              </p>
+
+              <svg
+                id="region-popup-temperature-chart-svg"
+                viewBox="0 0 520 190"
+                role="img"
+                aria-label="향후 12시간 기온 예보 꺾은선 그래프"
+                preserveAspectRatio="none"
+                hidden
+              >
+                <g id="region-popup-temperature-chart-grid"></g>
+                <polyline
+                  id="region-popup-temperature-chart-line"
+                  class="temperature-chart-line"
+                  points=""
+                ></polyline>
+                <g id="region-popup-temperature-chart-points"></g>
+                <g id="region-popup-temperature-chart-labels"></g>
+              </svg>
+              </div>
+            </div>
+          </section>
+          </section>
+
+
+          <footer class="region-popup-source">
+            출처:
+            <span id="region-popup-weather-source">조회 중</span>
+          </footer>
+        </section>
       </div>
     </div>
     <!-- 03 -->

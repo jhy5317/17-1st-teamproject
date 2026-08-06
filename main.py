@@ -1,5 +1,6 @@
 # app구현
 
+import csv
 import json
 import os
 import re
@@ -46,6 +47,12 @@ templates = Jinja2Templates(
 )
 
 HEAT_DATA_FILE = BASE_DIR / "data" / "processed" / "heat_vulnerability.json"
+
+# tg 추가 / 행정동별 녹지율 원본 CSV
+HEAT_INDICATORS_FILE = (
+    BASE_DIR / "data" / "processed" / "heat_indicators.csv"
+)
+
 NAVER_LOCAL_SEARCH_URL = "https://naverapihub.apigw.ntruss.com/search/v1/local"
 
 # jisu_03_추가 -> 행정동 경계 및 실시간 기상 데이터 설정-------------#
@@ -112,7 +119,73 @@ def load_heat_payload() -> dict[str, Any]:
             detail="폭염 취약도 데이터 형식이 올바르지 않습니다.",
         )
 
+    # tg 추가 / 내부 조회 함수에서도 녹지율이 포함된 레코드를 사용한다.
+    payload = dict(payload)
+    payload["records"] = add_green_ratio_to_records(payload["records"])
+
     return payload
+
+
+@lru_cache(maxsize=1)
+def load_green_ratio_by_region() -> dict[str, float]:
+    """heat_indicators.csv의 행정동별 green_ratio_pct를 읽는다."""
+    if not HEAT_INDICATORS_FILE.exists():
+        return {}
+
+    green_ratio_by_region: dict[str, float] = {}
+
+    try:
+        with HEAT_INDICATORS_FILE.open(
+            "r",
+            encoding="utf-8-sig",
+            newline="",
+        ) as csv_file:
+            reader = csv.DictReader(csv_file)
+
+            for row in reader:
+                region_code = str(
+                    row.get("adm_cd")
+                    or row.get("ADM_CD")
+                    or row.get("region_code")
+                    or row.get("dong_code")
+                    or ""
+                ).strip()
+
+                green_ratio_value = row.get("green_ratio_pct")
+
+                if not region_code or green_ratio_value in (None, ""):
+                    continue
+
+                try:
+                    green_ratio = float(green_ratio_value)
+                except (TypeError, ValueError):
+                    continue
+
+                green_ratio_by_region[region_code] = green_ratio
+    except OSError:
+        return {}
+
+    return green_ratio_by_region
+
+
+def add_green_ratio_to_records(
+    records: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """폭염 취약도 레코드에 green_ratio_pct를 병합한다."""
+    green_ratio_by_region = load_green_ratio_by_region()
+    enriched_records: list[dict[str, Any]] = []
+
+    for record in records:
+        enriched_record = dict(record)
+        region_code = str(record.get("adm_cd", "")).strip()
+
+        # tg 추가 / 동일 행정동 코드의 녹지율을 API 응답에 포함한다.
+        enriched_record["green_ratio_pct"] = green_ratio_by_region.get(
+            region_code
+        )
+        enriched_records.append(enriched_record)
+
+    return enriched_records
 
 
 @lru_cache(maxsize=1)
@@ -979,6 +1052,9 @@ def heat_vulnerability():
                 "message": "폭염 취약도 데이터의 records는 배열이어야 합니다.",
             },
         )
+
+    # tg 추가 / 프런트엔드가 녹지율 카드를 채울 수 있도록 CSV 값을 병합한다.
+    records = add_green_ratio_to_records(records)
 
     return {
         "status": "ready",

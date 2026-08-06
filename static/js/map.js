@@ -61,6 +61,23 @@
   );
   const districtChartReset = document.getElementById("district-chart-reset");
 
+  // tg 추가 / 버거 메뉴와 기능별 패널 HTML 요소 참조
+  const headerFunctionMenu = document.getElementById("header-function-menu");
+  const openDistrictAnalysisMenu = document.getElementById(
+    "open-district-analysis-menu",
+  );
+  const openShelterFinderMenu = document.getElementById(
+    "open-shelter-finder-menu",
+  );
+  const shelterFinderPanel = document.getElementById("shelter-finder-panel");
+  const shelterFinderBackdrop = document.getElementById(
+    "shelter-finder-backdrop",
+  );
+  const shelterFinderClose = document.getElementById("shelter-finder-close");
+  const shelterFinderMessage = document.getElementById(
+    "shelter-finder-message",
+  );
+
   //jisu_03_추가 / 팝업 / HTML 요소 참조 추가
   const dongPanel = document.getElementById("dong-panel");
 
@@ -87,9 +104,9 @@
   const regionPopupTitle = document.getElementById("region-popup-title");
   const regionPopupRisk = document.getElementById("region-popup-risk");
   const regionPopupScore = document.getElementById("region-popup-score");
-  // jisu_03_추가수정 / 팝업 /
-  const regionPopupMapElement = document.getElementById("region-popup-map");
-  //
+  // tg 추가 / 순위·비교·요약 표시 요소
+  const regionPopupRank = document.getElementById("region-popup-rank");
+  // tg 수정 / 팝업 내부 지도는 제거하고 메인 지도를 쉼터 찾기에 사용한다.
 
   const regionPopupWeatherSource = document.getElementById(
     "region-popup-weather-source",
@@ -110,6 +127,76 @@
   );
   const regionPopupWeatherFeelsLike = document.getElementById(
     "region-popup-weather-feels-like",
+  );
+  // tg 추가 / 새 분석 카드의 풍속·녹지율·건물밀집도 요소 참조
+  const regionPopupWeatherWind = document.getElementById(
+    "region-popup-weather-wind",
+  );
+  const regionPopupGreenRatio = document.getElementById(
+    "region-popup-green-ratio",
+  );
+  const regionPopupBuildingDensity = document.getElementById(
+    "region-popup-building-density",
+  );
+  const regionPopupGreenComparison = document.getElementById(
+    "region-popup-green-comparison",
+  );
+  // tg 추가 / 녹지율 평균 비교 막대 요소
+  const regionPopupGreenBar = document.getElementById(
+    "region-popup-green-bar",
+  );
+  const regionPopupGreenBarFill = document.getElementById(
+    "region-popup-green-bar-fill",
+  );
+  const regionPopupGreenAverageMarker = document.getElementById(
+    "region-popup-green-average-marker",
+  );
+  const regionPopupGreenCurrentLabel = document.getElementById(
+    "region-popup-green-current-label",
+  );
+  const regionPopupGreenAverageLabel = document.getElementById(
+    "region-popup-green-average-label",
+  );
+
+  // tg 추가 / 건물밀집도 평균 비교 막대 자리
+  const regionPopupBuildingBar = document.getElementById(
+    "region-popup-building-bar",
+  );
+  const regionPopupBuildingBarFill = document.getElementById(
+    "region-popup-building-bar-fill",
+  );
+  const regionPopupBuildingAverageMarker = document.getElementById(
+    "region-popup-building-average-marker",
+  );
+  const regionPopupBuildingCurrentLabel = document.getElementById(
+    "region-popup-building-current-label",
+  );
+  const regionPopupBuildingAverageLabel = document.getElementById(
+    "region-popup-building-average-label",
+  );
+  const regionPopupBuildingComparison = document.getElementById(
+    "region-popup-building-comparison",
+  );
+  const regionPopupKeyFactors = document.getElementById(
+    "region-popup-key-factors",
+  );
+  const regionPopupForecastSummary = document.getElementById(
+    "region-popup-forecast-summary",
+  );
+  const regionPopupShelterTotal = document.getElementById(
+    "region-popup-shelter-total",
+  );
+  const regionPopupShelterPublic = document.getElementById(
+    "region-popup-shelter-public",
+  );
+  const regionPopupShelterRestricted = document.getElementById(
+    "region-popup-shelter-restricted",
+  );
+  const regionPopupShelterPublicRatio = document.getElementById(
+    "region-popup-shelter-public-ratio",
+  );
+  const regionPopupShelterComparison = document.getElementById(
+    "region-popup-shelter-comparison",
   );
 
   // tg 추가 / 팝업 시간별 온도 변화 그래프 HTML 요소 참조
@@ -140,6 +227,26 @@
   );
   const regionPopupShelterList = document.getElementById(
     "region-popup-shelter-list",
+  );
+
+  // tg 추가 / 무더위쉼터 이용 대상 파이차트 HTML 요소 참조
+  const regionPopupShelterChartMessage = document.getElementById(
+    "region-popup-shelter-chart-message",
+  );
+  const regionPopupShelterChart = document.getElementById(
+    "region-popup-shelter-chart",
+  );
+  const regionPopupShelterChartSlices = document.getElementById(
+    "region-popup-shelter-chart-slices",
+  );
+  const regionPopupShelterChartCenter = document.getElementById(
+    "region-popup-shelter-chart-center",
+  );
+  const regionPopupShelterChartTooltip = document.getElementById(
+    "region-popup-shelter-chart-tooltip",
+  );
+  const regionPopupShelterChartLegend = document.getElementById(
+    "region-popup-shelter-chart-legend",
   );
   //
   const districtDetailElements = {
@@ -315,9 +422,8 @@
   let regionPopupDongCode = null;
   let selectedRegionRequestId = 0;
 
-  // 팝업 전용 네이버 지도와 행정동 경계 도형을 보관한다.
-  let regionPopupMap = null;
-  const regionPopupBoundaryPolygons = [];
+  // tg 수정 / 무더위쉼터 마커는 팝업 지도가 아니라 메인 지도에 표시한다.
+  let shelterFinderOpen = false;
   //
 
   // jisu_08_추가 / 팝업 쉼터 데이터와 지도 마커
@@ -377,10 +483,17 @@
         return;
       }
 
+      const greenRatioPct = Number(record.green_ratio_pct);
+
       heatDataByDongCode.set(dongCode, {
         score: Math.max(0, Math.min(100, score)),
         riskLevel: normalizeRiskLevel(record.risk_level, score),
         indicators: normalizeIndicators(record.indicators),
+
+        // tg 추가 / heat_indicators.csv에서 병합된 행정동별 녹지율을 저장한다.
+        greenRatioPct: Number.isFinite(greenRatioPct)
+          ? greenRatioPct
+          : null,
       });
     });
     districts.forEach((district) => {
@@ -1244,6 +1357,10 @@
   function resetTemperatureChart(
     message = "시간별 온도 자료를 불러오는 중입니다.",
   ) {
+    if (regionPopupForecastSummary) {
+      regionPopupForecastSummary.textContent = "예보 자료 없음";
+    }
+
     if (regionPopupTemperatureChartMessage) {
       regionPopupTemperatureChartMessage.textContent = message;
       regionPopupTemperatureChartMessage.hidden = false;
@@ -1310,7 +1427,9 @@
     }
 
     const chartHeight = 190;
-    const pointSpacing = 44;
+
+    // tg 수정 / 실제 화면에서 체감될 정도로 점과 시간 간격을 줄인다.
+    const pointSpacing = 34;
     const padding = {
       top: 34,
       right: 32,
@@ -1320,7 +1439,8 @@
 
     // tg 수정 / 12개 예보값이 과하게 벌어지지 않도록 시간 간격을 줄인다.
     const chartWidth = Math.max(
-      520,
+      // tg 수정 / 12시간 그래프의 전체 가로 폭을 줄여 늘어진 인상을 완화한다.
+      440,
       padding.left + padding.right + pointSpacing * (records.length - 1),
     );
     const plotWidth = chartWidth - padding.left - padding.right;
@@ -1331,14 +1451,25 @@
       `0 0 ${chartWidth} ${chartHeight}`,
     );
     // tg 수정 / 12시간 그래프 전체가 카드 안에 한 번에 보이도록 SVG를 100% 너비로 표시한다.
-    regionPopupTemperatureChartSvg.setAttribute("width", "100%");
+    // tg 수정 / CSS의 720px 고정 폭에 의해 다시 늘어나지 않도록 계산된 폭을 직접 사용한다.
+    regionPopupTemperatureChartSvg.setAttribute("width", String(chartWidth));
     regionPopupTemperatureChartSvg.setAttribute("height", String(chartHeight));
-    regionPopupTemperatureChartSvg.style.width = "100%";
-    regionPopupTemperatureChartSvg.style.minWidth = "0";
+    regionPopupTemperatureChartSvg.style.width = `${chartWidth}px`;
+    regionPopupTemperatureChartSvg.style.minWidth = `${chartWidth}px`;
     const plotHeight = chartHeight - padding.top - padding.bottom;
     const temperatures = records.map((item) => item.temperature);
     const minimumTemperature = Math.min(...temperatures);
     const maximumTemperature = Math.max(...temperatures);
+
+    // tg 추가 / 향후 12시간 중 최고 예상 기온과 시각을 제목 옆에 표시한다.
+    const hottestRecord = records.reduce((hottest, item) =>
+      item.temperature > hottest.temperature ? item : hottest,
+    );
+    if (regionPopupForecastSummary) {
+      regionPopupForecastSummary.textContent =
+        `최고 ${hottestRecord.temperature.toFixed(1)}℃ · ` +
+        `${formatTemperatureChartHour(hottestRecord.observedAt)}`;
+    }
     const temperatureRange = Math.max(
       maximumTemperature - minimumTemperature,
       2,
@@ -1397,12 +1528,13 @@
       const circle = createTemperatureChartSvgElement("circle", {
         cx: point.x,
         cy: point.y,
-        r: 5,
+        // tg 수정 / 조밀해진 그래프에 맞춰 점을 조금 줄인다.
+        r: 4,
         class: "temperature-chart-point",
       });
       const temperatureLabel = createTemperatureChartSvgElement("text", {
         x: point.x,
-        y: point.y - 14,
+        y: point.y - 12,
         "text-anchor": "middle",
         class: "temperature-chart-value",
       });
@@ -1414,7 +1546,8 @@
       });
 
       // tg 수정 / 각 지점에는 단위를 반복하지 않고 숫자만 표시한다.
-      temperatureLabel.textContent = point.temperature.toFixed(1);
+      // tg 수정 / 소수점 표기를 제거해 숫자의 가로 폭을 줄인다.
+      temperatureLabel.textContent = Math.round(point.temperature);
       timeLabel.textContent = formatTemperatureChartHour(
         point.observedAt,
       );
@@ -1432,6 +1565,172 @@
     regionPopupTemperatureChartSvg.hidden = false;
     // tg 수정 / hidden 속성과 CSS 상태를 모두 해제해 SVG 그래프를 확실히 표시한다.
     regionPopupTemperatureChartSvg.style.display = "block";
+  }
+
+  // tg 추가 / 전체 행정동 녹지율의 단순 평균을 계산한다.
+  function getAverageGreenRatio() {
+    const values = [...heatDataByDongCode.values()]
+      .map((item) => Number(item.greenRatioPct))
+      .filter(Number.isFinite);
+
+    return values.length > 0
+      ? values.reduce((sum, value) => sum + value, 0) / values.length
+      : null;
+  }
+
+  // tg 추가 / 선택 행정동 점수의 대구 내 상대 순위를 표시한다.
+  function updatePopupRank(dongCode) {
+    if (!regionPopupRank) {
+      return;
+    }
+
+    const ranking = [...heatDataByDongCode.entries()]
+      .filter(([, item]) => Number.isFinite(Number(item.score)))
+      .sort((left, right) => right[1].score - left[1].score);
+    const index = ranking.findIndex(([code]) => code === String(dongCode ?? ""));
+
+    regionPopupRank.textContent =
+      index >= 0
+        ? `${ranking.length}개 행정동 중 ${index + 1}위`
+        : "순위 자료 없음";
+  }
+
+  // tg 추가 / 정규화값이 큰 취약 요인 두 개를 한 문장으로 요약한다.
+  function updatePopupKeyFactors(dongCode) {
+    if (!regionPopupKeyFactors) {
+      return;
+    }
+
+    const indicators =
+      heatDataByDongCode.get(String(dongCode ?? ""))?.indicators ?? {};
+    // tg 수정 / 주요 취약 요인은 짧은 명사형으로 표시한다.
+    const labels = {
+      impervious_risk: "불투수면 위험",
+      green_deficit: "녹지 부족",
+      elderly_sensitivity: "고령인구 민감도",
+      cooling_shelter_density_deficit: "무더위쉼터 밀도 부족",
+      cooling_shelter_access_deficit: "무더위쉼터 접근성 부족",
+      shade_shelter_density_deficit: "그늘막 공급 부족",
+    };
+
+    const factors = Object.entries(indicators)
+      .filter(([, value]) => Number.isFinite(Number(value)))
+      .sort((left, right) => Number(right[1]) - Number(left[1]))
+      .slice(0, 2)
+      .map(([key]) => labels[key])
+      .filter(Boolean);
+
+    // tg 수정 / 제목 아래에는 요인 이름만 쉼표로 구분하여 간결하게 표시한다.
+    regionPopupKeyFactors.textContent =
+      factors.length > 0
+        ? factors.join(", ")
+        : "세부 취약 요인 데이터 없음";
+  }
+
+  // tg 추가 / 0~100 범위의 해당 동 값과 평균을 한 막대에 표시한다.
+  function updateAverageComparisonBar({
+    container,
+    fill,
+    marker,
+    currentLabel,
+    averageLabel,
+    currentValue,
+    averageValue,
+    unit = "%",
+  }) {
+    const hasCurrentValue = Number.isFinite(currentValue);
+    const hasAverageValue = Number.isFinite(averageValue);
+
+    container?.classList.toggle(
+      "is-empty",
+      !hasCurrentValue || !hasAverageValue,
+    );
+
+    if (fill) {
+      fill.style.width = hasCurrentValue
+        ? `${Math.max(0, Math.min(100, currentValue))}%`
+        : "0%";
+    }
+
+    if (marker) {
+      marker.style.left = hasAverageValue
+        ? `${Math.max(0, Math.min(100, averageValue))}%`
+        : "0%";
+    }
+
+    if (currentLabel) {
+      currentLabel.textContent = hasCurrentValue
+        ? `해당 동 ${currentValue.toFixed(1)}${unit}`
+        : "해당 동 -";
+    }
+
+    if (averageLabel) {
+      averageLabel.textContent = hasAverageValue
+        ? `대구 평균 ${averageValue.toFixed(1)}${unit}`
+        : "대구 평균 -";
+    }
+  }
+
+  // tg 추가 / 선택 행정동의 녹지율을 분석 팝업에 표시한다.
+  function updatePopupEnvironmentMetrics(dongCode) {
+    const heatData = heatDataByDongCode.get(String(dongCode ?? ""));
+    const greenRatioPct = Number(heatData?.greenRatioPct);
+
+    if (regionPopupGreenRatio) {
+      regionPopupGreenRatio.textContent = Number.isFinite(greenRatioPct)
+        ? `${greenRatioPct.toFixed(1)}%`
+        : "자료 없음";
+    }
+
+    const averageGreenRatio = getAverageGreenRatio();
+
+    // tg 추가 / 녹지율은 채워진 막대로 해당 동 값을, 세로선으로 대구 평균을 표시한다.
+    updateAverageComparisonBar({
+      container: regionPopupGreenBar,
+      fill: regionPopupGreenBarFill,
+      marker: regionPopupGreenAverageMarker,
+      currentLabel: regionPopupGreenCurrentLabel,
+      averageLabel: regionPopupGreenAverageLabel,
+      currentValue: greenRatioPct,
+      averageValue: averageGreenRatio,
+      unit: "%",
+    });
+
+    if (regionPopupGreenComparison) {
+      if (Number.isFinite(greenRatioPct) && Number.isFinite(averageGreenRatio)) {
+        const difference = greenRatioPct - averageGreenRatio;
+        const direction = difference >= 0 ? "높음" : "낮음";
+        regionPopupGreenComparison.textContent =
+          `대구 평균보다 ${Math.abs(difference).toFixed(1)}%p ${direction}`;
+        regionPopupGreenComparison.classList.toggle("metric-positive", difference >= 0);
+        regionPopupGreenComparison.classList.toggle("metric-negative", difference < 0);
+      } else {
+        regionPopupGreenComparison.textContent = "대구 평균 비교 불가";
+        regionPopupGreenComparison.classList.remove("metric-positive", "metric-negative");
+      }
+    }
+
+    updatePopupKeyFactors(dongCode);
+
+    // tg 수정 / 건물밀집도는 실제 데이터가 연결될 때까지 비교 막대도 비활성 상태로 유지한다.
+    if (regionPopupBuildingDensity) {
+      regionPopupBuildingDensity.textContent = "자료 준비 중";
+    }
+
+    updateAverageComparisonBar({
+      container: regionPopupBuildingBar,
+      fill: regionPopupBuildingBarFill,
+      marker: regionPopupBuildingAverageMarker,
+      currentLabel: regionPopupBuildingCurrentLabel,
+      averageLabel: regionPopupBuildingAverageLabel,
+      currentValue: Number.NaN,
+      averageValue: Number.NaN,
+      unit: "%",
+    });
+
+    if (regionPopupBuildingComparison) {
+      regionPopupBuildingComparison.textContent = "자료 연결 대기 중";
+    }
   }
 
   // 새 지역을 조회하기 전 패널과 팝업의 이전 날씨 값을 초기 상태로 되돌린다.
@@ -1457,6 +1756,10 @@
       regionPopupWeatherTemperature.textContent = "-";
       regionPopupWeatherHumidity.textContent = "-";
       regionPopupWeatherFeelsLike.textContent = "-";
+      regionPopupWeatherWind.textContent = "-";
+
+      // tg 수정 / 날씨 조회가 시작되어도 선택 행정동의 녹지율은 유지한다.
+      updatePopupEnvironmentMetrics(regionPopupDongCode);
     }
   }
 
@@ -1567,6 +1870,11 @@
           weather.feelsLike,
           "℃",
         );
+        // tg 추가 / 새 분석 팝업의 풍속 카드에 현재 풍속을 표시한다.
+        regionPopupWeatherWind.textContent = formatMetric(
+          weather.windSpeed,
+          "m/s",
+        );
 
         // tg 추가 / main.py의 hourlyTemperatures 배열로 온도 변화 그래프를 그린다.
         renderTemperatureChart(weather.hourlyTemperatures);
@@ -1579,78 +1887,7 @@
     }
   }
 
-  /*jisu_03_추가 / 팝업 / 같은 위치에 실제 지도 함수 추가 */
-  /*
-   * 팝업 내부에 별도의 네이버 지도를 만들고,
-   * 선택한 행정동 경계가 지도 영역에 맞게 보이도록 확대한다.
-   */
-  function renderRegionPopupMap(dongCode) {
-    if (!regionPopupMapElement) {
-      return;
-    }
-
-    const geometry = dongGeometryByCode.get(dongCode);
-    const bounds = dongBoundsByCode.get(dongCode);
-
-    if (!geometry || !bounds) {
-      return;
-    }
-
-    // 팝업 지도는 최초 한 번만 생성하고 이후에는 재사용한다.
-    if (!regionPopupMap) {
-      regionPopupMap = new naver.maps.Map(regionPopupMapElement, {
-        center: bounds.getCenter(),
-        zoom: 14,
-        minZoom: 10,
-        maxZoom: 18,
-
-        draggable: true,
-        scrollWheel: true,
-        pinchZoom: true,
-        keyboardShortcuts: false,
-
-        zoomControl: true,
-        mapTypeControl: false,
-        mapDataControl: false,
-        scaleControl: false,
-      });
-    }
-
-    // 이전에 선택했던 행정동 경계를 제거한다.
-    regionPopupBoundaryPolygons
-      .splice(0)
-      .forEach((polygon) => polygon.setMap(null));
-
-    // 선택한 행정동의 Polygon 또는 MultiPolygon만 표시한다.
-    getPolygonCoordinateGroups(geometry).forEach((polygonCoordinates) => {
-      const polygon = new naver.maps.Polygon({
-        map: regionPopupMap,
-        paths: polygonCoordinatesToPaths(polygonCoordinates),
-        // jisu_10_추가수정 / 팝업 지도 속 행정동 색상만 낮음 색상으로 통일//
-        // 팝업 지도 경계는 실제 위험도와 관계없이 '낮음' 색상으로 표시한다.
-        fillColor: RISK_STYLES.low.color,
-        fillOpacity: 0.48,
-        strokeColor: "#1e3a8a",
-        strokeOpacity: 1,
-        strokeWeight: 3,
-        clickable: false,
-        zIndex: 10,
-      });
-
-      regionPopupBoundaryPolygons.push(polygon);
-    });
-
-    // jisu_08_추가 / 무더위 쉼터
-    // 선택 행정동 경계 안의 쉼터를 팝업 지도에 표시한다.
-    renderRegionPopupShelterMarkers(regionPopupShelterRecords);
-
-    // 팝업이 열린 후 지도 크기를 다시 계산하고 행정동 경계에 맞춘다.
-    window.requestAnimationFrame(() => {
-      naver.maps.Event.trigger(regionPopupMap, "resize");
-      regionPopupMap.fitBounds(bounds, 32);
-    });
-  }
-
+  // tg 수정 / 팝업 내부 지도 기능은 제거하고 아래부터 메인 지도용 쉼터 기능을 처리한다.
   // 03 -> jisu_08_추가수정 / 무더위 쉼터-----------------------------------------//
   // 외부 쉼터 문자열이 HTML 태그로 실행되지 않도록 변환한다.
   function escapeHtml(value) {
@@ -1698,7 +1935,7 @@
 
   // tg 추가 / 무더위쉼터 목록을 클릭하면 연결된 마커 위치로 지도를 이동한다.
   function focusPopupShelterMarker(shelterIndex) {
-    if (!regionPopupMap) {
+    if (!shelterFinderOpen) {
       return;
     }
 
@@ -1718,10 +1955,10 @@
     focusPopupShelterListItem(shelterIndex);
 
     // 선택한 쉼터 마커가 잘 보이도록 중심 이동 후 확대한다.
-    regionPopupMap.panTo(markerPosition);
+    map.panTo(markerPosition);
 
-    if (regionPopupMap.getZoom() < 16) {
-      regionPopupMap.setZoom(16);
+    if (map.getZoom() < 16) {
+      map.setZoom(16);
     }
 
     // 선택한 마커를 다른 마커보다 위에 표시한다.
@@ -1761,7 +1998,7 @@
   function renderRegionPopupShelterMarkers(shelters) {
     clearRegionPopupShelterMarkers();
 
-    if (!regionPopupMap) {
+    if (!shelterFinderOpen) {
       return;
     }
 
@@ -1775,7 +2012,7 @@
       }
 
       const marker = new naver.maps.Marker({
-        map: regionPopupMap,
+        map,
         position: new naver.maps.LatLng(latitude, longitude),
         title: shelter.name ?? "무더위쉼터",
         icon: {
@@ -1792,6 +2029,293 @@
 
       regionPopupShelterMarkers.push(marker);
     });
+  }
+
+  // tg 추가 / 파이차트용 SVG 요소를 생성한다.
+  function createShelterChartSvgElement(tagName, attributes = {}) {
+    const element = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      tagName,
+    );
+
+    Object.entries(attributes).forEach(([name, value]) => {
+      element.setAttribute(name, String(value));
+    });
+
+    return element;
+  }
+
+  // tg 추가 / 기존 데이터에 이용 대상 필드가 없을 때 시설 유형으로 보완 분류한다.
+  function normalizeShelterAccessType(shelter) {
+    if (shelter?.accessType === "public" || shelter?.accessType === "restricted") {
+      return shelter.accessType;
+    }
+
+    const facilityType = String(shelter?.facilityType ?? "");
+    const name = String(shelter?.name ?? "");
+
+    const restricted =
+      facilityType === "경로당" ||
+      facilityType === "특정계층이용시설" ||
+      ["경로당", "노인", "시니어", "장애인", "어린이집", "아동"].some(
+        (keyword) => name.includes(keyword),
+      );
+
+    return restricted ? "restricted" : "public";
+  }
+
+  // tg 추가 / 모두 이용 가능·특정 대상 중심별 개수와 시설 세부 유형을 집계한다.
+  function summarizeShelterAccess(shelters) {
+    const summary = {
+      public: {
+        key: "public",
+        label: "모두 이용 가능",
+        count: 0,
+        color: "#10b981",
+        facilityTypes: new Map(),
+      },
+      restricted: {
+        key: "restricted",
+        label: "특정 대상 중심",
+        count: 0,
+        color: "#f97316",
+        facilityTypes: new Map(),
+      },
+    };
+
+    shelters.forEach((shelter) => {
+      const accessType = normalizeShelterAccessType(shelter);
+      const group = summary[accessType];
+      const facilityType = String(shelter?.facilityType ?? "기타").trim() || "기타";
+
+      group.count += 1;
+      group.facilityTypes.set(
+        facilityType,
+        (group.facilityTypes.get(facilityType) ?? 0) + 1,
+      );
+    });
+
+    return summary;
+  }
+
+  // tg 수정 / 마우스를 올리면 "모두 이용 가능 5 (금융기관 3 + 공공시설 1 + 행정복지센터 1)" 형식으로 표시한다.
+  function showShelterChartTooltip(event, group, totalCount) {
+    if (!regionPopupShelterChartTooltip) {
+      return;
+    }
+
+    const percentage =
+      totalCount > 0 ? ((group.count / totalCount) * 100).toFixed(1) : "0.0";
+    const facilitySummary = [...group.facilityTypes.entries()]
+      .sort((left, right) => right[1] - left[1])
+      .map(([facilityType, count]) => `${facilityType} ${count}`)
+      .join(" + ");
+
+    // tg 수정 / 전체 개수에는 '곳' 단위를 붙이고 세부 유형 개수는 숫자만 표시한다.
+    regionPopupShelterChartTooltip.textContent =
+      `${group.label} ${group.count}곳 (${facilitySummary}) · ${percentage}%`;
+    regionPopupShelterChartTooltip.hidden = false;
+
+    const wrapper = regionPopupShelterChartTooltip.parentElement;
+    const wrapperRect = wrapper?.getBoundingClientRect();
+    const pointerX = Number(event.clientX);
+    const pointerY = Number(event.clientY);
+
+    if (wrapperRect && Number.isFinite(pointerX) && Number.isFinite(pointerY)) {
+      regionPopupShelterChartTooltip.style.left =
+        `${pointerX - wrapperRect.left + 12}px`;
+      regionPopupShelterChartTooltip.style.top =
+        `${pointerY - wrapperRect.top + 12}px`;
+    }
+  }
+
+  function hideShelterChartTooltip() {
+    if (regionPopupShelterChartTooltip) {
+      regionPopupShelterChartTooltip.hidden = true;
+    }
+  }
+
+  // tg 추가 / 지역 변경 또는 조회 실패 시 이전 파이차트를 초기화한다.
+  function resetShelterAccessChart(
+    message = "무더위쉼터 이용 대상을 분석하는 중입니다.",
+  ) {
+    if (regionPopupShelterChartMessage) {
+      regionPopupShelterChartMessage.textContent = message;
+      regionPopupShelterChartMessage.hidden = false;
+      regionPopupShelterChartMessage.style.display = "grid";
+    }
+
+    if (regionPopupShelterChart) {
+      regionPopupShelterChart.hidden = true;
+      regionPopupShelterChart.style.display = "none";
+    }
+
+    regionPopupShelterChartSlices?.replaceChildren();
+    regionPopupShelterChartCenter?.replaceChildren();
+    regionPopupShelterChartLegend?.replaceChildren();
+    hideShelterChartTooltip();
+  }
+
+  // tg 추가 / 해당 동의 쉼터를 모두 이용 가능과 특정 대상 중심으로 나눈 도넛형 파이차트를 그린다.
+  function renderShelterAccessChart(shelters) {
+    if (
+      !regionPopupShelterChart ||
+      !regionPopupShelterChartSlices ||
+      !regionPopupShelterChartCenter ||
+      !regionPopupShelterChartLegend
+    ) {
+      return;
+    }
+
+    const records = Array.isArray(shelters) ? shelters : [];
+    const summary = summarizeShelterAccess(records);
+    const groups = [summary.public, summary.restricted].filter(
+      (group) => group.count > 0,
+    );
+    const totalCount = groups.reduce((sum, group) => sum + group.count, 0);
+
+    if (totalCount === 0) {
+      resetShelterAccessChart("표시할 무더위쉼터가 없습니다.");
+      return;
+    }
+
+    const centerX = 108;
+    const centerY = 108;
+    const radius = 72;
+    const circumference = 2 * Math.PI * radius;
+    let accumulatedRatio = 0;
+
+    regionPopupShelterChartSlices.replaceChildren();
+    regionPopupShelterChartCenter.replaceChildren();
+    regionPopupShelterChartLegend.replaceChildren();
+
+    const backgroundCircle = createShelterChartSvgElement("circle", {
+      cx: centerX,
+      cy: centerY,
+      r: radius,
+      fill: "none",
+      stroke: "#e2e8f0",
+      "stroke-width": 30,
+    });
+    regionPopupShelterChartSlices.append(backgroundCircle);
+
+    groups.forEach((group) => {
+      const ratio = group.count / totalCount;
+      const segmentLength = Math.max(0, circumference * ratio - 2);
+      const circle = createShelterChartSvgElement("circle", {
+        cx: centerX,
+        cy: centerY,
+        r: radius,
+        fill: "none",
+        stroke: group.color,
+        "stroke-width": 30,
+        "stroke-linecap": "butt",
+        "stroke-dasharray": `${segmentLength} ${circumference}`,
+        "stroke-dashoffset": String(-circumference * accumulatedRatio),
+        transform: `rotate(-90 ${centerX} ${centerY})`,
+        tabindex: "0",
+        role: "img",
+        "aria-label": `${group.label} ${group.count}곳`,
+        class: "region-popup-shelter-chart-slice",
+      });
+
+      circle.addEventListener("mouseenter", (event) => {
+        showShelterChartTooltip(event, group, totalCount);
+      });
+      circle.addEventListener("mousemove", (event) => {
+        showShelterChartTooltip(event, group, totalCount);
+      });
+      circle.addEventListener("mouseleave", hideShelterChartTooltip);
+      circle.addEventListener("focus", (event) => {
+        const syntheticEvent = {
+          clientX: event.target.getBoundingClientRect().left,
+          clientY: event.target.getBoundingClientRect().top,
+        };
+        showShelterChartTooltip(syntheticEvent, group, totalCount);
+      });
+      circle.addEventListener("blur", hideShelterChartTooltip);
+
+      regionPopupShelterChartSlices.append(circle);
+      accumulatedRatio += ratio;
+
+      const legendItem = document.createElement("span");
+      const legendColor = document.createElement("i");
+      const legendText = document.createElement("span");
+
+      legendItem.className = "region-popup-shelter-chart-legend-item";
+      legendColor.className = "region-popup-shelter-chart-legend-color";
+      legendColor.style.backgroundColor = group.color;
+      legendText.textContent =
+        `${group.label} ${group.count}곳 · ${(ratio * 100).toFixed(1)}%`;
+
+      legendItem.append(legendColor, legendText);
+      regionPopupShelterChartLegend.append(legendItem);
+    });
+
+    const publicRatio = (summary.public.count / totalCount) * 100;
+
+    // tg 추가 / 파이차트 옆에 쉼터 핵심 수치를 글로 함께 표시한다.
+    if (regionPopupShelterTotal) regionPopupShelterTotal.textContent = `${totalCount}곳`;
+    if (regionPopupShelterPublic) {
+      regionPopupShelterPublic.textContent = `${summary.public.count}곳`;
+    }
+    if (regionPopupShelterRestricted) {
+      regionPopupShelterRestricted.textContent = `${summary.restricted.count}곳`;
+    }
+    if (regionPopupShelterPublicRatio) {
+      regionPopupShelterPublicRatio.textContent = `${publicRatio.toFixed(1)}%`;
+    }
+    if (regionPopupShelterComparison) {
+      regionPopupShelterComparison.textContent =
+        publicRatio >= 50
+          ? "일반 시민이 이용 가능한 쉼터가 절반 이상입니다."
+          : "일반 시민이 이용 가능한 쉼터가 절반 미만입니다.";
+    }
+
+    const centerLabel = createShelterChartSvgElement("text", {
+      x: centerX,
+      y: centerY - 10,
+      "text-anchor": "middle",
+      fill: "#64748b",
+      "font-size": 11,
+      "font-weight": 700,
+    });
+    centerLabel.textContent = "일반 이용 가능";
+
+    const centerValue = createShelterChartSvgElement("text", {
+      x: centerX,
+      y: centerY + 14,
+      "text-anchor": "middle",
+      fill: "#0f172a",
+      "font-size": 22,
+      "font-weight": 800,
+    });
+    centerValue.textContent = `${publicRatio.toFixed(1)}%`;
+
+    const centerCount = createShelterChartSvgElement("text", {
+      x: centerX,
+      y: centerY + 32,
+      "text-anchor": "middle",
+      fill: "#64748b",
+      "font-size": 10,
+      "font-weight": 700,
+    });
+    // tg 수정 / 차트 중앙의 개수 표기에서 '곳' 단위를 제거한다.
+    centerCount.textContent = `${summary.public.count} / ${totalCount}`;
+
+    regionPopupShelterChartCenter.append(
+      centerLabel,
+      centerValue,
+      centerCount,
+    );
+
+    if (regionPopupShelterChartMessage) {
+      regionPopupShelterChartMessage.hidden = true;
+      regionPopupShelterChartMessage.style.display = "none";
+    }
+
+    regionPopupShelterChart.hidden = false;
+    regionPopupShelterChart.style.display = "block";
   }
 
   // 팝업의 쉼터 개수와 목록을 초기 상태로 되돌린다.
@@ -1811,6 +2335,17 @@
     if (regionPopupShelterList) {
       regionPopupShelterList.innerHTML = "";
     }
+
+    // tg 추가 / 행정동이 바뀔 때 이전 쉼터 파이차트와 핵심 수치를 초기화한다.
+    if (regionPopupShelterTotal) regionPopupShelterTotal.textContent = "-";
+    if (regionPopupShelterPublic) regionPopupShelterPublic.textContent = "-";
+    if (regionPopupShelterRestricted) regionPopupShelterRestricted.textContent = "-";
+    if (regionPopupShelterPublicRatio) regionPopupShelterPublicRatio.textContent = "-";
+    if (regionPopupShelterComparison) {
+      regionPopupShelterComparison.textContent =
+        "해당 동 쉼터 구성을 분석하는 중입니다.";
+    }
+    resetShelterAccessChart();
   }
 
   // jisu_09_추가 / 쉼터 운영요일을 짧게 표시한다.----------------//
@@ -1903,11 +2438,8 @@
 
   // 선택 행정동 경계 안의 무더위쉼터를 서버에서 조회한다.
   async function updateShelters(dongCode, requestId) {
-    if (
-      !regionPopup ||
-      regionPopup.hidden ||
-      regionPopupDongCode !== dongCode
-    ) {
+    // tg 수정 / 쉼터 데이터는 분석 팝업의 파이차트와 별도 찾기 메뉴에서 함께 사용한다.
+    if (regionPopupDongCode !== dongCode) {
       return;
     }
 
@@ -1943,10 +2475,21 @@
       regionPopupShelterMessage.textContent =
         payload.message ?? "선택 행정동 안의 무더위쉼터 정보입니다.";
 
+      if (shelterFinderMessage && selectedFeature) {
+        const dongInfo = getDongInfo(selectedFeature);
+        shelterFinderMessage.textContent =
+          `${dongInfo.name} · 무더위쉼터 ${shelters.length}곳`;
+      }
+
       renderPopupShelterList(shelters);
 
-      // 쉼터 응답이 도착한 뒤 경계와 마커를 함께 다시 표시한다.
-      renderRegionPopupMap(dongCode);
+      // tg 추가 / 조회된 쉼터의 일반 이용 가능 여부와 시설 세부 유형을 파이차트로 표시한다.
+      renderShelterAccessChart(shelters);
+
+      // tg 수정 / 무더위쉼터 찾기 패널이 열려 있을 때만 메인 지도에 마커를 표시한다.
+      if (shelterFinderOpen) {
+        renderRegionPopupShelterMarkers(shelters);
+      }
     } catch (error) {
       console.error("쉼터 조회 실패:", error);
 
@@ -1955,6 +2498,7 @@
         regionPopupShelterMessage.textContent =
           "쉼터 정보를 불러오지 못했습니다.";
         renderPopupShelterList([]);
+        resetShelterAccessChart("쉼터 이용 대상 분석을 불러오지 못했습니다.");
         clearRegionPopupShelterMarkers();
       }
     }
@@ -2147,8 +2691,12 @@
     regionPopupScore.textContent = heatData
       ? `${Number(heatData.score).toFixed(1)}점`
       : "-";
+    updatePopupRank(dongInfo.code);
 
     regionPopupDongCode = dongInfo.code;
+
+    // tg 추가 / 팝업을 열자마자 해당 행정동의 녹지율을 표시한다.
+    updatePopupEnvironmentMetrics(dongInfo.code);
 
     resetPopupShelters();
     hideSelectedHeatAlert();
@@ -2156,9 +2704,8 @@
     regionPopup.hidden = false;
     document.body.classList.add("has-region-popup");
 
-    // 팝업이 화면에 표시된 후 지도를 생성해야 크기를 정상 계산할 수 있다.
+    // tg 수정 / 팝업 내부 지도는 제거했으므로 닫기 버튼에만 포커스를 이동한다.
     window.setTimeout(() => {
-      renderRegionPopupMap(dongInfo.code);
       regionPopupClose?.focus();
     }, 0);
   }
@@ -2171,10 +2718,11 @@
 
     regionPopup.hidden = true;
     regionPopupDongCode = null;
-    // jisu_08_추가 / 무더위 쉼터 -------------------------//
-    regionPopupShelterRecords = [];
-    clearRegionPopupShelterMarkers();
-    //--------------------------------------------------//
+    // tg 수정 / 분석 팝업을 닫아도 별도 쉼터 찾기 메뉴가 열려 있으면 마커와 목록은 유지한다.
+    if (!shelterFinderOpen) {
+      regionPopupShelterRecords = [];
+      clearRegionPopupShelterMarkers();
+    }
     document.body.classList.remove("has-region-popup");
     hideSelectedHeatAlert();
   }
@@ -2296,6 +2844,13 @@
     const requestId = ++selectedRegionRequestId;
 
     updateDongPanel(feature);
+
+    // tg 추가 / 쉼터 찾기 패널이 열린 상태에서 다른 동을 선택하면 안내 문구와 기존 마커를 갱신한다.
+    if (shelterFinderOpen && shelterFinderMessage) {
+      shelterFinderMessage.textContent =
+        `${dongInfo.name}의 무더위쉼터를 조회하고 있습니다.`;
+      clearRegionPopupShelterMarkers();
+    }
 
     // 날씨와 특보를 서로 기다리지 않고 동시에 조회한다.
     Promise.allSettled([
@@ -2836,6 +3391,10 @@
       if (districtChartPanel && !districtChartPanel.hidden) {
         setDistrictChartPanelOpen(false);
       }
+      if (shelterFinderPanel && !shelterFinderPanel.hidden) {
+        setShelterFinderPanelOpen(false);
+      }
+      setHeaderFunctionMenuOpen(false);
     }
   });
   //
@@ -2868,7 +3427,6 @@
     districtChartPanel.hidden = !isOpen;
     districtChartBackdrop.hidden = !isOpen;
     districtChartPanel.setAttribute("aria-hidden", String(!isOpen));
-    headerMenuButton?.setAttribute("aria-expanded", String(isOpen));
     document.body.classList.toggle("district-chart-open", isOpen);
 
     if (isOpen) {
@@ -2886,8 +3444,80 @@
     setSearchPopupOpen(false);
   });
 
+  // tg 추가 / 버거 메뉴 열기·닫기
+  function setHeaderFunctionMenuOpen(isOpen) {
+    if (!headerFunctionMenu) {
+      return;
+    }
+
+    headerFunctionMenu.hidden = !isOpen;
+    headerMenuButton?.setAttribute("aria-expanded", String(isOpen));
+  }
+
+  // tg 추가 / 무더위쉼터 찾기 전용 사이드 패널 열기·닫기
+  function setShelterFinderPanelOpen(isOpen) {
+    if (!shelterFinderPanel || !shelterFinderBackdrop) {
+      return;
+    }
+
+    shelterFinderOpen = isOpen;
+    shelterFinderPanel.hidden = !isOpen;
+    shelterFinderBackdrop.hidden = !isOpen;
+    shelterFinderPanel.setAttribute("aria-hidden", String(!isOpen));
+    document.body.classList.toggle("shelter-finder-open", isOpen);
+
+    if (isOpen) {
+      setDistrictChartPanelOpen(false);
+      setHeaderFunctionMenuOpen(false);
+
+      if (!selectedFeature || !regionPopupDongCode) {
+        if (shelterFinderMessage) {
+          shelterFinderMessage.textContent =
+            "먼저 지도에서 행정동을 선택해주세요.";
+        }
+        clearRegionPopupShelterMarkers();
+      } else {
+        const dongInfo = getDongInfo(selectedFeature);
+        if (shelterFinderMessage) {
+          shelterFinderMessage.textContent =
+            `${dongInfo.name}의 무더위쉼터를 표시합니다.`;
+        }
+
+        if (regionPopupShelterRecords.length > 0) {
+          renderRegionPopupShelterMarkers(regionPopupShelterRecords);
+        } else {
+          updateShelters(regionPopupDongCode, selectedRegionRequestId);
+        }
+      }
+
+      window.requestAnimationFrame(() => shelterFinderClose?.focus());
+    } else {
+      clearRegionPopupShelterMarkers();
+      shelterFinderClose?.blur();
+      headerMenuButton?.focus();
+    }
+  }
+
   headerMenuButton?.addEventListener("click", () => {
-    setDistrictChartPanelOpen(districtChartPanel?.hidden ?? true);
+    setHeaderFunctionMenuOpen(headerFunctionMenu?.hidden ?? true);
+  });
+
+  openDistrictAnalysisMenu?.addEventListener("click", () => {
+    setHeaderFunctionMenuOpen(false);
+    setShelterFinderPanelOpen(false);
+    setDistrictChartPanelOpen(true);
+  });
+
+  openShelterFinderMenu?.addEventListener("click", () => {
+    setShelterFinderPanelOpen(true);
+  });
+
+  shelterFinderClose?.addEventListener("click", () => {
+    setShelterFinderPanelOpen(false);
+  });
+
+  shelterFinderBackdrop?.addEventListener("click", () => {
+    setShelterFinderPanelOpen(false);
   });
 
   districtChartClose?.addEventListener("click", () => {
@@ -2896,6 +3526,17 @@
 
   districtChartBackdrop?.addEventListener("click", () => {
     setDistrictChartPanelOpen(false);
+  });
+
+  document.addEventListener("click", (event) => {
+    if (
+      headerFunctionMenu &&
+      !headerFunctionMenu.hidden &&
+      !headerFunctionMenu.contains(event.target) &&
+      !headerMenuButton?.contains(event.target)
+    ) {
+      setHeaderFunctionMenuOpen(false);
+    }
   });
 
   searchInput?.addEventListener("input", () => {
